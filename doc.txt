@@ -1,0 +1,10 @@
+# Project Name: SeeC
+# Version: 1.0.0
+# Log Start Date: 2025-05-05
+# Log File: doc_log.txt
+
+[2025-05-05] - Day 1: SeeC Initialization
+- Initialized source code files for SeeC project
+- Set up src, `include/`, `tests/`, `build/` directories for SeeC structure
+- Set up `Makefile`, `.gitignore` files for efficient workflow
+- Set up `doc_log.txt` file for tracking progress
