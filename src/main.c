@@ -18,7 +18,7 @@ int main(void)
         t = next_token(&input);
         printf("[%s, \"%s\"]\n", token_kind_to_string(t.kind), t.lexeme);
         free(t.lexeme);
-    } while (t.kind != TOKEN_EOF);
+    } while (t.type != TOKEN_EOF);
 
     return 0;
 }
