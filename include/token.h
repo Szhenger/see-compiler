@@ -20,7 +20,7 @@ typedef struct {
     int column;         // Column number in source (optional but helpful)
 } Token;
 
-// Returns a string name for a TokenCategory enum (for debugging or printing)
+// Returns a string name for a TokenType enum (for debugging or printing)
 const char *token_type_to_string(TokenType type);
 
 #endif // TOKEN_H
