@@ -12,8 +12,8 @@ int main(void)
         "}";
 
     const char *input = source;
+    
     Token t;
-
     do {
         t = next_token(&input);
         printf("[%s, \"%s\"]\n", token_kind_to_string(t.type), t.lexeme);
