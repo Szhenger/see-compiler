@@ -8,3 +8,11 @@
 - Set up src, `include/`, `tests/`, `build/` directories for SeeC structure
 - Set up `Makefile`, `.gitignore` files for efficient workflow
 - Set up `doc_log.txt` file for tracking progress
+
+[2025-05-28] - Day 2: Source File Initialization
+- Planned to support compilation of a Hello, World program
+- Defined the interface of tokens in `token.h`
+- Defined the driver structure of `main.c`
+- Defined a subset of tokens in `token.c`
+- Defined the lexer structure in `lexer.c`
+- Defined a text driver in `lexer_test.c`
