@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "lexer.h"
 
-static const char *keywords[] = { "int", "return" };
+static const char *keywords[] = { "int", "return", "void" };
 
 static int is_keyword(const char *word) 
 {
