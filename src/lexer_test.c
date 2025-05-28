@@ -1,13 +1,20 @@
 #include <stdio.h>
-#include "lexer.c"
+#include <stdlib.h>
+#include "lexer.h"
+#include "token.h"
 
 int main(void) 
 {
-    const char *input = "int main(void) { return 0; }";
-    Token tok;
-    while ((tok = next_token(&input)).type != TOKEN_EOF) {
-        printf("[%s, \"%s\"]\n", token_kind_to_string(tok.type), tok.lexeme);
-        free(tok.lexeme);
-    }
+    const char *source = "int main(void) { return 0; }";
+    const char *input = source;
+    
+    Token t;
+    do {
+        t = next_token(&input);
+        printf("[%s, \"%s\"]\n", token_type_to_string(t.type), t.lexeme);
+        free(t.lexeme);
+    } while (t.type != TOKEN_EOF);
+
     return 0;
 }
+
