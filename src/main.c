@@ -10,7 +10,6 @@ int main(void)
         "    printf(\"Hello, world!\\n\");\n"
         "    return 0;\n"
         "}";
-
     const char *input = source;
     
     Token t;
