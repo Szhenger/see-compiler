@@ -16,7 +16,7 @@ int main(void)
 
     do {
         t = next_token(&input);
-        printf("[%s, \"%s\"]\n", token_kind_to_string(t.kind), t.lexeme);
+        printf("[%s, \"%s\"]\n", token_kind_to_string(t.type), t.lexeme);
         free(t.lexeme);
     } while (t.type != TOKEN_EOF);
 
