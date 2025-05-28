@@ -20,10 +20,10 @@ LEXER_TEST_BIN = $(BUILD_DIR)/lexer_test
 
 all: $(MAIN_BIN)
 
-$(MAIN_BIN): $(MAIN_SRC) $(LEXER_SRC)
+$(MAIN_BIN): $(MAIN_SRC) $(LEXER_SRC) src/token.c
 	$(CC) $(CFLAGS) -o $@ $^
 
-lexer_test: $(LEXER_TEST_SRC) $(LEXER_SRC)
+lexer_test: $(LEXER_TEST_SRC) $(LEXER_SRC) src/token.c
 	$(CC) $(CFLAGS) -o $(LEXER_TEST_BIN) $^
 
 clean:
