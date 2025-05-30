@@ -5,13 +5,13 @@
 
 int main(void) 
 {
-    const char* source_code = "int main() { printf(\"Hello, world!\\n\"); return 0; }";
+    const char *source_code = "int main() { printf(\"Hello, world!\\n\"); return 0; }";
     Token* tokens;
     int token_count;
     tokens = tokenize(source_code, &token_count);
 
-    Parser* parser = init_parser(tokens, token_count);
-    ASTNode* tree = parse(parser);
+    Parser *parser = init_parser(tokens, token_count);
+    ASTNode *tree = parse(parser);
 
     // For now, just print top-level structure
     printf("Function: %s\n", tree->value); // main
