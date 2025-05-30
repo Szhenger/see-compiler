@@ -5,6 +5,11 @@
 
 static const char *keywords[] = { "int", "return", "void" };
 
+// Helper function prototypes
+static int is_keyword(const char *word);
+Token next_token(const char **input);
+
+// Tokenize the source file
 int lexer(void) 
 {
     // Get the source file
