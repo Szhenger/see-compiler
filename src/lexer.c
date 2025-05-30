@@ -5,6 +5,32 @@
 
 static const char *keywords[] = { "int", "return", "void" };
 
+int lexer(void) 
+{
+    // Get the source file
+    const char *source =
+        "int main(void)" 
+        "{\n"
+        "    printf(\"Hello, world!\\n\");\n"
+        "    return 0;\n"
+        "}";
+
+    // Get a pointer to source
+    const char *input = source;
+
+    // Initialize a token variable
+    Token t;
+
+    // Process each token in source
+    do {
+        t = next_token(&input);
+        printf("[%s, \"%s\"]\n", token_type_to_string(t.type), t.lexeme);
+        free(t.lexeme);
+    } while (t.type != TOKEN_EOF);
+
+    return 0;
+}
+
 // Helper function to verify keywords 
 static int is_keyword(const char *word) 
 {
