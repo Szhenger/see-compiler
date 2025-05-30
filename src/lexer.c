@@ -5,6 +5,7 @@
 
 static const char *keywords[] = { "int", "return", "void" };
 
+// Helper function to verify keywords 
 static int is_keyword(const char *word) 
 {
     for (size_t i = 0; i < sizeof(keywords)/sizeof(keywords[0]); i++) {
@@ -13,18 +14,23 @@ static int is_keyword(const char *word)
     return 0;
 }
 
+// Get token obtained from input pointer
 Token next_token(const char **input) 
 {
+    // Increment on whitespaces
     while (**input && isspace(**input)) {
         (*input)++;
     }
 
+    // Return NUL token on NUL character   
     if (**input == '\0') {
         return (Token){ TOKEN_EOF, strdup(""), 0, 0 };
     }
 
+    // Get the char literal deferenced by input
     char c = **input;
 
+    // See if c is bracket character
     if (strchr("(){};=", c)) {
         (*input)++;
         char *lexeme = malloc(2);
@@ -33,6 +39,7 @@ Token next_token(const char **input)
         return (Token){ TOKEN_SYMBOL, lexeme, 0, 0 };
     }
 
+    // See if c is a integer literal
     if (isdigit(c)) {
         char buffer[32];
         int i = 0;
@@ -41,6 +48,7 @@ Token next_token(const char **input)
         return (Token){ TOKEN_INTEGER_LITERAL, strdup(buffer), 0, 0 };
     }
 
+    // See if c is a string literal
     if (c == '"') {
         (*input)++;
         char buffer[256];
@@ -51,6 +59,7 @@ Token next_token(const char **input)
         return (Token){ TOKEN_STRING_LITERAL, strdup(buffer), 0, 0 };
     }
 
+    // See if c is either a keyword or a identifier
     if (isalpha(c)) {
         char buffer[64];
         int i = 0;
