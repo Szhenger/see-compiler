@@ -27,3 +27,5 @@
 - Defined the procedure of parser in `parser.c` in `src/` 
 - Developed a unit test of parser in `parser_test.c` in `src/`
 - Automated the test of parser with Python script in `test_parser.py` in `tests`
+- Integrated the procedure of the lexer to `lexer.c`
+- Defined the main driver of `seec` in main.c 
