@@ -5,15 +5,21 @@
 
 int main(void) 
 {
+    // Get the source file
     const char *source =
         "int main(void)" 
         "{\n"
         "    printf(\"Hello, world!\\n\");\n"
         "    return 0;\n"
         "}";
+
+    // Get a pointer to source
     const char *input = source;
-    
+
+    // Initialize a token variable
     Token t;
+
+    // Process each token in source
     do {
         t = next_token(&input);
         printf("[%s, \"%s\"]\n", token_type_to_string(t.type), t.lexeme);
