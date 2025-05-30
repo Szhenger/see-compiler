@@ -21,3 +21,9 @@
 - Defined the automated test for `Hello, World` in `test_lexer_hello.py`
 - Corrected syntax and semantic errors in `main.c` and `token.c`
 - Updated the Makefile to build seec executable
+
+[2025-05-30] - Day 4: AST and Parser Initializations
+- Defined the structure of AST in `ast.c` in `src/`
+- Defined the procedure of parser in `parser.c` in `src/` 
+- Developed a unit test of parser in `parser_test.c` in `src/`
+- Automated the test of parser with Python script in `test_parser.py` in `tests`
