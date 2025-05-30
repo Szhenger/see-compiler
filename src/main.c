@@ -36,4 +36,5 @@ int main(void)
     free_ast(root);
     free_token_stream(tokens);
 
-    return 0;}
+    return 0;
+}
