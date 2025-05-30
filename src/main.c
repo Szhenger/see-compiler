@@ -15,18 +15,25 @@ int main(void)
         "    return 0;\n"
         "}";
 
-    // Get a pointer to source
-    const char *input = source;
+    // Procedure 1: Lexical Analysis
+    TokenStream *tokens = tokenize(source_code);
+    if (tokens == NULL) {
+        fprintf(stderr, "Lexing failed!\n");
+        return 1;
+    }
 
-    // Initialize a token variable
-    Token t;
+    // Procedure 2: Syntactic Analysis (Parsing)
+    ASTNode *root = parse(tokens);
+    if (root == NULL) {
+        fprintf(stderr, "Parsing failed!\n");
+        return 1;
+    }
 
-    // Process each token in source
-    do {
-        t = next_token(&input);
-        printf("[%s, \"%s\"]\n", token_type_to_string(t.type), t.lexeme);
-        free(t.lexeme);
-    } while (t.type != TOKEN_EOF);
+    // Procedure 3 (optional): Debugging Output
+    print_ast(root);
 
-    return 0;
-}
+    // Procedure 4: Clean Up
+    free_ast(root);
+    free_token_stream(tokens);
+
+    return 0;}
