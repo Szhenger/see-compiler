@@ -6,7 +6,8 @@
 int main(void) 
 {
     const char *source =
-        "int main(void) {\n"
+        "int main(void)" 
+        "{\n"
         "    printf(\"Hello, world!\\n\");\n"
         "    return 0;\n"
         "}";
