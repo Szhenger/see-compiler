@@ -6,7 +6,7 @@
 int main(void) 
 {
     const char *source_code = "int main() { printf(\"Hello, world!\\n\"); return 0; }";
-    Token* tokens;
+    Token *tokens;
     int token_count;
     tokens = tokenize(source_code, &token_count);
 
