@@ -9,10 +9,15 @@
 - Set up `Makefile`, `.gitignore` files for efficient workflow
 - Set up `doc_log.txt` file for tracking progress
 
-[2025-05-28] - Day 2: Source File Initialization
-- Planned to support compilation of a Hello, World program
+[2025-05-28] - Day 2: Source Folder Initialization
+- Planned to support compilation of a `Hello, World` program
 - Defined the interface of tokens in `token.h`
 - Defined the driver structure of `main.c`
 - Defined a subset of tokens in `token.c`
 - Defined the lexer structure in `lexer.c`
 - Defined a text driver in `lexer_test.c`
+
+[2025-05-29] - Day 3: Tests Folder Initialization
+- Defined the automated test for `Hello, World` in `test_lexer_hello.py`
+- Corrected syntax and semantic errors in `main.c` and `token.c`
+- Updated the Makefile to build seec executable
