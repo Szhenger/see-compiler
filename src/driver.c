@@ -15,7 +15,7 @@ int main(void)
 {
     const char *source = load_sample_source();
 
-    // Step 1: Lexical Analysis
+    // Procedure 1: Lexical Analysis
     int token_count = 0;
     Token *tokens = tokenize(source, &token_count);
     if (!tokens || token_count == 0) {
@@ -23,7 +23,7 @@ int main(void)
         return 1;
     }
 
-    // Step 2: Parsing
+    // Procedure 2: Parsing
     Parser *parser = init_parser(tokens, token_count);
     ASTNode *ast = parse(parser);
     if (!ast) {
@@ -33,10 +33,10 @@ int main(void)
         return 1;
     }
 
-    // Step 3: Debug Output
+    // Procedure 3: Debug Output
     print_ast(ast);  // Define this in ast.c if not already
 
-    // Step 4: Cleanup
+    // Procedure 4: Cleanup
     free_ast(ast);
     free_parser(parser);
     free_tokens(tokens, token_count);
