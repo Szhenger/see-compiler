@@ -7,7 +7,7 @@ static Token current_token(Parser *p)
     return p->tokens[p->current];
 }
 
-static void advance(Parser* p) 
+static void advance(Parser *p) 
 {
     if (p->current < p->length) p->current++;
 }
