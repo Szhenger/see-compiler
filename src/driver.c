@@ -1,40 +1,46 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "ast.h" 
+#include "ast.h"
 #include "lexer.h"
 #include "parser.h"
-#include "token.h"
+#include "tokens.h"
+
+// Simple source provider for now
+const char *load_sample_source(void) 
+{
+    return "int main(void) { printf(\"Hello, world!\\n\"); return 0; }";
+}
 
 int main(void) 
 {
-    // Get the source file
-    const char *source =
-        "int main(void)" 
-        "{\n"
-        "    printf(\"Hello, world!\\n\");\n"
-        "    return 0;\n"
-        "}";
+    const char *source = load_sample_source();
 
-    // Procedure 1: Lexical Analysis
-    TokenStream *tokens = tokenize(source_code);
-    if (tokens == NULL) {
+    // Step 1: Lexical Analysis
+    int token_count = 0;
+    Token *tokens = tokenize(source, &token_count);
+    if (!tokens || token_count == 0) {
         fprintf(stderr, "Lexing failed!\n");
         return 1;
     }
 
-    // Procedure 2: Syntactic Analysis (Parsing)
-    ASTNode *root = parse(tokens);
-    if (root == NULL) {
+    // Step 2: Parsing
+    Parser *parser = init_parser(tokens, token_count);
+    ASTNode *ast = parse(parser);
+    if (!ast) {
         fprintf(stderr, "Parsing failed!\n");
+        free_parser(parser);
+        free_tokens(tokens, token_count);
         return 1;
     }
 
-    // Procedure 3 (optional): Debugging Output
-    print_ast(root);
+    // Step 3: Debug Output
+    print_ast(ast);  // Define this in ast.c if not already
 
-    // Procedure 4: Clean Up
-    free_ast(root);
-    free_token_stream(tokens);
+    // Step 4: Cleanup
+    free_ast(ast);
+    free_parser(parser);
+    free_tokens(tokens, token_count);
 
     return 0;
 }
+
