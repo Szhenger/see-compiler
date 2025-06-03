@@ -28,4 +28,9 @@
 - Developed a unit test of parser in `parser_test.c` in `src/`
 - Automated the test of parser with Python script in `test_parser.py` in `tests`
 - Integrated the procedure of the lexer to `lexer.c`
-- Defined the main driver of `seec` in main.c 
+- Defined the main driver of `seec` in main.c
+
+[2025-06-02] - Day 5: Lexer and Parser Testing Initialization
+- Initializaed the program driver in `main.c`
+- Developing unit tests for `lexer.c` and `parser.c`
+- Planning regression tests for `main.c`
