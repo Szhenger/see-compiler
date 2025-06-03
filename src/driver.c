@@ -34,7 +34,7 @@ int main(void)
     }
 
     // Procedure 3: Debug Output
-    print_ast(ast);  // Define this in ast.c if not already
+    print_ast(ast);
 
     // Procedure 4: Cleanup
     free_ast(ast);
