@@ -7,14 +7,16 @@
 #include "tokens.h"
 
 // Assert helper for AST nodes
-void assert_ast_node(ASTNode *node, ASTNodeType expected_type, const char *expected_value) {
+void assert_ast_node(ASTNode *node, ASTNodeType expected_type, const char *expected_value) 
+{
     assert(node != NULL);
     assert(node->type == expected_type);
     assert(strcmp(node->value, expected_value) == 0);
 }
 
 // Main test driver
-int parser_test(void) {
+int parser_test(void) 
+{
     const char *source_code = "int main() { printf(\"Hello, world!\\n\"); return 0; }";
 
     // Tokenize
