@@ -1,4 +1,4 @@
-# Project Name: SeeC
+# Project Name: `SeeC`
 # Version: 1.0.0
 # Log Start Date: 2025-05-05
 # Log File: doc_log.txt
