@@ -18,7 +18,7 @@ typedef struct ASTNode {
 
 ASTNode *create_ast_node(ASTNodeType type, const char *value);
 void free_ast(ASTNode *node);
-void print_ast(ASTNode *root); // <-- Add this declaration
+void print_ast(ASTNode *root);
 
 #endif
 
