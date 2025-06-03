@@ -39,7 +39,8 @@ static int is_keyword(const char *word) {
 }
 
 // Public: read next token from input pointer
-Token next_token(const char **input) {
+Token next_token(const char **input) 
+{
     while (**input && isspace(**input)) (*input)++;
     if (**input == '\0') return (Token){ TOKEN_EOF, strdup(""), 0, 0 };
 
