@@ -1,27 +1,37 @@
 import subprocess
 import unittest
 
-class TestParserOutput(unittest.TestCase):
-
-    def test_hello_world_ast(self):
-        """Runs test_parser executable and checks AST output"""
-        result = subprocess.run(
-            ["./build/test_parser"],  # Adjust path if needed
-            capture_output=True,
-            text=True
-        )
-
-        self.assertEqual(result.returncode, 0, "C test_parser did not exit cleanly")
-
-        output = result.stdout.strip().splitlines()
-        expected_output = [
+class TestParserHelloWorld(unittest.TestCase):
+    def setUp(self):
+        self.executable = "./build/test_parser"
+        self.expected_output = [
             "Function: main",
-            'Call: printf with arg: "Hello, world!\\n"',
+            'Call: printf with arg: Hello, world!\\n',
             "Return: 0"
         ]
 
-        for expected, actual in zip(expected_output, output):
-            self.assertEqual(actual.strip(), expected, f"Expected '{expected}', got '{actual}'")
+    def run_parser(self):
+        result = subprocess.run(
+            [self.executable],
+            capture_output=True,
+            text=True
+        )
+        self.assertEqual(result.returncode, 0, "Parser executable did not exit cleanly")
+        return result.stdout.strip().splitlines()
+
+    def test_ast_structure(self):
+        actual_output = self.run_parser()
+        self.assertEqual(
+            len(actual_output), len(self.expected_output),
+            f"Expected {len(self.expected_output)} lines, got {len(actual_output)}."
+        )
+
+        for i, (expected, actual) in enumerate(zip(self.expected_output, actual_output), 1):
+            self.assertEqual(
+                actual.strip(), expected,
+                f"Line {i} mismatch:\nExpected: {expected}\nGot     : {actual.strip()}"
+            )
 
 if __name__ == "__main__":
     unittest.main()
+
