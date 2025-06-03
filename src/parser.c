@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Utilities
 static Token current_token(Parser *p) 
 {
     return p->tokens[p->current];
@@ -12,13 +13,25 @@ static void advance(Parser *p)
     if (p->current < p->length) p->current++;
 }
 
-ASTNode *parse_return(Parser *p) 
+static int match(Parser *p, TokenType type, const char *lexeme) 
 {
-    // Assuming: return LITERAL ;
-    advance(p); // skip 'return'
+    if (p->current >= p->length) return 0;
+    Token t = current_token(p);
+    if (t.type == type && (!lexeme || strcmp(t.lexeme, lexeme) == 0)) {
+        advance(p);
+        return 1;
+    }
+    return 0;
+}
+
+// Parse return statement: return 0;
+static ASTNode *parse_return(Parser *p) {
+    if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
+
     Token val = current_token(p);
     advance(p); // skip literal
-    advance(p); // skip ';'
+
+    if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
 
     ASTNode *value = create_ast_node(AST_LITERAL, val.lexeme);
     ASTNode *ret_node = create_ast_node(AST_RETURN_STMT, NULL);
@@ -26,34 +39,47 @@ ASTNode *parse_return(Parser *p)
     return ret_node;
 }
 
-ASTNode* parse(Parser* p) 
+// Parse printf("..."); → call expression
+static ASTNode *parse_call(Parser *p) 
 {
-    // Extremely basic: parse `int main() { printf(...); return ...; }`
-    // Skip 'int main ( ) {'
-    while (p->current < p->length && strcmp(current_token(p).lexeme, "{") != 0) {
+    Token func = current_token(p);
+    if (func.type != TOKEN_IDENTIFIER) return NULL;
+    advance(p);
+
+    if (!match(p, TOKEN_SYMBOL, "(")) return NULL;
+
+    Token arg = current_token(p);
+    advance(p);
+
+    if (!match(p, TOKEN_SYMBOL, ")")) return NULL;
+    if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
+
+    ASTNode *arg_node = create_ast_node(AST_STRING_LITERAL, arg.lexeme);
+    ASTNode *call_node = create_ast_node(AST_CALL_EXPR, func.lexeme);
+    call_node->left = arg_node;
+    return call_node;
+}
+
+// Parse function body: { printf(...); return ...; }
+static ASTNode *parse_function(Parser *p) 
+{
+    while (p->current < p->length && !match(p, TOKEN_SYMBOL, "{")) {
         advance(p);
     }
-    advance(p); // skip '{'
 
-    // Parse call
-    Token call = current_token(p);
-    ASTNode *call_node = create_ast_node(AST_CALL_EXPR, call.lexeme);
-    advance(p); // skip 'printf'
-    advance(p); // skip '('
-    Token str = current_token(p); // string literal
-    ASTNode *arg_node = create_ast_node(AST_STRING_LITERAL, str.lexeme);
-    call_node->left = arg_node;
-    advance(p); // skip string
-    advance(p); // skip ')'
-    advance(p); // skip ';'
+    ASTNode *call = parse_call(p);
+    ASTNode *ret = parse_return(p);
 
-    // Parse return
-    ASTNode *ret_node = parse_return(p);
+    if (!match(p, TOKEN_SYMBOL, "}")) return NULL;
 
-    // Wrap it all in a function node
-    ASTNode *func_node = create_ast_node(AST_FUNCTION_DEF, "main");
-    func_node->left = call_node;
-    func_node->right = ret_node;
-
-    return func_node;
+    ASTNode *func = create_ast_node(AST_FUNCTION_DEF, "main");
+    func->left = call;
+    func->right = ret;
+    return func;
 }
+
+ASTNode *parse(Parser *p) 
+{
+    return parse_function(p);
+}
+
