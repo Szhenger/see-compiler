@@ -10,7 +10,7 @@ static int is_keyword(const char *word);
 Token next_token(const char **input);
 
 // Tokenize the source file
-int main(void) 
+int tokenize(void) 
 {
     // Get the source file
     const char *source =
