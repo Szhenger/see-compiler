@@ -3,7 +3,7 @@
 #include "ast.h"
 #include <stdio.h>
 
-int main(void) 
+int parser_test(void) 
 {
     const char *source_code = "int main() { printf(\"Hello, world!\\n\"); return 0; }";
     Token *tokens;
