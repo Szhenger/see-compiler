@@ -6,7 +6,7 @@
 
 // Define the structure of a parser variable
 typedef struct {
-    Token* tokens;
+    Token *tokens;
     int current;
     int length;
 } Parser;
