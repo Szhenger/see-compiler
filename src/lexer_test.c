@@ -3,7 +3,7 @@
 #include "lexer.h"
 #include "token.h"
 
-int main(void) 
+int lexer_test(void) 
 {
     const char *source = "int main(void) { return 0; }";
     const char *input = source;
