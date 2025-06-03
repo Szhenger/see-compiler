@@ -5,7 +5,8 @@
 #include "tokens.h"
 
 // A basic assertion helper
-void assert_token(Token t, TokenType expected_type, const char *expected_lexeme) {
+void assert_token(Token t, TokenType expected_type, const char *expected_lexeme) 
+{
     if (t.type != expected_type || strcmp(t.lexeme, expected_lexeme) != 0) {
         fprintf(stderr, "FAIL: Got [%s, \"%s\"], expected [%s, \"%s\"]\n",
                 token_type_to_string(t.type), t.lexeme,
@@ -15,7 +16,8 @@ void assert_token(Token t, TokenType expected_type, const char *expected_lexeme)
 }
 
 // Unit test for the lexer
-int lexer_test(void) {
+int lexer_test(void) 
+{
     const char *source = "int main(void) { return 0; }";
     int count = 0;
 
