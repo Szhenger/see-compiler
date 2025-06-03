@@ -40,7 +40,7 @@ static ASTNode *parse_return(Parser *p)
     return ret_node;
 }
 
-// Parse printf("..."); → call expression
+// Parse printf("...");
 static ASTNode *parse_call(Parser *p) 
 {
     Token func = current_token(p);
