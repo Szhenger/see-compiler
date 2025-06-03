@@ -25,7 +25,8 @@ static int match(Parser *p, TokenType type, const char *lexeme)
 }
 
 // Parse return statement: return 0;
-static ASTNode *parse_return(Parser *p) {
+static ASTNode *parse_return(Parser *p) 
+{
     if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
 
     Token val = current_token(p);
