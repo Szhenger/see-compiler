@@ -4,7 +4,7 @@
 #include "lexer.h"
 #include "tokens.h"
 
-// A basic assertion helper
+// Basic assertion helper
 void assert_token(Token t, TokenType expected_type, const char *expected_lexeme) 
 {
     if (t.type != expected_type || strcmp(t.lexeme, expected_lexeme) != 0) {
