@@ -4,7 +4,8 @@
 #include "ast.h"
 
 // Create a new AST node with given type and value
-ASTNode *create_ast_node(ASTNodeType type, const char *value) {
+ASTNode *create_ast_node(ASTNodeType type, const char *value) 
+{
     ASTNode *node = malloc(sizeof(ASTNode));
     if (!node) return NULL;
 
@@ -16,7 +17,8 @@ ASTNode *create_ast_node(ASTNodeType type, const char *value) {
 }
 
 // Recursively free AST nodes
-void free_ast(ASTNode *node) {
+void free_ast(ASTNode *node) 
+{
     if (!node) return;
     free_ast(node->left);
     free_ast(node->right);
@@ -25,7 +27,8 @@ void free_ast(ASTNode *node) {
 }
 
 // Helper: Convert node type to string for printing
-const char *ast_type_to_string(ASTNodeType type) {
+const char *ast_type_to_string(ASTNodeType type) 
+{
     switch (type) {
         case AST_FUNCTION_DEF: return "FunctionDef";
         case AST_CALL_EXPR: return "CallExpr";
@@ -37,7 +40,8 @@ const char *ast_type_to_string(ASTNodeType type) {
 }
 
 // Recursively print AST structure
-void print_ast_recursive(ASTNode *node, int indent) {
+void print_ast_recursive(ASTNode *node, int indent) 
+{
     if (!node) return;
     
     for (int i = 0; i < indent; i++) printf("  ");
