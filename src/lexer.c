@@ -1,18 +1,18 @@
 #include <ctype.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include "lexer.h"
 
 static const char *keywords[] = { "int", "return", "void" };
 
-// Helper function prototypes
-static int is_keyword(const char *word);
+// Helper function prototype
+Token next_token(const char **input);
 
 // Public: tokenize source into dynamic array of tokens
 Token *tokenize(const char *source, int *count) 
 {
     const char *input = source;
-    int capacity = 16;
+    int capacity = 64;
     int size = 0;
     Token *tokens = malloc(sizeof(Token) * capacity);
 
@@ -32,7 +32,7 @@ Token *tokenize(const char *source, int *count)
 
 // Private: check if word is a keyword
 static int is_keyword(const char *word) {
-    for (size_t i = 0; i < sizeof(keywords)/sizeof(keywords[0]); i++) {
+    for (size_t i = 0; i < sizeof(keywords) / sizeof(keywords[0]); i++) {
         if (strcmp(word, keywords[i]) == 0) return 1;
     }
     return 0;
