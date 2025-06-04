@@ -15,16 +15,16 @@ PARSER_SRC = $(SRC_DIR)/parser.c
 PARSER_TEST_SRC = $(SRC_DIR)/test_parser.c
 
 # Output binaries
-MAIN_BIN = $(BUILD_DIR)/seec
+DRIVER_BIN = $(BUILD_DIR)/seec
 LEXER_TEST_BIN = $(BUILD_DIR)/lexer_test
 PARSER_TEST_BIN = $(BUILD_DIR)/parser_test
 
 .PHONY: all clean
 
 # Default target
-all: $(MAIN_BIN)
+all: $(DRIVER_BIN)
 
-$(MAIN_BIN): $(DRIVER_SRC) $(LEXER_SRC) src/token.c
+$(DRIVER_BIN): $(DRIVER_SRC) $(LEXER_SRC) src/token.c
 	$(CC) $(CFLAGS) -o $@ $^
 
 # Build lexer test
