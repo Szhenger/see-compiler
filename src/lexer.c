@@ -31,7 +31,8 @@ Token *tokenize(const char *source, int *count)
 }
 
 // Private: check if word is a keyword
-static int is_keyword(const char *word) {
+static int is_keyword(const char *word) 
+{
     for (size_t i = 0; i < sizeof(keywords) / sizeof(keywords[0]); i++) {
         if (strcmp(word, keywords[i]) == 0) return 1;
     }
