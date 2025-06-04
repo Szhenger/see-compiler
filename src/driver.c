@@ -30,7 +30,7 @@ int main(void)
         fprintf(stderr, "Parsing failed!\n");
         free_parser(parser);
         free_tokens(tokens, token_count);
-        return 1;
+        return 2;
     }
 
     // Procedure 3: Debug Output
