@@ -24,7 +24,7 @@ PARSER_TEST_BIN = $(BUILD_DIR)/parser_test
 # Default target
 all: $(MAIN_BIN)
 
-$(MAIN_BIN): $(MAIN_SRC) $(LEXER_SRC) src/token.c
+$(MAIN_BIN): $(DRIVER_SRC) $(LEXER_SRC) src/token.c
 	$(CC) $(CFLAGS) -o $@ $^
 
 # Build lexer test
