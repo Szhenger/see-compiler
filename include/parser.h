@@ -12,7 +12,7 @@ typedef struct {
 } Parser;
 
 // Construct parser instance
-Parser *init_parser(Token *tokens, int *count);
+Parser *init_parser(Token *t, int *count);
 
 // Utilities
 Token current_token(Parser *p);
