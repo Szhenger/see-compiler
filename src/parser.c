@@ -3,7 +3,7 @@
 #include <string.h>
 
 // Construct parser instance
-Parser *init_parser(Token *t, int *c)
+Parser *init_parser(Token *t, int *count)
 {
     // TODO
 }
