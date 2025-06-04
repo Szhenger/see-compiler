@@ -11,6 +11,9 @@ typedef struct {
     int length;
 } Parser;
 
+// Construct parser instance
+Parser *init_parser(Token *tokens, int *count);
+
 // Utilities
 Token current_token(Parser *p);
 void advance(Parser *p);
@@ -27,3 +30,6 @@ ASTNode *parse_function(Parser *p);
 
 // Parse main procedure
 ASTNode *parse(Parser *p);
+
+// Destory parser instance
+void destory_parser(Parser *p);
