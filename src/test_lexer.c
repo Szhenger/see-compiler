@@ -16,7 +16,7 @@ void assert_token(Token t, TokenType expected_type, const char *expected_lexeme)
 }
 
 // Unit test for the lexer
-int lexer_test(void) 
+int main(void) 
 {
     const char *source = "int main(void) { return 0; }";
     int count = 0;
