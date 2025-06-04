@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lexer.h"
-#include "tokens.h"
+#include "token.h"
 
 // Basic assertion helper
 void assert_token(Token t, TokenType expected_type, const char *expected_lexeme) 
