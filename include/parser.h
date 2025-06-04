@@ -32,4 +32,4 @@ ASTNode *parse_function(Parser *p);
 ASTNode *parse(Parser *p);
 
 // Destory parser instance
-void destory_parser(Parser *p);
+void free_parser(Parser *p);
