@@ -2,18 +2,24 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Construct parser instance
+Parser *init_parser(Token *t, int *c)
+{
+    // TODO
+}
+
 // Utilities
-static Token current_token(Parser *p) 
+Token current_token(Parser *p) 
 {
     return p->tokens[p->current];
 }
 
-static void advance(Parser *p) 
+void advance(Parser *p) 
 {
     if (p->current < p->length) p->current++;
 }
 
-static int match(Parser *p, TokenType type, const char *lexeme) 
+int match(Parser *p, TokenType type, const char *lexeme) 
 {
     if (p->current >= p->length) return 0;
     Token t = current_token(p);
@@ -25,7 +31,7 @@ static int match(Parser *p, TokenType type, const char *lexeme)
 }
 
 // Parse return statement: return 0;
-static ASTNode *parse_return(Parser *p) 
+ASTNode *parse_return(Parser *p) 
 {
     if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
 
@@ -41,7 +47,7 @@ static ASTNode *parse_return(Parser *p)
 }
 
 // Parse printf("...");
-static ASTNode *parse_call(Parser *p) 
+ASTNode *parse_call(Parser *p) 
 {
     Token func = current_token(p);
     if (func.type != TOKEN_IDENTIFIER) return NULL;
@@ -62,7 +68,7 @@ static ASTNode *parse_call(Parser *p)
 }
 
 // Parse function body: { printf(...); return ...; }
-static ASTNode *parse_function(Parser *p) 
+ASTNode *parse_function(Parser *p) 
 {
     while (p->current < p->length && !match(p, TOKEN_SYMBOL, "{")) {
         advance(p);
@@ -82,5 +88,11 @@ static ASTNode *parse_function(Parser *p)
 ASTNode *parse(Parser *p) 
 {
     return parse_function(p);
+}
+
+// Destroy parser instance
+void free_parser(Parser *p)
+{
+    // TODO
 }
 
