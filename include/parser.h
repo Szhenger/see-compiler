@@ -11,13 +11,19 @@ typedef struct {
     int length;
 } Parser;
 
-// Construct a new parser instance
-Parser* init_parser(Token* tokens, int length);
+// Utilities
+Token current_token(Parser *p);
+void advance(Parser *p);
+int match(Parser *p, TokenType type, const char *lexeme);
 
-// Get the associated AST for parser variable
-ASTNode* parse(Parser* parser);  // Entry point
+// Parse return statement: return 0;
+ASTNode *parse_return(Parser *p);
 
-// Destroy the input parser instance
-void free_parser(Parser* parser);
+// Parse printf("...");
+ASTNode *parse_call(Parser *p);
 
-#endif
+// Parse function body: { printf(...); return ...; }
+ASTNode *parse_function(Parser *p);
+
+// Parse main procedure
+ASTNode *parse(Parser *p);
