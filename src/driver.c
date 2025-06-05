@@ -13,6 +13,7 @@ const char *load_sample_source(void)
 
 int main(void) 
 {
+    // Get the source file
     const char *source = load_sample_source();
 
     // Procedure 1: Lexical Analysis
