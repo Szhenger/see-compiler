@@ -20,6 +20,7 @@ class TestLexerHelloWorld(unittest.TestCase):
             '[TOKEN_INTEGER_LITERAL, "0"]',
             '[TOKEN_SYMBOL, ";"]',
             '[TOKEN_SYMBOL, "}"]',
+            '[TOKEN_EOF, ""]'
         ]
 
     def run_lexer(self):
