@@ -21,6 +21,7 @@ Token *tokenize(const char *source, int *count)
         if (size >= capacity) {
             capacity *= 2;
             tokens = realloc(tokens, sizeof(Token) * capacity);
+            // TODO (Error handling)
         }
         tokens[size++] = t;
         if (t.type == TOKEN_EOF) break;
@@ -31,7 +32,7 @@ Token *tokenize(const char *source, int *count)
 }
 
 // Private: check if word is a keyword
-static int is_keyword(const char *word) 
+int is_keyword(const char *word) 
 {
     for (size_t i = 0; i < sizeof(keywords) / sizeof(keywords[0]); i++) {
         if (strcmp(word, keywords[i]) == 0) return 1;
