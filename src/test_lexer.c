@@ -24,7 +24,7 @@ int main(void)
     Token *tokens = tokenize(source, &count);
     if (!tokens) {
         fprintf(stderr, "Lexer failed: NULL token array.\n");
-        return 1;
+        return 3;
     }
 
     // Token-by-token assertions
