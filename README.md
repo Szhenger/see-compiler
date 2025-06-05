@@ -1,6 +1,6 @@
 # SeeC
 
-**SeeC** is a modular, self-contained C/C++ compiler written in C that translates a verified subset of the C programming language into x86 assembly instructions. It is designed to be testable, extensible, and usable as a personal compilation tool for systems software I write.
+This is **SeeC**, a modular and self-contained C/C++ compiler written in C that translates a verified subset of the C programming language into x86 assembly instructions. It is designed to be testable, extensible, and usable as a personal compilation tool for systems software I write.
 
 > **Current Status**: Driver, Lexer, and Parser implemented and verified against a standard `Hello, world!` C program.
 
