@@ -58,9 +58,7 @@ SeeC/
 │   └── test_parser.c
 │
 ├── automation/         # Python scripts for automating test execution and validation
-│   ├── test_driver.py
-│   ├── test_lexer.py
-│   └── test_parser.py
+│   ├── test_all.py
 │
 ├── doc/                # Internal design documentation
 │   ├── design_driver.md
