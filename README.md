@@ -50,7 +50,7 @@ seec/
 ├── utils/                # AST and token utilities
 │   ├── token.c
 │   └── ast.c
-├── tests/                # Python-based and C-based test harnesses
+├── tests/                # Python-based test harnesses
 │   ├── test_lexer_hello.py
 │   ├── test_all.py
 │   └── test_parser.py
