@@ -3,7 +3,7 @@
 #include "ast.h"
 #include "lexer.h"
 #include "parser.h"
-#include "tokens.h"
+#include "token.h"
 
 // Simple source provider for now
 const char *load_sample_source(void) 
