@@ -36,24 +36,37 @@ The early milestones (Lexer -> Parser) are completed. Later stages will be rolle
 ## Project Layout
 
 ```bash
-seec/
-├── src/                  # Core compiler logic
-│   ├── driver.c
-│   ├── lexer.c
-│   ├── parser.c
-│   ├── test_*.c
-├── include/              # Interfaces and data types
+SeeC/
+├── src/                # Core C source files for compiler components
+│   ├── driver.c        # Main entry point that orchestrates the compilation pipeline
+│   ├── lexer.c         # Tokenizes source code into a stream of tokens
+│   ├── parser.c        # Parses tokens into abstract syntax trees (AST)
+│
+├── utils/              # Utility modules shared across components
+│   ├── token.c         # Token definitions and helper functions
+│   └── ast.c           # AST node definitions and constructors
+│
+├── include/            # Header files defining public interfaces
 │   ├── lexer.h
 │   ├── parser.h
 │   ├── token.h
 │   └── ast.h
-├── utils/                # AST and token utilities
-│   ├── token.c
-│   └── ast.c
-├── tests/                # Python-based test harnesses
-│   ├── test_lexer_hello.py
-│   ├── test_all.py
+│
+├── test/               # C unit tests for individual compiler components
+│   ├── test_driver.c
+│   ├── test_lexer.c
+│   └── test_parser.c
+│
+├── automation/         # Python scripts for automating test execution and validation
+│   ├── test_driver.py
+│   ├── test_lexer.py
 │   └── test_parser.py
-├── docs/                 # Design contracts and dev notes
-├── build/                # Compiled binaries
-└── Makefile              # Build and test automation
+│
+├── doc/                # Internal design documentation
+│   ├── design_driver.md
+│   ├── design_lexer.md
+│   └── design_parser.md
+│
+├── log.txt             # Daily engineering log for development progress and decisions
+└── README.md           # Project overview, build instructions, and goals
+
