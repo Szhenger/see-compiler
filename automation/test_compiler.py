@@ -3,8 +3,8 @@ import subprocess
 import tempfile
 import os
 
-class DriverIntegrationTests(unittest.TestCase):
-    DRIVER_BIN = "build/driver"
+class CompilerIntegrationTests(unittest.TestCase):
+    COMPILER_BIN = "build/seec"
     
     def run_compiler(self, source_code):
         with tempfile.NamedTemporaryFile(mode='w', suffix='.c', delete=False) as tmp:
