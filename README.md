@@ -53,12 +53,12 @@ SeeC/
 │   └── ast.h
 │
 ├── test/               # C unit tests for individual compiler components
-│   ├── test_driver.c
 │   ├── test_lexer.c
 │   └── test_parser.c
 │
 ├── automation/         # Python scripts for automating test execution and validation
-│   ├── test_all.py
+│   ├── test_compiler_generation.py
+│   └── test_compiler_errors.py
 │
 ├── doc/                # Internal design documentation
 │   ├── design_driver.md
