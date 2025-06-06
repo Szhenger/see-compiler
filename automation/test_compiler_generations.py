@@ -3,7 +3,7 @@ import subprocess
 import tempfile
 import os
 
-class CompilerIntegrationTests(unittest.TestCase):
+class TestCompilerGenerations(unittest.TestCase):
     COMPILER_BIN = "build/seec"
     
     def run_compiler(self, source_code):
