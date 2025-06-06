@@ -18,7 +18,7 @@ void assert_token(Token t, TokenType expected_type, const char *expected_lexeme)
 // Unit test for the lexer
 int main(void) 
 {
-    const char *source = "int main(void) { return 0; }";
+    const char *source = "int main(void) { printf(\"hello, world!\\n\"); return 0; }";
     int count = 0;
 
     Token *tokens = tokenize(source, &count);
@@ -35,6 +35,11 @@ int main(void)
     assert_token(tokens[i++], TOKEN_KEYWORD, "void");
     assert_token(tokens[i++], TOKEN_SYMBOL, ")");
     assert_token(tokens[i++], TOKEN_SYMBOL, "{");
+    assert_token(tokens[i++], TOKEN_IDENTIFIER, "printf");
+    assert_token(tokens[i++], TOKEN_SYMBOL, "(");
+    assert_token(tokens[i++], TOKEN_STRING_LITERAL, "\"hello, world!\\n\"");
+    assert_token(tokens[i++], TOKEN_SYMBOL, ")");
+    assert_token(tokens[i++], TOKEN_SYMBOL, ";");
     assert_token(tokens[i++], TOKEN_KEYWORD, "return");
     assert_token(tokens[i++], TOKEN_INTEGER_LITERAL, "0");
     assert_token(tokens[i++], TOKEN_SYMBOL, ";");
