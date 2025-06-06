@@ -3,10 +3,9 @@ import subprocess
 import tempfile
 import os
 
-DRIVER_BIN = "build/driver"
-
 class DriverIntegrationTests(unittest.TestCase):
-
+    DRIVER_BIN = "build/driver"
+    
     def run_compiler(self, source_code):
         with tempfile.NamedTemporaryFile(mode='w', suffix='.c', delete=False) as tmp:
             tmp.write(source_code)
