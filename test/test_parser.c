@@ -17,7 +17,7 @@ void assert_ast_node(ASTNode *node, ASTNodeType expected_type, const char *expec
 // Main test driver
 int main(void) 
 {
-    const char *source_code = "int main() { printf(\"Hello, world!\\n\"); return 0; }";
+    const char *source_code = "int main(void) { printf(\"hello, world!\\n\"); return 0; }";
 
     // Tokenize
     int token_count = 0;
