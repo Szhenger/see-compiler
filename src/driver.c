@@ -8,7 +8,7 @@
 // Simple source provider for now
 const char *load_sample_source(void) 
 {
-    return "int main(void) { printf(\"Hello, world!\\n\"); return 0; }";
+    return "int main(void) { printf(\"hello, world!\\n\"); return 0; }";
 }
 
 int main(void) 
