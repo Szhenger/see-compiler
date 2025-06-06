@@ -44,8 +44,12 @@
 - Developed a basic unit test to ensure that the lexer takes a C string and produces a token stream
 - Made an automation suite to test different behavior of `lexer.c` and `parser.c`
 
-[2025-06-5] - Day 8: README Refactor and Design Documentation Initialization
+[2025-06-05] - Day 8: README Refactor and Design Documentation Initialization
 - Wrote up purpose, pipeline, and layout sections in README.md
 - Wrote up design documentation for the lexer and parser components
 - Reorganized the project layout to be modular and clear
 - Deleted unnecessary automation tests
+
+[2025-06-06] - Day 9: Python Automation Refactor
+- Defined the expected behavior of `seec` for code generation and error handling
+- Rewrote layout in `README.md` to reflect this change
