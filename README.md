@@ -29,7 +29,7 @@ SeeC follows the classic compiler architecture, designed with strict modularity 
 | **x86 Code Generator** | Emits verified x86 assembly from IR (focus: readability and safety)         |
 | **Assembler/Linker**   | Integrates with `nasm` or similar to produce final executable               |
 
-The early milestones (Lexer -> Parser) are completed. Later stages will be rolled out iteratively, each with independent testing and documentation.
+The early milestones (Lexer -> Parser) are completed. Later steps will be rolled out iteratively, each with independent testing and documentation.
 
 ---
 
