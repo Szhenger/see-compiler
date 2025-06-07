@@ -21,7 +21,6 @@ Token *tokenize(const char *source, int *count)
         if (size >= capacity) {
             capacity *= 2;
             tokens = realloc(tokens, sizeof(Token) * capacity);
-            // TODO (Error handling)
         }
         tokens[size++] = t;
         if (t.type == TOKEN_EOF) break;
