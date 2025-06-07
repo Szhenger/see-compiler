@@ -12,7 +12,7 @@ Token next_token(const char **input);
 Token *tokenize(const char *source, int *count) 
 {
     const char *input = source;
-    int capacity = 64;
+    int capacity = 18;
     int size = 0;
     Token *tokens = malloc(sizeof(Token) * capacity);
 
