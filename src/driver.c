@@ -61,7 +61,6 @@ int main(void)
     // Procedure 6: Debug IR Output
     printf("== Intermediate Representation ==\n");
     print_ir(ir);
-    print_ast(ast);
 
     // Procedure 7: Code Generation
     FILE *out = fopen("output.s", "w");
