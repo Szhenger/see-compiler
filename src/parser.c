@@ -3,7 +3,8 @@
 #include <string.h>
 
 // Construct parser instance
-Parser *init_parser(Token *t, int *count) {
+Parser *init_parser(Token *t, int *count) 
+{
     Parser *p = malloc(sizeof(Parser));
     p->tokens = t;
     p->length = *count;
@@ -96,6 +97,7 @@ ASTNode *parse(Parser *p)
 // Destroy parser instance
 void free_parser(Parser *p)
 {
-    // TODO
+    if (!p) return;
+    free(p);
 }
 
