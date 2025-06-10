@@ -50,9 +50,8 @@ int main(void)
 
     // Flush the stream and get the generated assembly string
     fflush(memstream);
-    long size;
+    long size = 0;
     char *asm_code = NULL;
-    size = 0;
     fseek(memstream, 0, SEEK_END);
     size = ftell(memstream);
     fseek(memstream, 0, SEEK_SET);
