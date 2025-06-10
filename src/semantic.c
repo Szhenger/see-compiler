@@ -8,7 +8,8 @@ static int analyze_function(ASTNode *node);
 static int analyze_call(ASTNode *node);
 static int analyze_return(ASTNode *node);
 
-SemanticResult analyze(ASTNode *root) {
+SemanticResult analyze(ASTNode *root) 
+{
     if (!root) {
         fprintf(stderr, "Semantic error: NULL AST\n");
         return SEMANTIC_ERROR;
@@ -27,7 +28,8 @@ SemanticResult analyze(ASTNode *root) {
 }
 
 // Analyzes a function node
-static int analyze_function(ASTNode *node) {
+static int analyze_function(ASTNode *node) 
+{
     if (!node->left || !node->right) {
         fprintf(stderr, "Semantic error: Function body incomplete\n");
         return 0;
@@ -40,7 +42,8 @@ static int analyze_function(ASTNode *node) {
 }
 
 // Analyzes a call expression (e.g., printf)
-static int analyze_call(ASTNode *node) {
+static int analyze_call(ASTNode *node) 
+{
     if (node->type != AST_CALL_EXPR || strcmp(node->value, "printf") != 0) {
         fprintf(stderr, "Semantic error: Unsupported function call: %s\n", node->value);
         return 0;
@@ -55,7 +58,8 @@ static int analyze_call(ASTNode *node) {
 }
 
 // Analyzes a return statement
-static int analyze_return(ASTNode *node) {
+static int analyze_return(ASTNode *node) 
+{
     if (node->type != AST_RETURN_STMT || !node->left) {
         fprintf(stderr, "Semantic error: Malformed return statement\n");
         return 0;
