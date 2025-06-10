@@ -3,9 +3,12 @@
 #include <string.h>
 
 // Construct parser instance
-Parser *init_parser(Token *t, int *count)
-{
-    // TODO
+Parser *init_parser(Token *t, int *count) {
+    Parser *p = malloc(sizeof(Parser));
+    p->tokens = t;
+    p->length = *count;
+    p->current = 0;
+    return p;
 }
 
 // Utilities
