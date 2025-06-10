@@ -7,7 +7,8 @@
 void generate_code(FILE *out, ASTNode *node);
 
 // Helper: create a simple AST for `int main() { printf("hello, world!\n"); return 0; }`
-ASTNode *build_test_ast(void) {
+ASTNode *build_test_ast(void) 
+{
     // Build string literal node
     ASTNode *str_lit = create_ast_node(AST_STRING_LITERAL, "\"hello, world!\\n\"");
 
@@ -28,7 +29,8 @@ ASTNode *build_test_ast(void) {
     return func;
 }
 
-int main(void) {
+int main(void) 
+{
     ASTNode *ast = build_test_ast();
     if (!ast) {
         fprintf(stderr, "Failed to build test AST\n");
