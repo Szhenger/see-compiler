@@ -34,10 +34,19 @@ int main(void)
         return 2;
     }
 
-    // Procedure 3: Debug Output
+    // Procedure 3: Semantic Analysis
+    if (analyze(ast) != SEMANTIC_OK) {
+        fprintf(stderr, "Semantic analysis failed!\n");
+        free_ast(ast);
+        free_parser(parser);
+        free_tokens(tokens, token_count);
+        return 3;
+    }
+
+    // Procedure 4: Debug Output
     print_ast(ast);
 
-    // Procedure 4: Cleanup
+    // Procedure 5: Cleanup
     free_ast(ast);
     free_parser(parser);
     free_tokens(tokens, token_count);
