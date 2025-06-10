@@ -40,7 +40,7 @@ SeeC/
 ├── src/                # Core C source files for compiler components
 │   ├── driver.c        # Main entry point that orchestrates the compilation pipeline
 │   ├── lexer.c         # Tokenizes source code into a stream of tokens
-│   ├── parser.c        # Parses tokens into abstract syntax trees (AST)
+│   └── parser.c        # Parses tokens into abstract syntax trees (AST)
 │    
 ├── utils/              # Utility modules shared across components
 │   ├── token.c         # Token definitions and helper functions
