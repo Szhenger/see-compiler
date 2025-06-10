@@ -52,7 +52,6 @@ int main(void)
     fflush(memstream);
     long size;
     char *asm_code = NULL;
-    asm_code = NULL;
     size = 0;
     fseek(memstream, 0, SEEK_END);
     size = ftell(memstream);
