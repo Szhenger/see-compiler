@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ast.h"
+#include "codegen.h"
+
 
 void generate_prologue(FILE *out) 
 {
