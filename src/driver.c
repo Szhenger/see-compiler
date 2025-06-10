@@ -63,7 +63,19 @@ int main(void)
     print_ir(ir);
     print_ast(ast);
 
-    // Procedure 7: Cleanup
+    // Procedure 7: Code Generation
+    FILE *out = fopen("output.s", "w");
+    if (!out) {
+        fprintf(stderr, "Failed to open output file\n");
+        free_ir(ir);
+        free_ast(ast);
+        free_parser(parser);
+        free_tokens(tokens, token_count);    
+    }
+    generate_code(out, ir);
+    fclose(out);
+
+    // Procedure 8: Cleanup
     free_ir(ir);
     free_ast(ast);
     free_parser(parser);
