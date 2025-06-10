@@ -5,7 +5,8 @@
 #include "ir.h"
 
 // Helper: Create AST for printf("hello, world!\n");
-ASTNode *create_sample_ast() {
+ASTNode *create_sample_ast(void) 
+{
     ASTNode *str_lit = create_ast_node(AST_STRING_LITERAL, "\"hello, world!\\n\"");
     ASTNode *call = create_ast_node(AST_CALL_EXPR, "printf");
     call->left = str_lit;
@@ -21,7 +22,8 @@ ASTNode *create_sample_ast() {
     return func;
 }
 
-int main(void) {
+int main(void) 
+{
     ASTNode *ast = create_sample_ast();
 
     // Generate IR
