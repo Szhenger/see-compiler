@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ir.h"
 #include "ast.h"
+#include "ir.h"
 
 // IR instruction structure
 IRInstr *create_ir_instr(IRType type, const char *arg) {
