@@ -58,3 +58,4 @@
 - Created the semantic analysis tool in `semantic.c`
 - Created the IR representation structure in `ir.c`
 - Created the code generator pipeline in `codegen.c`
+- Defined the unit tests for the componented described above
