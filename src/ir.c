@@ -5,7 +5,8 @@
 #include "ir.h"
 
 // IR instruction structure
-IRInstr *create_ir_instr(IRType type, const char *arg) {
+IRInstr *create_ir_instr(IRType type, const char *arg) 
+{
     IRInstr *instr = malloc(sizeof(IRInstr));
     if (!instr) return NULL;
     instr->type = type;
@@ -14,7 +15,8 @@ IRInstr *create_ir_instr(IRType type, const char *arg) {
     return instr;
 }
 
-void free_ir(IRInstr *head) {
+void free_ir(IRInstr *head) 
+{
     while (head) {
         IRInstr *next = head->next;
         free(head->arg);
@@ -23,7 +25,8 @@ void free_ir(IRInstr *head) {
     }
 }
 
-const char *ir_type_to_string(IRType type) {
+const char *ir_type_to_string(IRType type) 
+{
     switch (type) {
         case IR_LABEL: return "LABEL";
         case IR_CALL: return "CALL";
@@ -33,7 +36,8 @@ const char *ir_type_to_string(IRType type) {
     }
 }
 
-void print_ir(IRInstr *head) {
+void print_ir(IRInstr *head) 
+{
     for (IRInstr *curr = head; curr != NULL; curr = curr->next) {
         printf("%s", ir_type_to_string(curr->type));
         if (curr->arg) printf(" %s", curr->arg);
@@ -42,7 +46,8 @@ void print_ir(IRInstr *head) {
 }
 
 // Recursively generate IR from AST
-void emit_ir_node(ASTNode *node, IRInstr **tail) {
+void emit_ir_node(ASTNode *node, IRInstr **tail) 
+{
     if (!node) return;
 
     switch (node->type) {
@@ -71,7 +76,8 @@ void emit_ir_node(ASTNode *node, IRInstr **tail) {
     }
 }
 
-IRInstr *generate_ir(ASTNode *ast) {
+IRInstr *generate_ir(ASTNode *ast) 
+{
     IRInstr *head = create_ir_instr(IR_LABEL, "entry");  // optional entry label
     IRInstr *tail = head;
     emit_ir_node(ast, &tail);
