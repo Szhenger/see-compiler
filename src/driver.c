@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ast.h"
+#include "ir.h"
 #include "lexer.h"
 #include "parser.h"
+#include "semantic.h"
 #include "token.h"
 
 // Simple source provider for now
@@ -43,10 +45,26 @@ int main(void)
         return 3;
     }
 
-    // Procedure 4: Debug Output
+    // Procedure 4: Debug AST Output
+    print_ast(ast);
+    
+    // Procedure 5: IR Generation
+    IRInstr *ir = generate_ir(ast);
+    if (!ir) {
+        fprintf(stderr, "IR generation failed!\n");
+        free_ast(ast);
+        free_parser(parser);
+        free_tokens(tokens, token_count);
+        return 4;
+    }
+
+    // Procedure 6: Debug IR Output
+    printf("== Intermediate Representation ==\n");
+    print_ir(ir);
     print_ast(ast);
 
-    // Procedure 5: Cleanup
+    // Procedure 7: Cleanup
+    free_ir(ir);
     free_ast(ast);
     free_parser(parser);
     free_tokens(tokens, token_count);
