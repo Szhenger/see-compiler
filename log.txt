@@ -53,3 +53,8 @@
 [2025-06-06] - Day 9: Python Automation Refactor
 - Defined the expected behavior of `seec` for code generation and error handling
 - Rewrote layout in `README.md` to reflect this change
+
+[2025-06-10] - Day 10: Semantic Analysis, IR Representation, and x86 Code Generation Initialized
+- Created the semantic analysis tool in `semantic.c`
+- Created the IR representation structure in `ir.c`
+- Created the code generator pipeline in `codegen.c`
