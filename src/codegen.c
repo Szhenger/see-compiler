@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include "ast.h"
 
-void generate_prologue(FILE *out) {
+void generate_prologue(FILE *out) 
+{
     fprintf(out,
         "    .intel_syntax noprefix\n"
         "    .globl main\n"
@@ -12,7 +13,8 @@ void generate_prologue(FILE *out) {
     );
 }
 
-void generate_epilogue(FILE *out) {
+void generate_epilogue(FILE *out) 
+{
     fprintf(out,
         "    mov rsp, rbp\n"
         "    pop rbp\n"
@@ -22,7 +24,8 @@ void generate_epilogue(FILE *out) {
 }
 
 // Generate code for string literals by putting them in .rodata
-void generate_string_literal(FILE *out, const char *label, const char *str) {
+void generate_string_literal(FILE *out, const char *label, const char *str) 
+{
     fprintf(out,
         "    .section .rodata\n"
         "%s:\n"
@@ -32,7 +35,8 @@ void generate_string_literal(FILE *out, const char *label, const char *str) {
 }
 
 // Generate code for a call expression node (only printf for now)
-void generate_call(FILE *out, ASTNode *node) {
+void generate_call(FILE *out, ASTNode *node) 
+{
     if (node->type != AST_CALL_EXPR) return;
 
     // Expect left child to be string literal
@@ -51,7 +55,8 @@ void generate_call(FILE *out, ASTNode *node) {
 }
 
 // Generate code for return statement (return <literal>)
-void generate_return(FILE *out, ASTNode *node) {
+void generate_return(FILE *out, ASTNode *node) 
+{
     if (node->type != AST_RETURN_STMT) return;
 
     ASTNode *val = node->left;
@@ -64,7 +69,8 @@ void generate_return(FILE *out, ASTNode *node) {
 }
 
 // Recursively generate code from AST
-void generate_code(FILE *out, ASTNode *node) {
+void generate_code(FILE *out, ASTNode *node) 
+{
     if (!node) return;
 
     switch (node->type) {
