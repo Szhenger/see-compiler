@@ -1,3 +1,21 @@
-# SeeComplier: A C/C++ Compiler 
+# SeeComplier: A Beginner-Friendly C/C++ Compiler 
 
-This is **SeeCompiler**, a modular C/C++ compiler that transforms a verified subset of the C Programming Language into a set of x86 Assembly Instructions.   
+## Description
+
+This is **SeeCompiler**, a modular C/C++ compiler that transforms a verified subset of the C Programming Language into a set of x86 Assembly Instructions....   
+
+## Purpose
+
+TODO
+
+## Features 
+
+TODO
+
+## Structure
+
+TODO
+
+# Build
+
+TODO
