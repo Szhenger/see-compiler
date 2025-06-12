@@ -1,3 +1,3 @@
-# SeeComplier: A Educational C/C++ Compiler 
+# SeeComplier: A Modular and Educational C/C++ Compiler 
 
 TODO
