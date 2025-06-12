@@ -2,7 +2,7 @@
 
 ## Description
 
-This is **SeeCompiler**, a modular C/C++ compiler that transforms a verified subset of the C Programming Language into a set of x86 Assembly Instructions....   
+This is **SeeCompiler**, a modular C/C++ compiler that translates a verified subset of the C Programming Language into a sequence of x86 Assembly Instructions....   
 
 ## Purpose
 
