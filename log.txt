@@ -59,3 +59,7 @@
 - Created the IR representation structure in `ir.c`
 - Created the code generator pipeline in `codegen.c`
 - Defined the unit tests for the componented described above
+
+[2025-06-14] - Day 11: `SeeCompiler` Integration Initialization
+- Updated the `README.md` Description for `SeeCompiler`
+- Reviewed the driver defined in `driver.c` for the lexing and parser subroutines
