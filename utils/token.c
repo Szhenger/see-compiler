@@ -1,6 +1,6 @@
 #include "token.h"
 
-// Maps token type to string variables for debugging
+// Maps token type to string representation for debugging
 const char *token_type_to_string(TokenType type) {
     switch (type) {
         case TOKEN_EOF:              return "TOKEN_EOF";
