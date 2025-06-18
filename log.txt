@@ -66,3 +66,4 @@
 
 [2025-06-18] - Day 12: `SeeCompiler` Code Review
 - Read the procedures that tokenize and parser the source file
+- Updated the comments of `src/driver.c`, `include/token.h`, `utils/token.c`, `include/lexer.h`, `src/lexer.c`, `include/parser.h`, and `src/parser.c`
