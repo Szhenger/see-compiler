@@ -23,7 +23,7 @@
  *     return_stmt     ::= 'return' INTEGER_LITERAL ';'
  */
 
-// === Construct parser from a token stream and count integer ===
+// === Public Function: Construct parser from a token stream and count integer ===
 Parser *init_parser(Token *t, int *count) 
 {
     Parser *p = malloc(sizeof(Parser));
@@ -33,7 +33,7 @@ Parser *init_parser(Token *t, int *count)
     return p;
 }
 
-// === Utilities for Token Inspection and Advancement ===
+// === Private Helper: Utilities for Token Inspection and Advancement ===
 Token current_token(Parser *p) 
 {
     return p->tokens[p->current];
@@ -53,7 +53,7 @@ int match(Parser *p, TokenType type, const char *lexeme)
     return 0;
 }
 
-// === Parse return statement: return 0; ===
+// === Public Helper: Parse return statement: return 0; ===
 ASTNode *parse_return(Parser *p) 
 {
     if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
@@ -69,7 +69,7 @@ ASTNode *parse_return(Parser *p)
     return ret_node;
 }
 
-// === Parse printf("..."); ===
+// === Public Helper: Parse printf("..."); ===
 ASTNode *parse_call(Parser *p) 
 {
     Token func = current_token(p);
@@ -90,7 +90,7 @@ ASTNode *parse_call(Parser *p)
     return call_node;
 }
 
-// === Parse function body: { printf(...); return ...; } ===
+// === Public Helper: Parse function body: { printf(...); return ...; } ===
 ASTNode *parse_function(Parser *p) 
 {
     while (p->current < p->length && !match(p, TOKEN_SYMBOL, "{")) {
@@ -108,13 +108,13 @@ ASTNode *parse_function(Parser *p)
     return func;
 }
 
-// === Parse main function ===
+// === Public Function: Parse main function ===
 ASTNode *parse(Parser *p) 
 {
     return parse_function(p);
 }
 
-// === Destroy parser and free resources ===
+// === Public Function: Destroy parser and free resources ===
 void free_parser(Parser *p)
 {
     if (!p) return;
