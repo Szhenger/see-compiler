@@ -6,16 +6,16 @@ typedef enum {
     TOKEN_KEYWORD,          // Keywords like "int", "return"
     TOKEN_IDENTIFIER,       // User-defined names like "main", "printf"
     TOKEN_INTEGER_LITERAL,  // Integers like 0, 42
-    TOKEN_STRING_LITERAL,   // String constants like "Hello, world!\n"
+    TOKEN_STRING_LITERAL,   // String constants like "hello, world!\n"
     TOKEN_SYMBOL,           // Symbols like (, ), {, }, ;
     TOKEN_UNKNOWN,          // Unrecognized token
     TOKEN_EOF               // End of input    
 } TokenType;
 
-// Represents a single token in the token stream
+// Represents a immutable token in the token stream
 typedef struct {
     TokenType type;     // The type of token
-    char *lexeme;       // A string copy of the token's actual text
+    char *lexeme;       // A string copy of the token's actual text and heap-allocated, so must be freed by the token consumer
     int line;           // Line number in source (optional but helpful)
     int column;         // Column number in source (optional but helpful)
 } Token;
