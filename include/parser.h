@@ -11,27 +11,29 @@ typedef struct {
     int length;
 } Parser;
 
-// Construct parser instance
+// Constructs a parser from a token stream
 Parser *init_parser(Token *t, int *count);
 
-// Utilities
+// Parser Utilities: Token Inspection and Advancement
 Token current_token(Parser *p);
 void advance(Parser *p);
 int match(Parser *p, TokenType type, const char *lexeme);
 
-// Parse return statement: return 0;
+// Parse the return statement of the form: return <int>;
+// Assumes 'return' has been matched
 ASTNode *parse_return(Parser *p);
 
-// Parse printf("...");
+// Parse a function call expression (currently only supports printf)
 ASTNode *parse_call(Parser *p);
 
-// Parse function body: { printf(...); return ...; }
+// Parse a function body enclosed in braces: { printf(...); return ...; }
+// Assumes a flat sequence of statements inide main
 ASTNode *parse_function(Parser *p);
 
-// Parse main procedure
+// Entry Point: Parse the main procedure including the signature, body, and return
 ASTNode *parse(Parser *p);
 
-// Destory parser instance
+// Destory parser and free dynamically allocated resources
 void free_parser(Parser *p);
 
 #endif
