@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Construct parser instance
+// === Construct parser from a token stream and count integer ===
 Parser *init_parser(Token *t, int *count) 
 {
     Parser *p = malloc(sizeof(Parser));
@@ -12,17 +12,15 @@ Parser *init_parser(Token *t, int *count)
     return p;
 }
 
-// Utilities
+// === Utilities for Token Inspection and Advancement ===
 Token current_token(Parser *p) 
 {
     return p->tokens[p->current];
 }
-
 void advance(Parser *p) 
 {
     if (p->current < p->length) p->current++;
 }
-
 int match(Parser *p, TokenType type, const char *lexeme) 
 {
     if (p->current >= p->length) return 0;
@@ -34,13 +32,13 @@ int match(Parser *p, TokenType type, const char *lexeme)
     return 0;
 }
 
-// Parse return statement: return 0;
+// === Parse return statement: return 0; ===
 ASTNode *parse_return(Parser *p) 
 {
     if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
 
     Token val = current_token(p);
-    advance(p); // skip literal
+    advance(p);
 
     if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
 
@@ -50,7 +48,7 @@ ASTNode *parse_return(Parser *p)
     return ret_node;
 }
 
-// Parse printf("...");
+// === Parse printf("..."); ===
 ASTNode *parse_call(Parser *p) 
 {
     Token func = current_token(p);
@@ -71,7 +69,7 @@ ASTNode *parse_call(Parser *p)
     return call_node;
 }
 
-// Parse function body: { printf(...); return ...; }
+// === Parse function body: { printf(...); return ...; } ===
 ASTNode *parse_function(Parser *p) 
 {
     while (p->current < p->length && !match(p, TOKEN_SYMBOL, "{")) {
@@ -89,12 +87,13 @@ ASTNode *parse_function(Parser *p)
     return func;
 }
 
+// === Parse main function ===
 ASTNode *parse(Parser *p) 
 {
     return parse_function(p);
 }
 
-// Destroy parser instance
+// === Destroy parser and free resources ===
 void free_parser(Parser *p)
 {
     if (!p) return;
