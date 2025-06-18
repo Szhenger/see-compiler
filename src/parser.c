@@ -1,6 +1,27 @@
-#include "parser.h"
 #include <stdlib.h>
 #include <string.h>
+#include "parser.h"
+
+/*
+ * Parser Strategy:
+ * This is a hand-written, recursive-descent parser for a minimal subset of C.
+ * It assumes the source program contains a single function: `int main(void) { ... }`
+ *
+ * The parser operates over a flat stream of tokens and builds an abstract syntax tree (AST).
+ * It currently supports:
+ * - Function calls: printf("...")
+ * - Return statements: return <integer>;
+ * - A flat sequence of statements in the function body (no nesting or control flow).
+ *
+ * The parser expects syntactically valid input; it performs limited error recovery.
+ *
+ * Grammar (subset):
+ *     program         ::= function
+ *     function        ::= 'int' 'main' '(' 'void' ')' '{' statement+ '}'
+ *     statement       ::= call_stmt | return_stmt
+ *     call_stmt       ::= IDENTIFIER '(' STRING_LITERAL ')' ';'
+ *     return_stmt     ::= 'return' INTEGER_LITERAL ';'
+ */
 
 // === Construct parser from a token stream and count integer ===
 Parser *init_parser(Token *t, int *count) 
