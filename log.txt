@@ -63,3 +63,6 @@
 [2025-06-14] - Day 11: `SeeCompiler` Integration Initialization
 - Updated the `README.md` Description for `SeeCompiler`
 - Reviewed the driver defined in `driver.c` for the lexing and parser subroutines
+
+[2025-06-18] - Day 12: `SeeCompiler` Code Review
+- Read the procedures that tokenize and parser the source file
