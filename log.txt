@@ -64,6 +64,10 @@
 - Updated the `README.md` Description for `SeeCompiler`
 - Reviewed the driver defined in `driver.c` for the lexing and parser subroutines
 
-[2025-06-18] - Day 12: `SeeCompiler` Code Review
+[2025-06-18] - Day 12: `SeeCompiler` Code Review Part 1
 - Read the procedures that tokenize and parser the source file
 - Updated the comments of `src/driver.c`, `include/token.h`, `utils/token.c`, `include/lexer.h`, `src/lexer.c`, `include/parser.h`, and `src/parser.c`
+
+[2025-06-19] - Day 13: `SeeCompiler` Code Review Part 2
+- Read the procedures that analyze and generate the assembly instructions
+- Updated the comments of `src/ast.c`, `include/ast.h`, `src/semantic.c`, `include/semantic.h`, `src/ir.c`, `include/ir.h`, `src/codegen.c`, and `include/codegen.h'
