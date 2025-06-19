@@ -3,7 +3,7 @@
 #include <string.h>
 #include "ast.h"
 
-// Create a new AST node with given type and value
+// === Public Function: Create a new AST node with given type and value ===
 ASTNode *create_ast_node(ASTNodeType type, const char *value) 
 {
     ASTNode *node = malloc(sizeof(ASTNode));
@@ -16,7 +16,7 @@ ASTNode *create_ast_node(ASTNodeType type, const char *value)
     return node;
 }
 
-// Recursively free AST nodes
+// === Public Function: Recursively free AST nodes ===
 void free_ast(ASTNode *node) 
 {
     if (!node) return;
@@ -26,7 +26,7 @@ void free_ast(ASTNode *node)
     free(node);
 }
 
-// Helper: Convert node type to string for printing
+// === Private Helper: Convert node type to string for printing ===
 const char *ast_type_to_string(ASTNodeType type) 
 {
     switch (type) {
@@ -39,7 +39,7 @@ const char *ast_type_to_string(ASTNodeType type)
     }
 }
 
-// Recursively print AST structure
+// === Private Helper: Recursively print AST structure ===
 void print_ast_recursive(ASTNode *node, int indent) 
 {
     if (!node) return;
@@ -54,7 +54,7 @@ void print_ast_recursive(ASTNode *node, int indent)
     print_ast_recursive(node->right, indent + 1);
 }
 
-// Public function to print an AST
+// === Public Function: Print an AST ===
 void print_ast(ASTNode *root) {
     print_ast_recursive(root, 0);
 }
