@@ -51,14 +51,14 @@ static int analyze_call(ASTNode *node)
     }
 }
 
-// === Private Helper: Analyzes a return statement ===
+// === Private Helper: Analyzes a Return Statement ===
 static int analyze_return(ASTNode *node) 
 {
     if (node->type != AST_RETURN_STMT || !node->left) {
-        fprintf(stderr, "Semantic error: Malformed return statement\n");
+        fprintf(stderr, "Semantic Error: Malformed return statement\n");
         return 0;
     } else if (node->left->type != AST_LITERAL) {
-        fprintf(stderr, "Semantic error: return must return a literal integer\n");
+        fprintf(stderr, "Semantic Error: return must return a literal integer\n");
         return 0;
     } else {
         return 1;
