@@ -70,6 +70,7 @@ Token next_token(const char **input)
             strdup(buffer), 0, 0
         };
     }
+    
     (*input)++;
     return (Token){ TOKEN_UNKNOWN, strdup("?"), 0, 0 };
 }
