@@ -37,7 +37,7 @@ int main(void)
     assert_token(tokens[i++], TOKEN_SYMBOL, "{");
     assert_token(tokens[i++], TOKEN_IDENTIFIER, "printf");
     assert_token(tokens[i++], TOKEN_SYMBOL, "(");
-    assert_token(tokens[i++], TOKEN_STRING_LITERAL, "\"hello, world!\\n\"");
+    assert_token(tokens[i++], TOKEN_STRING_LITERAL, "hello, world!\\n");
     assert_token(tokens[i++], TOKEN_SYMBOL, ")");
     assert_token(tokens[i++], TOKEN_SYMBOL, ";");
     assert_token(tokens[i++], TOKEN_KEYWORD, "return");

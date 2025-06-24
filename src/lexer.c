@@ -90,3 +90,13 @@ Token *tokenize(const char *source, int *count)
     return tokens;
 }
 
+// Public Helper: Frees the token stream
+void free_tokens(Token *tokens, int count) {
+    if (!tokens) return;
+    for (int i = 0; i < count; i++) {
+        free(tokens[i].lexeme);
+    }
+    free(tokens);
+}
+
+

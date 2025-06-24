@@ -1,40 +1,35 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include "ast.h"
+#include "lexer.h"
+#include "parser.h"
 #include "semantic.h"
-
-// Minimal test runner
-void assert_semantic_ok(int result, const char *label) {
-    if (!result) {
-        fprintf(stderr, "FAIL: Semantic analysis failed for %s\n", label);
-        exit(1);
-    } else {
-        printf("PASS: Semantic analysis passed for %s\n", label);
-    }
-}
+#include "token.h"
 
 int main(void) {
-    // Simulate AST for: int main(void) { printf("Hello, world!\n"); return 0; }
+    const char *source = "int main(void) { printf(\"hello, world!\\n\"); return 0; }";
 
-    ASTNode *string_literal = create_ast_node(AST_STRING_LITERAL, "Hello, world!\\n");
-    ASTNode *call_expr = create_ast_node(AST_CALL_EXPR, "printf");
-    call_expr->left = string_literal;
+    // Lexing
+    int token_count = 0;
+    Token *tokens = tokenize(source, &token_count);
+    assert(tokens != NULL && token_count > 0);
 
-    ASTNode *ret_value = create_ast_node(AST_LITERAL, "0");
-    ASTNode *return_stmt = create_ast_node(AST_RETURN_STMT, NULL);
-    return_stmt->left = ret_value;
+    // Parsing
+    Parser *parser = init_parser(tokens, &token_count);
+    assert(parser != NULL);
+    ASTNode *ast = parse(parser);
+    assert(ast != NULL);
 
-    ASTNode *func = create_ast_node(AST_FUNCTION_DEF, "main");
-    func->left = call_expr;
-    func->right = return_stmt;
+    // Semantic Analysis
+    SemanticResult result = analyze(ast);
+    assert(result == SEMANTIC_OK);
 
-    // Run semantic analysis
-    int result = analyze_semantics(func);
-    assert_semantic_ok(result, "hello world");
+    printf("Semantic test passed.\n");
 
     // Cleanup
-    free_ast(func);
+    free_ast(ast);
+    free_parser(parser);
+    free_tokens(tokens, token_count);
 
     return 0;
 }

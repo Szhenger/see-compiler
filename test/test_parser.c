@@ -1,17 +1,23 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
+#include <string.h>
 #include "ast.h"
 #include "lexer.h"
 #include "parser.h"
-#include "tokens.h"
+#include "token.h"
 
 // Assert helper for AST nodes
 void assert_ast_node(ASTNode *node, ASTNodeType expected_type, const char *expected_value) 
 {
     assert(node != NULL);
     assert(node->type == expected_type);
-    assert(strcmp(node->value, expected_value) == 0);
+    
+    if (expected_value == NULL) {
+        assert(node-> value == NULL);
+    } else {
+        assert(strcmp(node->value, expected_value) == 0);\
+    }
 }
 
 // Main test driver
@@ -25,18 +31,18 @@ int main(void)
     assert(tokens != NULL);
 
     // Parse
-    Parser *parser = init_parser(tokens, token_count);
+    Parser *parser = init_parser(tokens, &token_count);
     ASTNode *tree = parse(parser);
     assert(tree != NULL);
 
     // Assert function node
     assert_ast_node(tree, AST_FUNCTION_DEF, "main");
 
-    // Assert call node: printf("Hello, world!\n")
+    // Assert call node: printf("hello, world!\n")
     ASTNode *call = tree->left;
     assert_ast_node(call, AST_CALL_EXPR, "printf");
-    assert_ast_node(call->left, AST_STRING_LITERAL, "Hello, world!\\n");
-
+    assert_ast_node(call->left, AST_STRING_LITERAL, "hello, world!\\n");
+    
     // Assert return node: return 0
     ASTNode *ret = tree->right;
     assert_ast_node(ret, AST_RETURN_STMT, NULL);
