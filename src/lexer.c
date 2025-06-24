@@ -38,23 +38,30 @@ Token next_token(const char **input)
     if (**input == '\0') return (Token){ TOKEN_EOF, strdup(""), 0, 0 };
 
     char c = **input;
+    
     if (strchr("(){};=", c)) {
         (*input)++;
         char *lexeme = malloc(2); lexeme[0] = c; lexeme[1] = '\0';
         return (Token){ TOKEN_SYMBOL, lexeme, 0, 0 };
-    } else if (isdigit(c)) {
+    }
+    
+    if (isdigit(c)) {
         char buffer[32]; int i = 0;
         while (isdigit(**input)) buffer[i++] = *(*input)++;
         buffer[i] = '\0';
         return (Token){ TOKEN_INTEGER_LITERAL, strdup(buffer), 0, 0 };
-    } else if (c == '"') {
+    } 
+    
+    if (c == '"') {
         (*input)++;
         char buffer[256]; int i = 0;
         while (**input && **input != '"') buffer[i++] = *(*input)++;
         (*input)++;
         buffer[i] = '\0';
         return (Token){ TOKEN_STRING_LITERAL, strdup(buffer), 0, 0 };
-    } else if (isalpha(c)) {
+    } 
+    
+    if (isalpha(c)) {
         char buffer[64]; int i = 0;
         while (isalnum(**input) || **input == '_') buffer[i++] = *(*input)++;
         buffer[i] = '\0';
@@ -62,10 +69,9 @@ Token next_token(const char **input)
             is_keyword(buffer) ? TOKEN_KEYWORD : TOKEN_IDENTIFIER,
             strdup(buffer), 0, 0
         };
-    } else {
-        (*input)++;
-        return (Token){ TOKEN_UNKNOWN, strdup("?"), 0, 0 };
     }
+    (*input)++;
+    return (Token){ TOKEN_UNKNOWN, strdup("?"), 0, 0 };
 }
 
 // === Public Function: Tokenize source into dynamic array of tokens ===
