@@ -71,3 +71,8 @@
 [2025-06-19] - Day 13: `SeeCompiler` Code Review Part 2
 - Read the procedures that analyze and generate the assembly instructions
 - Updated the comments of `src/ast.c`, `include/ast.h`, `src/semantic.c`, `include/semantic.h`, `src/ir.c`, `include/ir.h`, `src/codegen.c`, and `include/codegen.h'
+
+[2025-06-24] - Day 14: `SeeCompiler` Code Validation
+- Read the tokenization and parsing specifications and implementations
+- Tested the tokenizer via `test/test_lexer.c` and the parser via `test/test_parser.c`
+
