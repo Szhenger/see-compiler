@@ -4,36 +4,47 @@
 #include "ast.h"
 #include "token.h"
 
-// Define the structure of a parser variable
+// === Parser State ===
 typedef struct {
     Token *tokens;
     int current;
     int length;
 } Parser;
 
-// Constructs a parser from a token stream
-Parser *init_parser(Token *t, int *count);
+// === Initialization & Cleanup ===
+Parser *init_parser(Token *tokens, int *count);
+void free_parser(Parser *p);
 
-// Parser Utilities: Token Inspection and Advancement
+// === Token Inspection & Movement ===
 Token current_token(Parser *p);
 void advance(Parser *p);
 int match(Parser *p, TokenType type, const char *lexeme);
+int match_type(Parser *p, TokenType type);
 
-// Parse the return statement of the form: return <int>;
-// Assumes 'return' has been matched
+// === Statement Parsing ===
+// Parses a return statement: return <expr>;
 ASTNode *parse_return(Parser *p);
 
-// Parse a function call expression (currently only supports printf)
+// Parses a function call (e.g., printf(...));
 ASTNode *parse_call(Parser *p);
 
-// Parse a function body enclosed in braces: { printf(...); return ...; }
-// Assumes a flat sequence of statements inide main
+// Parses an expression — currently only supports literals and identifiers
+ASTNode *parse_expression(Parser *p);
+
+// Parses a declaration like: int x;
+ASTNode *parse_declaration(Parser *p);
+
+// Parses a single statement: return, call, declaration, etc.
+ASTNode *parse_statement(Parser *p);
+
+// Parses a block: { <stmt>; <stmt>; ... }
+ASTNode *parse_block(Parser *p);
+
+// Parses a function definition: int main(...) { ... }
 ASTNode *parse_function(Parser *p);
 
-// Entry Point: Parse the main procedure including the signature, body, and return
+// === Entry Point ===
 ASTNode *parse(Parser *p);
 
-// Destory parser and free dynamically allocated resources
-void free_parser(Parser *p);
+#endif // PARSER_H
 
-#endif
