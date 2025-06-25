@@ -15,7 +15,7 @@ static const char *multi_char_symbols[] = {
     "==", "!=", "<=", ">=", "&&", "||"
 };
 
-// === Check if word is a keyword ===
+// === Public Helper: Check if word is a keyword ===
 int is_keyword(const char *word) {
     for (size_t i = 0; i < sizeof(keywords) / sizeof(keywords[0]); i++) {
         if (strcmp(word, keywords[i]) == 0) return 1;
@@ -23,7 +23,7 @@ int is_keyword(const char *word) {
     return 0;
 }
 
-// === Check for a multi-char symbol match ===
+// === Public Helper: Check for a multi-char symbol match ===
 static const char *match_multi_char_symbol(const char *input) {
     for (size_t i = 0; i < sizeof(multi_char_symbols) / sizeof(multi_char_symbols[0]); i++) {
         size_t len = strlen(multi_char_symbols[i]);
@@ -34,7 +34,7 @@ static const char *match_multi_char_symbol(const char *input) {
     return NULL;
 }
 
-// === Read next token ===
+// === Public Helper: Read next token ===
 Token next_token(const char **input) {
     while (**input && isspace(**input)) (*input)++;
     if (**input == '\0') return (Token){ TOKEN_EOF, strdup(""), 0, 0 };
@@ -103,7 +103,7 @@ Token next_token(const char **input) {
     return (Token){ TOKEN_UNKNOWN, strdup("?"), 0, 0 };
 }
 
-// === Tokenize entire source ===
+// === Public Function: Tokenize entire source ===
 Token *tokenize(const char *source, int *count) {
     const char *input = source;
     int capacity = 64;
@@ -124,7 +124,7 @@ Token *tokenize(const char *source, int *count) {
     return tokens;
 }
 
-// === Free token array ===
+// === Public Function: Free token array ===
 void free_tokens(Token *tokens, int count) {
     if (!tokens) return;
     for (int i = 0; i < count; i++) {
