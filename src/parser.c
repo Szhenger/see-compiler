@@ -2,30 +2,8 @@
 #include <string.h>
 #include "parser.h"
 
-/*
- * Parser Strategy:
- * This is a hand-written, recursive-descent parser for a minimal subset of C.
- * It assumes the source program contains a single function: `int main(void) { ... }`
- *
- * The parser operates over a flat stream of tokens and builds an abstract syntax tree (AST).
- * It currently supports:
- * - Function calls: printf("...")
- * - Return statements: return <integer>;
- * - A flat sequence of statements in the function body (no nesting or control flow).
- *
- * The parser expects syntactically valid input; it performs limited error recovery.
- *
- * Grammar (subset):
- *     program         ::= function
- *     function        ::= 'int' 'main' '(' 'void' ')' '{' statement+ '}'
- *     statement       ::= call_stmt | return_stmt
- *     call_stmt       ::= IDENTIFIER '(' STRING_LITERAL ')' ';'
- *     return_stmt     ::= 'return' INTEGER_LITERAL ';'
- */
-
-// === Public Function: Construct parser from a token stream and count integer ===
-Parser *init_parser(Token *t, int *count) 
-{
+// === Initialization ===
+Parser *init_parser(Token *t, int *count) {
     Parser *p = malloc(sizeof(Parser));
     p->tokens = t;
     p->length = *count;
@@ -33,91 +11,154 @@ Parser *init_parser(Token *t, int *count)
     return p;
 }
 
-// === Private Helper: Utilities for Token Inspection and Advancement ===
-Token current_token(Parser *p) 
-{
+// === Token Helpers ===
+Token current_token(Parser *p) {
     return p->tokens[p->current];
 }
-void advance(Parser *p) 
-{
+
+void advance(Parser *p) {
     if (p->current < p->length) p->current++;
 }
-int match(Parser *p, TokenType type, const char *lexeme) 
-{
+
+int match(Parser *p, TokenType type, const char *lexeme) {
     if (p->current >= p->length) return 0;
     Token t = current_token(p);
-    if (t.type == type && (!lexeme || strcmp(t.lexeme, lexeme) == 0)) {
+    if (t.category == type && (!lexeme || strcmp(t.lexeme, lexeme) == 0)) {
         advance(p);
         return 1;
     }
     return 0;
 }
 
-// === Public Helper: Parse return statement: return 0; ===
-ASTNode *parse_return(Parser *p) 
-{
-    if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
-
-    Token val = current_token(p);
-    advance(p);
-
-    if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
-
-    ASTNode *value = create_ast_node(AST_LITERAL, val.lexeme);
-    ASTNode *ret_node = create_ast_node(AST_RETURN_STMT, NULL);
-    ret_node->left = value;
-    return ret_node;
+int match_type(Parser *p, TokenType type) {
+    if (p->current >= p->length) return 0;
+    if (current_token(p).type == type) {
+        advance(p);
+        return 1;
+    }
+    return 0;
 }
 
-// === Public Helper: Parse printf("..."); ===
-ASTNode *parse_call(Parser *p) 
-{
-    Token func = current_token(p);
-    if (func.type != TOKEN_IDENTIFIER) return NULL;
+// === Expression Parser (simplified) ===
+ASTNode *parse_expression(Parser *p) {
+    Token t = current_token(p);
+    if (t.category == TOKEN_INTEGER_LITERAL || t.category == TOKEN_IDENTIFIER) {
+        advance(p);
+        return create_ast_node(AST_LITERAL, t.lexeme);
+    }
+    return NULL;
+}
+
+// === Statement Parsers ===
+ASTNode *parse_return(Parser *p) {
+    if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
+
+    ASTNode *val = parse_expression(p);
+    if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
+
+    ASTNode *ret = create_ast_node(AST_RETURN_STMT, NULL);
+    ret->left = val;
+    return ret;
+}
+
+ASTNode *parse_call(Parser *p) {
+    Token fn = current_token(p);
+    if (fn.category != TOKEN_IDENTIFIER) return NULL;
     advance(p);
 
     if (!match(p, TOKEN_SYMBOL, "(")) return NULL;
 
     Token arg = current_token(p);
+    if (arg.category != TOKEN_STRING_LITERAL) return NULL;
     advance(p);
 
     if (!match(p, TOKEN_SYMBOL, ")")) return NULL;
     if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
 
     ASTNode *arg_node = create_ast_node(AST_STRING_LITERAL, arg.lexeme);
-    ASTNode *call_node = create_ast_node(AST_CALL_EXPR, func.lexeme);
-    call_node->left = arg_node;
-    return call_node;
+    ASTNode *call = create_ast_node(AST_CALL_EXPR, fn.lexeme);
+    call->left = arg_node;
+    return call;
 }
 
-// === Public Helper: Parse function body: { printf(...); return ...; } ===
-ASTNode *parse_function(Parser *p) 
-{
-    while (p->current < p->length && !match(p, TOKEN_SYMBOL, "{")) {
-        advance(p);
+ASTNode *parse_declaration(Parser *p) {
+    if (!match(p, TOKEN_KEYWORD, "int")) return NULL;
+
+    Token id = current_token(p);
+    if (id.category != TOKEN_IDENTIFIER) return NULL;
+    advance(p);
+
+    // Optional initialization (e.g., int x = 5;)
+    if (match(p, TOKEN_SYMBOL, "=")) {
+        ASTNode *rhs = parse_expression(p);
+        if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
+        // You can define a new AST_ASSIGN node if needed
+        return rhs; // TEMP: just return RHS for now
     }
 
-    ASTNode *call = parse_call(p);
-    ASTNode *ret = parse_return(p);
+    if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
+    return create_ast_node(AST_LITERAL, id.lexeme); // TEMP: represent declaration as literal
+}
 
-    if (!match(p, TOKEN_SYMBOL, "}")) return NULL;
+ASTNode *parse_statement(Parser *p) {
+    Token t = current_token(p);
 
+    if (t.category == TOKEN_KEYWORD && strcmp(t.lexeme, "return") == 0)
+        return parse_return(p);
+    if (t.category == TOKEN_KEYWORD && strcmp(t.lexeme, "int") == 0)
+        return parse_declaration(p);
+    if (t.category == TOKEN_IDENTIFIER)
+        return parse_call(p);
+
+    return NULL;
+}
+
+// === Block Parser: Parses a flat block of statements inside { ... } ===
+ASTNode *parse_block(Parser *p) {
+    if (!match(p, TOKEN_SYMBOL, "{")) return NULL;
+
+    ASTNode *head = NULL;
+    ASTNode *tail = NULL;
+
+    while (!match(p, TOKEN_SYMBOL, "}")) {
+        ASTNode *stmt = parse_statement(p);
+        if (!stmt) break;
+
+        if (!head) {
+            head = stmt;
+            tail = stmt;
+        } else {
+            tail->right = stmt;
+            tail = stmt;
+        }
+    }
+
+    return head;
+}
+
+// === Function Parser ===
+ASTNode *parse_function(Parser *p) {
+    if (!match(p, TOKEN_KEYWORD, "int")) return NULL;
+    if (!match(p, TOKEN_IDENTIFIER, "main")) return NULL;
+    if (!match(p, TOKEN_SYMBOL, "(")) return NULL;
+    if (!match(p, TOKEN_KEYWORD, "void")) return NULL;
+    if (!match(p, TOKEN_SYMBOL, ")")) return NULL;
+
+    ASTNode *body = parse_block(p);
     ASTNode *func = create_ast_node(AST_FUNCTION_DEF, "main");
-    func->left = call;
-    func->right = ret;
+    func->left = body;
     return func;
 }
 
-// === Public Function: Parse main function ===
-ASTNode *parse(Parser *p) 
-{
+// === Entry Point ===
+ASTNode *parse(Parser *p) {
     return parse_function(p);
 }
 
-// === Public Function: Destroy parser and free resources ===
-void free_parser(Parser *p)
-{
+// === Cleanup ===
+void free_parser(Parser *p) {
     if (!p) return;
     free(p);
 }
+
 
