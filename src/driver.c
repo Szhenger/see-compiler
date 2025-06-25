@@ -7,28 +7,53 @@
 #include "semantic.h"
 #include "token.h"
 
-// Simple Source Provider for Now
-const char *load_sample_source(void) 
+char *read_file(const char *filename) 
 {
-    return "int main(void) { printf(\"hello, world!\\n\"); return 0; }";
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        fprintf(stderr, "Failed to open source: %s\n", filename);
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long length = ftell(file);
+    rewind(file);
+
+    char *buffer = malloc(length + 1);
+    if (!buffer) {
+        fclose(file);
+        fprintf(stderr, "Buffer memory allocation failed.\n");
+        return NULL;
+    }
+
+    fread(buffer, 1, length, file);
+    buffer[length] = '\0';
+    fclose(file);
+    return buffer;
 }
 
-// Drives the Compilation of Source File
-int main(void) 
+int main(int argc, char **argv) 
 {
-    // Procedure 0: Get Source File
-    const char *source = load_sample_source();
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <source-file.c>\n", argv[0]);
+        return 1;
+    }
 
-    // Procedure 1: Lexical Analysis
+    // Procedure 1: Load Source File
+    char *source = read_file(argv[1]);
+    if (!source) return 1;
+
+    // Procedure 2: Lexical Analysis
     printf("== Lexical Analysis ==\n");
     int token_count = 0;
     Token *tokens = tokenize(source, &token_count);
     if (!tokens || token_count == 0) {
         fprintf(stderr, "Lexing failed!\n");
-        return 1;
+        free(source);
+        return 2;
     }
 
-    // Procedure 2: Parsing
+    // Procedure 3: Parsing
     printf("== Parsing ==\n");
     Parser *parser = init_parser(tokens, token_count);
     ASTNode *ast = parse(parser);
@@ -36,20 +61,22 @@ int main(void)
         fprintf(stderr, "Parsing failed!\n");
         free_parser(parser);
         free_tokens(tokens, token_count);
-        return 2;
+        free(source);
+        return 3;
     }
 
-    // Procedure 3: Semantic Analysis
+    // Procedure 4: Semantic Analysis
     printf("== Semantic Analysis ==\n");
     if (analyze(ast) != SEMANTIC_OK) {
         fprintf(stderr, "Semantic analysis failed!\n");
         free_ast(ast);
         free_parser(parser);
         free_tokens(tokens, token_count);
-        return 3;
+        free(source);
+        return 4;
     }
 
-    // Procedure 4: Debug AST Output
+    // Procedure 4.5: Debug AST Output
     printf("== Abstract Syntax Tree ==\n");
     print_ast(ast);
     
@@ -61,14 +88,15 @@ int main(void)
         free_ast(ast);
         free_parser(parser);
         free_tokens(tokens, token_count);
-        return 4;
+        free(source);
+        return 5;
     }
 
-    // Procedure 6: Debug IR Output
+    // Procedure 5.5: Debug IR Output
     printf("== Intermediate Representation ==\n");
     print_ir(ir);
 
-    // Procedure 7: Code Generation
+    // Procedure 6: Code Generation
     printf("== x86 Code Generation ==\n");
     FILE *out = fopen("output.s", "w");
     if (!out) {
@@ -77,17 +105,20 @@ int main(void)
         free_ast(ast);
         free_parser(parser);
         free_tokens(tokens, token_count);
-        return 5;    
+        free(source);
+        return 6;    
     }
     generate_code(out, ir);
     fclose(out);
 
-    // Procedure 8: Cleanup
+    // Procedure 7.5: Cleanup
     free_ir(ir);
     free_ast(ast);
     free_parser(parser);
     free_tokens(tokens, token_count);
+    free(source);
 
     return 0;
 }
+
 
