@@ -30,12 +30,17 @@ void free_ast(ASTNode *node)
 const char *ast_type_to_string(ASTNodeType type) 
 {
     switch (type) {
-        case AST_FUNCTION_DEF: return "FunctionDef";
-        case AST_CALL_EXPR: return "CallExpr";
-        case AST_STRING_LITERAL: return "StringLiteral";
-        case AST_RETURN_STMT: return "ReturnStmt";
-        case AST_LITERAL: return "Literal";
-        default: return "Unknown";
+        case AST_FUNCTION_DEF:    return "FunctionDef";
+        case AST_CALL_EXPR:       return "CallExpr";
+        case AST_STRING_LITERAL:  return "StringLiteral";
+        case AST_RETURN_STMT:     return "ReturnStmt";
+        case AST_LITERAL:         return "Literal";
+        case AST_DECLARATION:     return "Declaration";
+        case AST_ASSIGNMENT:      return "Assignment";
+        case AST_IDENTIFIER:      return "Identifier";
+        case AST_INTEGER_LITERAL: return "IntegerLiteral";
+        case AST_STATEMENT_LIST:  return "StatementList";
+        default:                  return "Unknown";
     }
 }
 
@@ -43,7 +48,7 @@ const char *ast_type_to_string(ASTNodeType type)
 void print_ast_recursive(ASTNode *node, int indent) 
 {
     if (!node) return;
-    
+
     for (int i = 0; i < indent; i++) printf("  ");
 
     printf("%s", ast_type_to_string(node->type));
@@ -58,3 +63,4 @@ void print_ast_recursive(ASTNode *node, int indent)
 void print_ast(ASTNode *root) {
     print_ast_recursive(root, 0);
 }
+
