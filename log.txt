@@ -76,3 +76,10 @@
 - Read the tokenization and parsing specifications and implementations
 - Tested the tokenizer via `test/test_lexer.c` and the parser via `test/test_parser.c`
 
+[2025-06-25] - Day 15: `SeeCompiler` Extending Functionality
+- Added the extended token category set to `token.h` and `token.c`
+- Updated the logic in `driver.c` to read source files to the source provider functionality
+- Added the new token category support to `lexer.h` 
+- Updated the logic in `lexer.c`to tokenize source files more extensively to match new token set
+- Added the new node support to `ast.h` for additional ast extensions
+- Updated the logic in `parser.c` to allocate the extension in nodes
