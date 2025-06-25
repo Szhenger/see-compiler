@@ -83,3 +83,6 @@
 - Updated the logic in `lexer.c`to tokenize source files more extensively to match new token set
 - Added the new node support to `ast.h` for additional ast extensions
 - Updated the logic in `parser.c` to allocate the extension in nodes
+- Added the new interface for parser in `parser.h`
+- Updated the logic in `semantic.c` to analyze extended syntax
+- Added the updated details to `semantic.h`
