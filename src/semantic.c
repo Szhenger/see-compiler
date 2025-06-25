@@ -65,7 +65,7 @@ static int analyze_statement(ASTNode *node)
     }
 }
 
-// === Call Expression (e.g., printf("...")) ===
+// === Private Helper: Call Expression (e.g., printf("...")) ===
 static int analyze_call(ASTNode *node) 
 {
     if (strcmp(node->value, "printf") != 0) {
@@ -79,7 +79,7 @@ static int analyze_call(ASTNode *node)
     return 1;
 }
 
-// === Return Statement ===
+// === Private Helper: Return Statement ===
 static int analyze_return(ASTNode *node) 
 {
     if (!node->left) {
@@ -93,7 +93,7 @@ static int analyze_return(ASTNode *node)
     return 1;
 }
 
-// === Variable Declaration (e.g., int x;) ===
+// === Private Helper: Variable Declaration (e.g., int x;) ===
 static int analyze_declaration(ASTNode *node)
 {
     if (!node->value) {
@@ -103,7 +103,7 @@ static int analyze_declaration(ASTNode *node)
     return 1; // In a full implementation, you'd check redefinitions here
 }
 
-// === Assignment (e.g., x = 42;) ===
+// === Private Helper: Assignment (e.g., x = 42;) ===
 static int analyze_assignment(ASTNode *node)
 {
     if (!node->left || node->left->type != AST_IDENTIFIER) {
