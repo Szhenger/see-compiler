@@ -13,10 +13,13 @@
 
 // Enumerates IR instruction types
 typedef enum {
-    IR_LABEL,   // A label (e.g., function entry point)
-    IR_CALL,    // A function call (e.g., printf)
-    IR_PUSH,    // Push a literal value onto the stack
-    IR_RET      // Return from function
+    IR_LABEL,
+    IR_CALL,
+    IR_PUSH,
+    IR_RET,
+    IR_DECL,
+    IR_STORE,
+    IR_LOAD
 } IRType;
 
 // Represents a single IR instruction
@@ -37,6 +40,9 @@ void print_ir(IRInstr *head);
 
 // Frees all dynamically allocated IR instructions
 void free_ir(IRInstr *head);
+
+// Converts IR type enum to string
+const char *ir_type_to_string(IRType type); 
 
 #endif
 
