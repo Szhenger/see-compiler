@@ -86,3 +86,10 @@
 - Added the new interface for parser in `parser.h`
 - Updated the logic in `semantic.c` to analyze extended syntax
 - Added the updated details to `semantic.h`
+
+[2025-06-26] - Day 16: `SeeCompiler` Logic and Verfication Part 1
+- Read the logic for `driver.c` to obtain a complete understanding of the integration
+- Updated the interface for ir generation in `ir.h` to match larger C subset support
+- Added the extended logic for ir generation in `ir.c` to match the new interface
+- Updated the interface for x86 code generation in `ir.c` to support new C subset
+- Planned the preprocessor and linker components with linking to clang preprocessor and gcc linker
