@@ -7,6 +7,7 @@ const char *token_category_to_string(TokenCategory category) {
         case TOKEN_IDENTIFIER:       return "TOKEN_IDENTIFIER";
         case TOKEN_INTEGER_LITERAL:  return "TOKEN_INTEGER_LITERAL";
         case TOKEN_STRING_LITERAL:   return "TOKEN_STRING_LITERAL";
+        case TOKEN_CHAR_LITERAL:     return "TOKEN_CHAR_LITERAL";
 
         case TOKEN_LPAREN:           return "TOKEN_LPAREN";
         case TOKEN_RPAREN:           return "TOKEN_RPAREN";
