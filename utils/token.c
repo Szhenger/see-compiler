@@ -19,8 +19,8 @@ const char *token_category_to_string(TokenCategory category) {
         case TOKEN_MINUS:            return "TOKEN_MINUS";
         case TOKEN_STAR:             return "TOKEN_STAR";
         case TOKEN_SLASH:            return "TOKEN_SLASH";
-        case TOKEN_LESS:             return "TOKEN_LESS_THAN";
-        case TOKEN_GREATER:          return "TOKEN_GREATER_THAN";
+        case TOKEN_LESS:             return "TOKEN_LESS";
+        case TOKEN_GREATER:          return "TOKEN_GREATER";
         case TOKEN_EQUAL:            return "TOKEN_EQUAL";
         case TOKEN_NOT_EQUAL:        return "TOKEN_NOT_EQUAL";
         case TOKEN_LESS_EQUAL:       return "TOKEN_LESS_EQUAL";
