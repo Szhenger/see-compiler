@@ -4,7 +4,7 @@
 #include "codegen.h"
 #include "ir.h"
 
-// === Symbol table for local variables (simple) ===
+// === Symbol table for local variables ===
 typedef struct VarEntry {
     char *name;
     int offset;          // Offset from rbp, e.g., -4, -8, ...
