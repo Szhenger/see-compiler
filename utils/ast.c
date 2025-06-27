@@ -27,7 +27,7 @@ void free_ast(ASTNode *node)
 }
 
 // === Private Helper: Convert node type to string for printing ===
-const char *ast_type_to_string(ASTNodeType type) 
+static const char *ast_type_to_string(ASTNodeType type) 
 {
     switch (type) {
         case AST_FUNCTION_DEF:    return "FunctionDef";
@@ -45,7 +45,7 @@ const char *ast_type_to_string(ASTNodeType type)
 }
 
 // === Private Helper: Recursively print AST structure ===
-void print_ast_recursive(ASTNode *node, int indent) 
+static void print_ast_recursive(ASTNode *node, int indent) 
 {
     if (!node) return;
 
