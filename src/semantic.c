@@ -1,71 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include "ast.h"
 #include "semantic.h"
 
-// Forward Declarations
-static int analyze_function(ASTNode *node);
-static int analyze_statement(ASTNode *node);
-static int analyze_call(ASTNode *node);
-static int analyze_return(ASTNode *node);
-static int analyze_declaration(ASTNode *node);
-static int analyze_assignment(ASTNode *node);
-
-// === Public Function: Analyze an AST ===
-SemanticResult analyze(ASTNode *root) 
-{
-    if (!root) {
-        fprintf(stderr, "Semantic Error: NULL AST\n");
-        return SEMANTIC_ERROR;
-    } else if (root->type != AST_FUNCTION_DEF || strcmp(root->value, "main") != 0) {
-        fprintf(stderr, "Semantic Error: Program must have a 'main' function\n");
-        return SEMANTIC_ERROR;
-    } else if (!analyze_function(root)) {
-        return SEMANTIC_ERROR;
-    } else {
-        return SEMANTIC_OK;
-    }
-}
-
-// === Private Helper: Analyze a Function Node ===
-// Assumes function body is a statement list
-static int analyze_function(ASTNode *node) 
-{
-    if (!node->left) {
-        fprintf(stderr, "Semantic Error: Function body is empty\n");
-        return 0;
-    }
-
-    ASTNode *stmt = node->left;
-    while (stmt) {
-        ASTNode *current = (stmt->type == AST_STATEMENT_LIST) ? stmt->left : stmt;
-        if (!analyze_statement(current)) return 0;
-
-        stmt = (stmt->type == AST_STATEMENT_LIST) ? stmt->right : NULL;
-    }
-
-    return 1;
-}
-
-// === Private Helper: Analyze One Statement ===
-static int analyze_statement(ASTNode *node)
-{
-    switch (node->type) {
-        case AST_CALL_EXPR:
-            return analyze_call(node);
-        case AST_RETURN_STMT:
-            return analyze_return(node);
-        case AST_DECLARATION:
-            return analyze_declaration(node);
-        case AST_ASSIGNMENT:
-            return analyze_assignment(node);
-        default:
-            fprintf(stderr, "Semantic Error: Unknown or unsupported statement type\n");
-            return 0;
-    }
-}
-
-// === Private Helper: Call Expression (e.g., printf("...")) ===
+// === Private Helper: Call expression (e.g., printf("...")) ===
 static int analyze_call(ASTNode *node) 
 {
     if (strcmp(node->value, "printf") != 0) {
@@ -79,7 +16,7 @@ static int analyze_call(ASTNode *node)
     return 1;
 }
 
-// === Private Helper: Return Statement ===
+// === Private Helper: Return statement ===
 static int analyze_return(ASTNode *node) 
 {
     if (!node->left) {
@@ -100,7 +37,7 @@ static int analyze_declaration(ASTNode *node)
         fprintf(stderr, "Semantic Error: Declaration missing identifier\n");
         return 0;
     }
-    return 1; // In a full implementation, you'd check redefinitions here
+    return 1;
 }
 
 // === Private Helper: Assignment (e.g., x = 42;) ===
@@ -115,4 +52,62 @@ static int analyze_assignment(ASTNode *node)
         return 0;
     }
     return 1;
+}
+
+// === Private Helper: Analyze one statement ===
+static int analyze_statement(ASTNode *node)
+{
+    switch (node->type) {
+        case AST_CALL_EXPR:
+            return analyze_call(node);
+        case AST_RETURN_STMT:
+            return analyze_return(node);
+        case AST_DECLARATION:
+            return analyze_declaration(node);
+        case AST_ASSIGNMENT:
+            return analyze_assignment(node);
+        default:
+            fprintf(stderr, "Semantic Error: Unknown or unsupported statement type\n");
+            return 0;
+    }
+}
+
+// === Private Helper: Analyze a function node ===
+// Assumes function body is a statement list
+static int analyze_function(ASTNode *node) 
+{
+    if (!node->left) {
+        fprintf(stderr, "Semantic Error: Function body is empty\n");
+        return 0;
+    }
+
+    ASTNode *statement = node->left;
+    while (statement) {
+        ASTNode *current = (statement->type == AST_STATEMENT_LIST) ? statement->left : statement;
+        if (!analyze_statement(current)) return 0;
+
+        statement = (statement->type == AST_STATEMENT_LIST) ? statement->right : NULL;
+    }
+
+    return 1;
+}
+
+// === Public Function: Analyze an AST ===
+SemanticResult analyze(ASTNode *root) 
+{
+    if (!root) {
+        fprintf(stderr, "Semantic Error: NULL AST\n");
+        return SEMANTIC_ERROR;
+    } 
+    
+    if (root->type != AST_FUNCTION_DEF || strcmp(root->value, "main") != 0) {
+        fprintf(stderr, "Semantic Error: Program must have a 'main' function\n");
+        return SEMANTIC_ERROR;
+    }
+    
+    if (!analyze_function(root)) {
+        return SEMANTIC_ERROR;
+    }
+    
+    return SEMANTIC_OK;
 }
