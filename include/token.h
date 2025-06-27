@@ -4,7 +4,7 @@
 // Enumerates the types of tokens the lexer can recognize
 typedef enum {
     // Keywords
-    TOKEN_KEYWORD,            // Covers: int, return, void, if, else, while, for, break, continue, bool, true, false
+    TOKEN_KEYWORD,            // int, return, void, if, else, while, for, break, continue, bool, true, false
 
     // Identifiers
     TOKEN_IDENTIFIER,         // Function names, variable names
@@ -48,7 +48,7 @@ typedef enum {
     TOKEN_OR,                 // ||
     TOKEN_NOT,                // !
 
-    // Bitwise (optional for now)
+    // Bitwise
     TOKEN_BIT_AND,            // &
     TOKEN_BIT_OR,             // |
     TOKEN_BIT_XOR,            // ^
@@ -61,7 +61,7 @@ typedef enum {
     TOKEN_QUESTION,           // ?
     TOKEN_COLON,              // :
 
-    // Misc
+    // Miscellaneous 
     TOKEN_UNKNOWN,
     TOKEN_EOF
 } TokenCategory;
