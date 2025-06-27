@@ -32,6 +32,26 @@ static int match(Parser *p, TokenCategory category, const char *lexeme) {
     return 0;
 }
 
+// Private Helper: Return precedence of operator token; higher means tighter binding
+static int get_precedence(TokenCategory category) {
+    switch (category) {
+        case TOKEN_OR:             return 1;  // ||
+        case TOKEN_AND:            return 2;  // &&
+        case TOKEN_EQUAL:
+        case TOKEN_NOT_EQUAL:      return 3;  // ==, !=
+        case TOKEN_LESS:
+        case TOKEN_GREATER:
+        case TOKEN_LESS_EQUAL:
+        case TOKEN_GREATER_EQUAL:  return 4;  // <, >, <=, >=
+        case TOKEN_PLUS:
+        case TOKEN_MINUS:          return 5;  // +, -
+        case TOKEN_STAR:
+        case TOKEN_SLASH:
+        case TOKEN_PERCENT:        return 6;  // *, /, %
+        default:                   return 0;  // Not an operator
+    }
+}
+
 // === Private Grammar: return_stmt ::= 'return' INTEGER_LITERAL ';' ===
 static ASTNode *parse_return(Parser *p) {
     if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
@@ -52,14 +72,30 @@ static ASTNode *parse_call(Parser *p) {
     advance(p);
 
     if (!match(p, TOKEN_LPAREN, "(")) return NULL;
-    Token arg = current_token(p);
-    advance(p);
-    if (!match(p, TOKEN_RPAREN, ")")) return NULL;
-    if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
 
-    ASTNode *arg_node = create_ast_node(AST_STRING_LITERAL, arg.lexeme);
     ASTNode *call_node = create_ast_node(AST_CALL_EXPR, func.lexeme);
-    call_node->left = arg_node;
+    ASTNode *last_arg = NULL;
+    ASTNode *args_head = NULL;
+
+    if (!match(p, TOKEN_RPAREN, ")")) {
+        while (1) {
+            ASTNode *arg = parse_expression(p);
+            if (!arg) return NULL;
+
+            if (!args_head) {
+                args_head = arg;
+            } else {
+                last_arg->right = arg;
+            }
+            last_arg = arg;
+
+            if (match(p, TOKEN_RPAREN, ")")) break;
+            if (!match(p, TOKEN_COMMA, ",")) return NULL;
+        }
+    }
+
+    call_node->left = args_head;
+
     return call_node;
 }
 
@@ -74,25 +110,87 @@ static ASTNode *parse_declaration(Parser *p) {
     return create_ast_node(AST_DECLARATION, ident.lexeme);
 }
 
+// === Private Helper ===
+static ASTNode *parse_primary(Parser *p) {
+    Token t = current_token(p);
+
+    if (t.category == TOKEN_INTEGER_LITERAL) {
+        advance(p);
+        return create_ast_node(AST_INTEGER_LITERAL, t.lexeme);
+    }
+
+    if (t.category == TOKEN_STRING_LITERAL) {
+        advance(p);
+        return create_ast_node(AST_STRING_LITERAL, t.lexeme);
+    }
+
+    if (t.category == TOKEN_IDENTIFIER) {
+        advance(p);
+        if (match(p, TOKEN_LPAREN, "(")) {
+            p->current--; // step back so parse_call can consume IDENTIFIER and '('
+            return parse_call(p);
+        }
+        return create_ast_node(AST_IDENTIFIER, t.lexeme);
+    }
+
+    if (match(p, TOKEN_LPAREN, "(")) {
+        ASTNode *expr = parse_expression(p);
+        match(p, TOKEN_RPAREN, ")");
+        return expr;
+    }
+
+    return NULL;
+}
+
+// === Private Helper: PEMDAS ===
+static ASTNode *parse_expression_with_precedence(Parser *p, int min_precedence) {
+    ASTNode *left = parse_primary(p);
+    if (!left) return NULL;
+
+    while (true) {
+        Token t = current_token(p);
+        int prec = get_precedence(t.category);
+        if (prec == 0 || prec < min_precedence) break;
+
+        advance(p);  // consume operator token
+
+        // Parse right side with higher precedence to handle associativity
+        ASTNode *right = parse_expression_with_precedence(p, prec + 1);
+        if (!right) return NULL;
+
+        ASTNode *binop = create_ast_node(AST_BINARY_OP, t.lexeme);
+        binop->left = left;
+        binop->right = right;
+        left = binop;
+    }
+
+    return left;
+}
+
+// === Private Grammer: expres_stmt ::= .... ===
+static ASTNode *parse_expression(Parser *p) {
+    return parse_expression_with_precedence(p, 1);
+}
+
 // === Private Grammar: assign_stmt ::= IDENTIFIER '=' INTEGER_LITERAL ';' ===
+// assign_stmt ::= IDENTIFIER '=' expression ';'
 static ASTNode *parse_assignment(Parser *p) {
     Token ident = current_token(p);
     if (ident.category != TOKEN_IDENTIFIER) return NULL;
     advance(p);
+
     if (!match(p, TOKEN_ASSIGN, "=")) return NULL;
 
-    Token val = current_token(p);
-    if (val.category != TOKEN_INTEGER_LITERAL) return NULL;
-    advance(p);
+    ASTNode *rhs = parse_expression(p);
     if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
 
     ASTNode *lhs = create_ast_node(AST_IDENTIFIER, ident.lexeme);
-    ASTNode *rhs = create_ast_node(AST_INTEGER_LITERAL, val.lexeme);
     ASTNode *assign = create_ast_node(AST_ASSIGNMENT, NULL);
     assign->left = lhs;
     assign->right = rhs;
     return assign;
 }
+
 
 // === Private Grammar: statement ::= decl_stmt | assign_stmt | call_stmt | return_stmt ===
 static ASTNode *parse_statement(Parser *p) {
@@ -100,10 +198,21 @@ static ASTNode *parse_statement(Parser *p) {
     ASTNode *stmt = NULL;
 
     if ((stmt = parse_declaration(p)) != NULL) return stmt;
+
     p->current = saved;
     if ((stmt = parse_assignment(p)) != NULL) return stmt;
+
     p->current = saved;
-    if ((stmt = parse_call(p)) != NULL) return stmt;
+    // Try parsing call expression *without* semicolon
+    ASTNode *call_expr = parse_call(p);
+    if (call_expr) {
+        if (!match(p, TOKEN_SEMICOLON, ";")) {
+            // Missing semicolon after call expression → syntax error
+            return NULL;
+        }
+        return call_expr;
+    }
+
     p->current = saved;
     if ((stmt = parse_return(p)) != NULL) return stmt;
 
