@@ -7,36 +7,15 @@
 #include "semantic.h"
 #include "token.h"
 
-char *read_file(const char *filename) 
-{
-    FILE *file = fopen(filename, "r");
-    if (!file) {
-        fprintf(stderr, "Failed to open source: %s\n", filename);
-        return NULL;
-    }
+// Helper Function Prototype
+char *read_file(const char *filename);
 
-    fseek(file, 0, SEEK_END);
-    long length = ftell(file);
-    rewind(file);
-
-    char *buffer = malloc(length + 1);
-    if (!buffer) {
-        fclose(file);
-        fprintf(stderr, "Buffer memory allocation failed.\n");
-        return NULL;
-    }
-
-    fread(buffer, 1, length, file);
-    buffer[length] = '\0';
-    fclose(file);
-    return buffer;
-}
-
+// Main Procedure: Driving Compilation of Source File 
 int main(int argc, char **argv) 
 {
     if (argc != 2) {
-        fprintf(stderr, "Usage: %s <source-file.c>\n", argv[0]);
-        return 1;
+        fprintf(stderr, "Proper Usage: %s <source-file.c>\n", argv[0]);
+        return -1;
     }
 
     // Procedure 1: Load Source File
@@ -52,7 +31,7 @@ int main(int argc, char **argv)
         free(source);
         return 2;
     }
-
+    
     // Procedure 3: Parsing
     printf("== Parsing ==\n");
     Parser *parser = init_parser(tokens, token_count);
@@ -98,8 +77,8 @@ int main(int argc, char **argv)
 
     // Procedure 6: Code Generation
     printf("== x86 Code Generation ==\n");
-    FILE *out = fopen("output.s", "w");
-    if (!out) {
+    FILE *output = fopen("output.s", "w");
+    if (!output) {
         fprintf(stderr, "Failed to open output file\n");
         free_ir(ir);
         free_ast(ast);
@@ -108,8 +87,8 @@ int main(int argc, char **argv)
         free(source);
         return 6;    
     }
-    generate_code(out, ir);
-    fclose(out);
+    generate_code(output, ir);
+    fclose(output);
 
     // Procedure 7.5: Cleanup
     free_ir(ir);
@@ -117,8 +96,34 @@ int main(int argc, char **argv)
     free_parser(parser);
     free_tokens(tokens, token_count);
     free(source);
-
+    
     return 0;
+}
+
+// Helper Function: Read Source File into Memory
+char *read_file(const char *filename) 
+{
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        fprintf(stderr, "Failed to open source: %s\n", filename);
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long length = ftell(file);
+    rewind(file);
+
+    char *buffer = malloc(length + 1);
+    if (!buffer) {
+        fclose(file);
+        fprintf(stderr, "Buffer memory allocation failed.\n");
+        return NULL;
+    }
+
+    fread(buffer, 1, length, file);
+    buffer[length] = '\0';
+    fclose(file);
+    return buffer;
 }
 
 
