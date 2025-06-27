@@ -40,6 +40,11 @@ static const char *ast_type_to_string(ASTNodeType type)
         case AST_IDENTIFIER:      return "Identifier";
         case AST_INTEGER_LITERAL: return "IntegerLiteral";
         case AST_STATEMENT_LIST:  return "StatementList";
+        case AST_BINARY_OP:       return "BinaryOp";
+        case AST_CHAR_LITERAL:    return "CharLiteral";
+        case AST_IF_STMT:         return "IfStmt";
+        case AST_FOR_STMT:        return "ForStmt";
+        case AST_WHILE_STMT:      return "WhileStmt";
         default:                  return "Unknown";
     }
 }
