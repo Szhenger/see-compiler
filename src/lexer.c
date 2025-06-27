@@ -6,25 +6,28 @@
 
 // === Internal Keyword Table ===
 static const char *keywords[] = {
-    "int", "return", "void", "if", "else", "while", "for",
-    "bool", "true", "false", "string", "include"
+    "int", "char", "bool", "string", "void", "return", 
+    "if", "else", "while", "for", 
+    "true", "false",
 };
 
 // === Internal Symbol Table ===
 static const char *multi_char_symbols[] = {
-    "==", "!=", "<=", ">=", "&&", "||"
+    "==", "!=", "<=", ">=", "&&", "||", "++", "--"
 };
 
-// === Public Helper: Check if word is a keyword ===
-int is_keyword(const char *word) {
+// === Private Helper: Check if word is a keyword ===
+static int is_keyword(const char *word) 
+{
     for (size_t i = 0; i < sizeof(keywords) / sizeof(keywords[0]); i++) {
         if (strcmp(word, keywords[i]) == 0) return 1;
     }
     return 0;
 }
 
-// === Public Helper: Check for a multi-char symbol match ===
-static const char *match_multi_char_symbol(const char *input) {
+// === Private Helper: Check for a multi-char symbol match ===
+static const char *match_multi_char_symbol(const char *input) 
+{
     for (size_t i = 0; i < sizeof(multi_char_symbols) / sizeof(multi_char_symbols[0]); i++) {
         size_t len = strlen(multi_char_symbols[i]);
         if (strncmp(input, multi_char_symbols[i], len) == 0) {
@@ -34,17 +37,66 @@ static const char *match_multi_char_symbol(const char *input) {
     return NULL;
 }
 
-// === Public Helper: Read next token ===
-Token next_token(const char **input) {
+// === Private Helper: Return token category for single-char symbols ===
+static TokenCategory find_single_char_symbol_category(const char symbol) 
+{
+    switch (symbol) {
+        case '(':           return TOKEN_LPAREN;
+        case ')':           return TOKEN_RPAREN;
+        case '{':           return TOKEN_LBRACE;
+        case '}':           return TOKEN_RBRACE;
+        case ',':           return TOKEN_COMMA;
+        case ';':           return TOKEN_SEMICOLON;
+        
+        case '=':           return TOKEN_ASSIGN;
+        case '+':           return TOKEN_PLUS;
+        case '-':           return TOKEN_MINUS;
+        case '*':           return TOKEN_STAR;
+        case '/':           return TOKEN_SLASH;
+        case '<':           return TOKEN_LESS;
+        case '>':           return TOKEN_GREATER;
+        case '!':           return TOKEN_NOT;
+        
+        case '&':           return TOKEN_BIT_AND;
+        case '|':           return TOKEN_BIT_OR;
+        case '^':           return TOKEN_BIT_XOR;
+        case '~':           return TOKEN_BIT_NOT;
+        
+        case '.'            return TOKEN_DOT;
+        case '?':           return TOKEN_QUESTION;
+        case ':':           return TOKEN_COLON;
+        
+        default:            return TOKEN_UNKNOWN;
+    }
+}
+
+// === Private Helper: Return token category for multi-char symbols ===
+static TokenCategory find_multi_char_symbol_category(const char *symbol) 
+{
+    switch (symbol) {    
+        case '==':          return TOKEN_EQUAL;
+        case '<=':          return TOKEN_LESS_EQUAL;
+        case '>=':          return TOKEN_GREATER_EQUAL;
+        case '!=':          return TOKEN_NOT_EQUAL;
+        case '&&':          return TOKEN_AND;
+        case '||':          return TOKEN_OR;
+        case '++':          return TOKEN_INCREMENT;
+        case '--':          return TOKEN_DECREMENT;
+        default:            return TOKEN_UNKNOWN;
+    }
+}
+
+// === Private Helper: Read next token ===
+static Token next_token(const char **input) {
     while (**input && isspace(**input)) (*input)++;
     if (**input == '\0') return (Token){ TOKEN_EOF, strdup(""), 0, 0 };
 
     // Handle comments
-    if (**input == '/' && (*input)[1] == '/') {
+    if (**input == '/' && *(*input + 1) == '/') {
         while (**input && **input != '\n') (*input)++;
         return next_token(input);
     }
-    if (**input == '/' && (*input)[1] == '*') {
+    if (**input == '/' && *(*input + 1) == '*') {
         (*input) += 2;
         while (**input && !(**input == '*' && (*input)[1] == '/')) (*input)++;
         if (**input) (*input) += 2;
@@ -52,10 +104,10 @@ Token next_token(const char **input) {
     }
 
     // Check for multi-char symbols
-    const char *sym = match_multi_char_symbol(*input);
-    if (sym) {
+    const char *symbol = match_multi_char_symbol(*input);
+    if (symbol) {
         (*input) += strlen(sym);
-        return (Token){ TOKEN_SYMBOL, strdup(sym), 0, 0 };
+        return (Token){ find_multi_char_symbol_category(c), strdup(sym), 0, 0 };
     }
 
     // Check for single-char symbols
@@ -63,7 +115,7 @@ Token next_token(const char **input) {
     if (strchr("(){}[];,=<>!+-*/%&|", c)) {
         (*input)++;
         char *lexeme = malloc(2); lexeme[0] = c; lexeme[1] = '\0';
-        return (Token){ TOKEN_SYMBOL, lexeme, 0, 0 };
+        return (Token){ find_single_char_symbol_category(c), lexeme, 0, 0 };
     }
 
     // Integer literal
@@ -79,10 +131,10 @@ Token next_token(const char **input) {
         (*input)++;
         char buffer[256]; int i = 0;
         while (**input && **input != '"') {
-            if (**input == '\\') buffer[i++] = *(*input)++; // escape char
+            if (**input == '\\') buffer[i++] = *(*input)++;
             buffer[i++] = *(*input)++;
         }
-        if (**input == '"') (*input)++; // skip closing quote
+        if (**input == '"') (*input)++;
         buffer[i] = '\0';
         return (Token){ TOKEN_STRING_LITERAL, strdup(buffer), 0, 0 };
     }
