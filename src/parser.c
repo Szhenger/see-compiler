@@ -12,18 +12,18 @@ Parser *init_parser(Token *t, int *count) {
     return p;
 }
 
-// === Public Helper: Get the current token from parser ===
-Token current_token(Parser *p) {
+// === Private Helper: Get the current token from parser ===
+static Token current_token(Parser *p) {
     return p->tokens[p->current];
 }
 
-// === Public Helper: Advance parser to next token ===
-void advance(Parser *p) {
+// === Private Helper: Advance parser to next token ===
+static void advance(Parser *p) {
     if (p->current < p->length) p->current++;
 }
 
-// === Public Helper: Match current token against expected type and lexeme ===
-int match(Parser *p, TokenCategory category, const char *lexeme) {
+// === Private Helper: Match current token against expected type and lexeme ===
+static int match(Parser *p, TokenCategory category, const char *lexeme) {
     if (p->current >= p->length) return 0;
     Token t = current_token(p);
     if (t.category == category && (!lexeme || strcmp(t.lexeme, lexeme) == 0)) {
@@ -33,12 +33,12 @@ int match(Parser *p, TokenCategory category, const char *lexeme) {
     return 0;
 }
 
-// === Grammar: return_stmt ::= 'return' INTEGER_LITERAL ';' ===
-ASTNode *parse_return(Parser *p) {
+// === Private Grammar: return_stmt ::= 'return' INTEGER_LITERAL ';' ===
+static ASTNode *parse_return(Parser *p) {
     if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
     Token val = current_token(p);
     advance(p);
-    if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
+    if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
 
     ASTNode *value = create_ast_node(AST_LITERAL, val.lexeme);
     ASTNode *ret_node = create_ast_node(AST_RETURN_STMT, NULL);
@@ -46,17 +46,17 @@ ASTNode *parse_return(Parser *p) {
     return ret_node;
 }
 
-// === Grammar: call_stmt ::= IDENTIFIER '(' STRING_LITERAL ')' ';' ===
-ASTNode *parse_call(Parser *p) {
+// === Private Grammar: call_stmt ::= IDENTIFIER '(' STRING_LITERAL ')' ';' ===
+static ASTNode *parse_call(Parser *p) {
     Token func = current_token(p);
-    if (func.type != TOKEN_IDENTIFIER) return NULL;
+    if (func.category != TOKEN_IDENTIFIER) return NULL;
     advance(p);
 
-    if (!match(p, TOKEN_SYMBOL, "(")) return NULL;
+    if (!match(p, TOKEN_LPAREN, "(")) return NULL;
     Token arg = current_token(p);
     advance(p);
-    if (!match(p, TOKEN_SYMBOL, ")")) return NULL;
-    if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
+    if (!match(p, TOKEN_RPAREN, ")")) return NULL;
+    if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
 
     ASTNode *arg_node = create_ast_node(AST_STRING_LITERAL, arg.lexeme);
     ASTNode *call_node = create_ast_node(AST_CALL_EXPR, func.lexeme);
@@ -64,28 +64,28 @@ ASTNode *parse_call(Parser *p) {
     return call_node;
 }
 
-// === Grammar: decl_stmt ::= 'int' IDENTIFIER ';' ===
-ASTNode *parse_declaration(Parser *p) {
+// === Private Grammar: decl_stmt ::= 'int' IDENTIFIER ';' ===
+static ASTNode *parse_declaration(Parser *p) {
     if (!match(p, TOKEN_KEYWORD, "int")) return NULL;
     Token ident = current_token(p);
     if (ident.category != TOKEN_IDENTIFIER) return NULL;
     advance(p);
-    if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
+    if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
 
     return create_ast_node(AST_DECLARATION, ident.lexeme);
 }
 
-// === Grammar: assign_stmt ::= IDENTIFIER '=' INTEGER_LITERAL ';' ===
-ASTNode *parse_assignment(Parser *p) {
+// === Private Grammar: assign_stmt ::= IDENTIFIER '=' INTEGER_LITERAL ';' ===
+static ASTNode *parse_assignment(Parser *p) {
     Token ident = current_token(p);
     if (ident.category != TOKEN_IDENTIFIER) return NULL;
     advance(p);
-    if (!match(p, TOKEN_SYMBOL, "=")) return NULL;
+    if (!match(p, TOKEN_ASSIGN, "=")) return NULL;
 
     Token val = current_token(p);
     if (val.category != TOKEN_INTEGER_LITERAL) return NULL;
     advance(p);
-    if (!match(p, TOKEN_SYMBOL, ";")) return NULL;
+    if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
 
     ASTNode *lhs = create_ast_node(AST_IDENTIFIER, ident.lexeme);
     ASTNode *rhs = create_ast_node(AST_INTEGER_LITERAL, val.lexeme);
@@ -95,8 +95,8 @@ ASTNode *parse_assignment(Parser *p) {
     return assign;
 }
 
-// === Grammar: statement ::= decl_stmt | assign_stmt | call_stmt | return_stmt ===
-ASTNode *parse_statement(Parser *p) {
+// === Private Grammar: statement ::= decl_stmt | assign_stmt | call_stmt | return_stmt ===
+static ASTNode *parse_statement(Parser *p) {
     int saved = p->current;
     ASTNode *stmt = NULL;
 
@@ -111,8 +111,8 @@ ASTNode *parse_statement(Parser *p) {
     return NULL;
 }
 
-// === Grammar: statement_list ::= statement statement_list | ε ===
-ASTNode *parse_statement_list(Parser *p) {
+// === Private Grammar: statement_list ::= statement statement_list | ε ===
+static ASTNode *parse_statement_list(Parser *p) {
     ASTNode *head = parse_statement(p);
     if (!head) return NULL;
 
@@ -125,27 +125,27 @@ ASTNode *parse_statement_list(Parser *p) {
     return list;
 }
 
-// === Grammar: function ::= 'int' IDENTIFIER '(' 'void' ')' '{' statement_list '}' ===
-ASTNode *parse_function(Parser *p) {
+// === Private Grammar: function ::= 'int' IDENTIFIER '(' 'void' ')' '{' statement_list '}' ===
+static ASTNode *parse_function(Parser *p) {
     // Skip to opening brace (used when parsing full C function signature is unnecessary)
-    while (p->current < p->length && !match(p, TOKEN_SYMBOL, "{")) {
+    while (p->current < p->length && !match(p, TOKEN_LBRACE, "{")) {
         advance(p);
     }
 
     ASTNode *body = parse_statement_list(p);
-    if (!match(p, TOKEN_SYMBOL, "}")) return NULL;
+    if (!match(p, TOKEN_RBRACE, "}")) return NULL;
 
     ASTNode *func = create_ast_node(AST_FUNCTION_DEF, "main");
     func->left = body;
     return func;
 }
 
-// === Entry Point: Parse complete program ===
+// === Public Function: Entry point ===
 ASTNode *parse(Parser *p) {
     return parse_function(p);
 }
 
-// === Free parser memory ===
+// === Public Function: Free parser memory ===
 void free_parser(Parser *p) {
     if (!p) return;
     free(p);
