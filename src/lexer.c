@@ -45,6 +45,8 @@ static TokenCategory find_single_char_symbol_category(const char symbol)
         case ')':           return TOKEN_RPAREN;
         case '{':           return TOKEN_LBRACE;
         case '}':           return TOKEN_RBRACE;
+        case '[':           return TOKEN_LBRACKET;
+        case ']':           return TOKEN_RBRACKET;
         case ',':           return TOKEN_COMMA;
         case ';':           return TOKEN_SEMICOLON;
         
@@ -106,8 +108,8 @@ static Token next_token(const char **input) {
     // Check for multi-char symbols
     const char *symbol = match_multi_char_symbol(*input);
     if (symbol) {
-        (*input) += strlen(sym);
-        return (Token){ find_multi_char_symbol_category(c), strdup(sym), 0, 0 };
+        (*input) += strlen(symbol);
+        return (Token){ find_multi_char_symbol_category(symbol), strdup(symbol), 0, 0 };
     }
 
     // Check for single-char symbols
@@ -137,6 +139,16 @@ static Token next_token(const char **input) {
         if (**input == '"') (*input)++;
         buffer[i] = '\0';
         return (Token){ TOKEN_STRING_LITERAL, strdup(buffer), 0, 0 };
+    }
+
+    // Char literal
+    if (c == '\'') {
+        (*input)++;
+        char ch = **input;
+        (*input)++;
+        if (**input == '\'') (*input)++;
+        char buffer[2] = { ch, '\0' };
+        return (Token){ TOKEN_CHAR_LITERAL, strdup(buffer), 0, 0 };
     }
 
     // Identifier or keyword
@@ -169,7 +181,7 @@ Token *tokenize(const char *source, int *count) {
             tokens = realloc(tokens, sizeof(Token) * capacity);
         }
         tokens[size++] = t;
-        if (t.type == TOKEN_EOF) break;
+        if (t.category == TOKEN_EOF) break;
     }
 
     *count = size;
