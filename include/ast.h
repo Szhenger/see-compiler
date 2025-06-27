@@ -3,18 +3,25 @@
 
 // === AST Node Types ===
 typedef enum {
-    AST_FUNCTION_DEF,     // Function definition (e.g., int main() { ... })
-    AST_CALL_EXPR,        // Function call (e.g., printf("hi"))
-    AST_STRING_LITERAL,   // String literal
-    AST_INTEGER_LITERAL,  // Integer literal
-    AST_IDENTIFIER,       // Variable or function name
-    AST_DECLARATION,      // Variable declaration (e.g., int x;)
-    AST_ASSIGNMENT,       // Variable assignment (e.g., x = 42;)
-    AST_RETURN_STMT,      // Return statement
-    AST_BINARY_OP,        // Binary operation (optional, for later)
-    AST_STATEMENT_LIST,   // A list of statements (linked via `left` and `right`)
-    AST_LITERAL           // General literal (e.g., "42" or variable name)
+    AST_FUNCTION_DEF,
+    AST_CALL_EXPR,
+    AST_STRING_LITERAL,
+    AST_INTEGER_LITERAL,
+    AST_CHAR_LITERAL,
+    AST_IDENTIFIER,
+    AST_DECLARATION,
+    AST_ASSIGNMENT,
+    AST_RETURN_STMT,
+    AST_IF_STMT,         
+    AST_FOR_STMT,         
+    AST_WHILE_STMT,             
+    AST_ARRAY_ACCESS,        
+    AST_BINARY_OP,             
+    AST_BLOCK,                
+    AST_STATEMENT_LIST,
+    AST_LITERAL
 } ASTNodeType;
+
 
 // === AST Node Structure ===
 typedef struct ASTNode {
