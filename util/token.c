@@ -13,8 +13,11 @@ const char *token_category_to_string(TokenCategory category) {
         case TOKEN_RPAREN:           return "TOKEN_RPAREN";
         case TOKEN_LBRACE:           return "TOKEN_LBRACE";
         case TOKEN_RBRACE:           return "TOKEN_RBRACE";
+        case TOKEN_LBRACKET:         return "TOKEN_LBRACKET";
+        case TOKEN_RBRACKET:         return "TOKEN_RBRACKET";
         case TOKEN_COMMA:            return "TOKEN_COMMA";
         case TOKEN_SEMICOLON:        return "TOKEN_SEMICOLON";
+        
         case TOKEN_ASSIGN:           return "TOKEN_ASSIGN";
         case TOKEN_PLUS:             return "TOKEN_PLUS";
         case TOKEN_MINUS:            return "TOKEN_MINUS";
