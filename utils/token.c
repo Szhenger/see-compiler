@@ -1,6 +1,6 @@
 #include "token.h"
 
-// Maps token category to string representation for debugging
+// Public Function: Maps token category to string representation for debugging
 const char *token_category_to_string(TokenCategory category) {
     switch (type) {
         case TOKEN_KEYWORD:          return "TOKEN_KEYWORD";
@@ -19,12 +19,12 @@ const char *token_category_to_string(TokenCategory category) {
         case TOKEN_MINUS:            return "TOKEN_MINUS";
         case TOKEN_STAR:             return "TOKEN_STAR";
         case TOKEN_SLASH:            return "TOKEN_SLASH";
-        case TOKEN_LT:               return "TOKEN_LT";
-        case TOKEN_GT:               return "TOKEN_GT";
-        case TOKEN_EQ:               return "TOKEN_EQ";
-        case TOKEN_NEQ:              return "TOKEN_NEQ";
-        case TOKEN_LEQ:              return "TOKEN_LEQ";
-        case TOKEN_GEQ:              return "TOKEN_GEQ";
+        case TOKEN_LESS:             return "TOKEN_LESS_THAN";
+        case TOKEN_GREATER:          return "TOKEN_GREATER_THAN";
+        case TOKEN_EQUAL:            return "TOKEN_EQUAL";
+        case TOKEN_NOT_EQUAL:        return "TOKEN_NOT_EQUAL";
+        case TOKEN_LESS_EQUAL:       return "TOKEN_LESS_EQUAL";
+        case TOKEN_GREATER_EQUAL:    return "TOKEN_GREATER_EQUAL";
         case TOKEN_AND:              return "TOKEN_AND";
         case TOKEN_OR:               return "TOKEN_OR";
         case TOKEN_NOT:              return "TOKEN_NOT";
