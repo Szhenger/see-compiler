@@ -3,14 +3,6 @@
 
 #include "ast.h"
 
-// Intermediate Representation (IR) Module
-// ---------------------------------------
-// This module defines a simple linear Intermediate Representation (IR) for a 
-// restricted C-like language. The IR models operations such as function calls, 
-// stack manipulation, and control flow.
-//
-// It is generated from the AST and consumed by the code generator to emit x86.
-
 // Enumerates IR instruction types
 typedef enum {
     IR_LABEL,
