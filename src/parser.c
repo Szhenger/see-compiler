@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "parser.h"
-#include "token.h"
 
 /// === Public Function: Initialize a parser with token stream and count ===
 Parser *init_parser(Token *t, int *count) {
