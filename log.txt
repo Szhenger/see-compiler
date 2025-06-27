@@ -1,7 +1,7 @@
 # Project Name: `SeeC`
 # Version: 1.0.0
 # Log Start Date: 2025-05-05
-# Log File: doc_log.txt
+# Log File: log.txt
 
 [2025-05-05] - Day 1: `SeeC` Initialization
 - Initialized source code files for `SeeC` project
@@ -93,3 +93,9 @@
 - Added the extended logic for ir generation in `ir.c` to match the new interface
 - Updated the interface for x86 code generation in `ir.c` to support new C subset
 - Planned the preprocessor and linker components with linking to clang preprocessor and gcc linker
+
+[2024-06-27] - Day 17: `SeeCompiler` Logic and Verfication Part 2
+- Read the logic of all source files in `src/`
+- Read the interface of all header files in `include/`
+- Read the tests of the test files in `test/`
+- Read the structure of the token streams and ast structs in `util/`
