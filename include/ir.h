@@ -11,7 +11,14 @@ typedef enum {
     IR_RET,
     IR_DECL,
     IR_STORE,
-    IR_LOAD
+    IR_LOAD,
+    IR_JUMP,
+    IR_JUMP_IF_ZERO,
+    IR_CMP,
+    IR_ADD,
+    IR_SUB,
+    IR_MUL,
+    IR_DIV
 } IRType;
 
 // Represents a single IR instruction
