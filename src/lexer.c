@@ -75,18 +75,17 @@ static TokenCategory find_single_char_symbol_category(const char symbol)
 // === Private Helper: Return token category for multi-char symbols ===
 static TokenCategory find_multi_char_symbol_category(const char *symbol) 
 {
-    switch (symbol) {    
-        case '==':          return TOKEN_EQUAL;
-        case '<=':          return TOKEN_LESS_EQUAL;
-        case '>=':          return TOKEN_GREATER_EQUAL;
-        case '!=':          return TOKEN_NOT_EQUAL;
-        case '&&':          return TOKEN_AND;
-        case '||':          return TOKEN_OR;
-        case '++':          return TOKEN_INCREMENT;
-        case '--':          return TOKEN_DECREMENT;
-        default:            return TOKEN_UNKNOWN;
-    }
+    if (strcmp(symbol, "==") == 0) return TOKEN_EQUAL;
+    if (strcmp(symbol, "!=") == 0) return TOKEN_NOT_EQUAL;
+    if (strcmp(symbol, "<=") == 0) return TOKEN_LESS_EQUAL;
+    if (strcmp(symbol, ">=") == 0) return TOKEN_GREATER_EQUAL;
+    if (strcmp(symbol, "&&") == 0) return TOKEN_AND;
+    if (strcmp(symbol, "||") == 0) return TOKEN_OR;
+    if (strcmp(symbol, "++") == 0) return TOKEN_INCREMENT;
+    if (strcmp(symbol, "--") == 0) return TOKEN_DECREMENT;
+    return TOKEN_UNKNOWN;
 }
+
 
 // === Private Helper: Read next token ===
 static Token next_token(const char **input) {
