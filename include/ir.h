@@ -3,7 +3,6 @@
 
 #include "ast.h"
 
-// Enumerates IR instruction types
 typedef enum {
     IR_LABEL,
     IR_CALL,
@@ -21,26 +20,20 @@ typedef enum {
     IR_DIV
 } IRType;
 
-// Represents a single IR instruction
 typedef struct IRInstr {
-    IRType type;             // Instruction kind (label, call, etc.)
-    char *arg;               // Argument (e.g., label name, literal string/int)
-    struct IRInstr *next;    // Next instruction in the linear IR sequence
+    IRType type;             
+    char *arg;               
+    struct IRInstr *next;    
 } IRInstr;
 
-// Creates a new IR instruction
 IRInstr *create_ir_instr(IRType type, const char *arg);
 
-// Translates an AST into a linear IR representation
 IRInstr *generate_ir(ASTNode *ast);
 
-// Prints the IR sequence to stdout (for debugging)
 void print_ir(IRInstr *head);
 
-// Frees all dynamically allocated IR instructions
 void free_ir(IRInstr *head);
 
-// Converts IR type enum to string
 const char *ir_type_to_string(IRType type); 
 
 #endif
