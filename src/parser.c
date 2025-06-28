@@ -52,6 +52,55 @@ static int get_precedence(TokenCategory category) {
     }
 }
 
+static ASTNode *parse_if(Parser *p) {
+    if (!match(p, TOKEN_KEYWORD, "if")) return NULL;
+    if (!match(p, TOKEN_LPAREN, "(")) return NULL;
+
+    ASTNode *condition = parse_expression(p);
+    if (!condition || !match(p, TOKEN_RPAREN, ")")) return NULL;
+
+    ASTNode *then_branch = parse_statement(p);
+    if (!then_branch) return NULL;
+
+    ASTNode *else_branch = NULL;
+    if (match(p, TOKEN_KEYWORD, "else")) {
+        else_branch = parse_statement(p);
+        if (!else_branch) return NULL;
+    }
+
+    ASTNode *if_node = create_ast_node(AST_IF_STMT, NULL);
+    if_node->left = condition;
+    if_node->right = create_ast_node(AST_STATEMENT_LIST, NULL);
+    if_node->right->left = then_branch;
+    if_node->right->right = else_branch;
+    return if_node;
+}
+
+static ASTNode *parse_while(Parser *p) {
+    if (!match(p, TOKEN_KEYWORD, "while")) return NULL;
+    if (!match(p, TOKEN_LPAREN, "(")) return NULL;
+
+    ASTNode *condition = parse_expression(p);
+    if (!condition || !match(p, TOKEN_RPAREN, ")")) return NULL;
+
+    ASTNode *body = parse_statement(p);
+    if (!body) return NULL;
+
+    ASTNode *while_node = create_ast_node(AST_WHILE_LOOP, NULL);
+    while_node->left = condition;
+    while_node->right = body;
+    return while_node;
+}
+
+static ASTNode *parse_expression_statement(Parser *p) {
+    ASTNode *expr = parse_expression(p);
+    if (!expr || !match(p, TOKEN_SEMICOLON, ";")) return NULL;
+
+    ASTNode *stmt = create_ast_node(AST_EXPRESSION_STMT, NULL);
+    stmt->left = expr;
+    return stmt;
+}
+
 // === Private Grammar: return_stmt ::= 'return' INTEGER_LITERAL ';' ===
 static ASTNode *parse_return(Parser *p) {
     if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
@@ -127,7 +176,7 @@ static ASTNode *parse_primary(Parser *p) {
     if (t.category == TOKEN_IDENTIFIER) {
         advance(p);
         if (match(p, TOKEN_LPAREN, "(")) {
-            p->current--; // step back so parse_call can consume IDENTIFIER and '('
+            p->current--;
             return parse_call(p);
         }
         return create_ast_node(AST_IDENTIFIER, t.lexeme);
@@ -198,23 +247,21 @@ static ASTNode *parse_statement(Parser *p) {
     ASTNode *stmt = NULL;
 
     if ((stmt = parse_declaration(p)) != NULL) return stmt;
-
     p->current = saved;
     if ((stmt = parse_assignment(p)) != NULL) return stmt;
-
     p->current = saved;
-    // Try parsing call expression *without* semicolon
-    ASTNode *call_expr = parse_call(p);
-    if (call_expr) {
-        if (!match(p, TOKEN_SEMICOLON, ";")) {
-            // Missing semicolon after call expression → syntax error
-            return NULL;
-        }
-        return call_expr;
+    if ((stmt = parse_if(p)) != NULL) return stmt;
+    p->current = saved;
+    if ((stmt = parse_while(p)) != NULL) return stmt;
+    p->current = saved;
+    if ((stmt = parse_call(p)) != NULL) {
+        if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
+        return stmt;
     }
-
     p->current = saved;
     if ((stmt = parse_return(p)) != NULL) return stmt;
+    p->current = saved;
+    if ((stmt = parse_expression_statement(p)) != NULL) return stmt;
 
     return NULL;
 }
@@ -258,6 +305,3 @@ void free_parser(Parser *p) {
     if (!p) return;
     free(p);
 }
-
-
-
