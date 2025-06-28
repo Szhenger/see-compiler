@@ -3,12 +3,8 @@
 
 #include "token.h"
 
-// Tokenize the entire source into a dynamic array of tokens.
-// Sets `count` to the number of tokens produced.
-// The returned array must be freed by the caller using `free_tokens`.
 Token *tokenize(const char *source, int *count);
 
-// Frees a token array allocated by `tokenize`.
 void free_tokens(Token *tokens, int count);
 
-#endif // LEXER_H
+#endif
