@@ -68,12 +68,17 @@ void emit_ir_node(ASTNode *node, IRInstr **tail)
             break;
 
         case AST_ASSIGNMENT:
-            if (node->right && node->right->type == AST_INTEGER_LITERAL) {
-                *tail = (*tail)->next = create_ir_instr(IR_LOAD, node->right->value);
-            }
-            if (node->left && node->left->type == AST_IDENTIFIER) {
-                *tail = (*tail)->next = create_ir_instr(IR_STORE, node->left->value);
-            }
+            emit_ir_node(node->right, tail);
+            *tail = (*tail)->next = create_ir_instr(IR_STORE, node->left->value);
+            break;
+
+        case AST_INTEGER_LITERAL:
+        case AST_STRING_LITERAL:
+            *tail = (*tail)->next = create_ir_instr(IR_PUSH, node->value);
+            break;
+        
+        case AST_IDENTIFIER:
+            *tail = (*tail)->next = create_ir_instr(IR_LOAD, node->value);
             break;
 
         case AST_CALL_EXPR:
@@ -89,6 +94,56 @@ void emit_ir_node(ASTNode *node, IRInstr **tail)
             }
             *tail = (*tail)->next = create_ir_instr(IR_RET, NULL);
             break;
+
+        case AST_BINARY_OP:
+            emit_ir_node(node->left, tail);
+            emit_ir_node(node->right, tail);
+            if (strcmp(node->value, "+") == 0)
+                *tail = (*tail)->next = create_ir_instr(IR_ADD, NULL);
+            else if (strcmp(node->value, "-") == 0)
+                *tail = (*tail)->next = create_ir_instr(IR_SUB, NULL);
+            else if (strcmp(node->value, "*") == 0)
+                *tail = (*tail)->next = create_ir_instr(IR_MULT, NULL);
+            else if (strcmp(node->value, "/") == 0)
+                *tail = (*tail)->next = create_ir_instr(IR_DIV, NULL);
+            else if (strcmp(node->value, "==") == 0 || strcmp(node->value, "!=") == 0 ||
+                     strcmp(node->value, "<") == 0 || strcmp(node->value, ">") == 0 ||
+                     strcmp(node->value, "<=") == 0 || strcmp(node->value, ">=") == 0)
+                *tail = (*tail)->next = create_ir_instr(IR_CMP, node->value);
+            break;
+
+        case AST_IF_STMT: {
+            static int label_id = 0;
+            char else_label[32], end_label[32];
+            sprintf(else_label, "else_%d", label_id);
+            sprintf(end_label, "endif_%d", label_id);
+            label_id++;
+        
+            emit_ir_node(node->left, tail);
+            *tail = (*tail)->next = create_ir_instr(IR_JUMP_IF_ZERO, else_label);
+            emit_ir_node(node->right->left, tail);
+            *tail = (*tail)->next = create_ir_instr(IR_JUMP, end_label);
+            *tail = (*tail)->next = create_ir_instr(IR_LABEL, else_label);
+            if (node->right->right) emit_ir_node(node->right->right, tail);
+            *tail = (*tail)->next = create_ir_instr(IR_LABEL, end_label);
+            break;
+        }
+
+        case AST_WHILE_LOOP: {
+            static int label_id = 0;
+            char cond_label[32], end_label[32];
+            sprintf(cond_label, "while_cond_%d", label_id);
+            sprintf(end_label, "while_end_%d", label_id);
+            label_id++;
+        
+            *tail = (*tail)->next = create_ir_instr(IR_LABEL, cond_label);
+            emit_ir_node(node->left, tail);
+            *tail = (*tail)->next = create_ir_instr(IR_JUMP_IF_ZERO, end_label);
+            emit_ir_node(node->right, tail);
+            *tail = (*tail)->next = create_ir_instr(IR_JUMP, cond_label);
+            *tail = (*tail)->next = create_ir_instr(IR_LABEL, end_label);
+            break;
+        }
 
         default:
             break;
