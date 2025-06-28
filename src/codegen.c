@@ -159,7 +159,6 @@ void generate_code(FILE *out, IRInstr *ir) {
                 generate_epilogue(out);
                 break;
 
-
             case IR_ADD:
                 fprintf(out, "    pop rbx\n");
                 fprintf(out, "    pop rax\n");
