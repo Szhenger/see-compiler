@@ -22,19 +22,19 @@ class TestCompilerErrorHandling(unittest.TestCase):
             os.unlink(tmp_file_path)
 
     def test_syntax_error_missing_paren(self):
-        source = "int main( { return 0; }"  # missing closing parenthesis
+        source = "int main( { return 0; }"
         stdout, stderr, returncode = self.run_compiler(source)
         self.assertNotEqual(returncode, 0)
         self.assertIn("Parsing failed", stderr)
 
     def test_unterminated_string_literal(self):
-        source = 'int main() { printf("Hello;'  # missing ending quote
+        source = 'int main() { printf("Hello;'
         stdout, stderr, returncode = self.run_compiler(source)
         self.assertNotEqual(returncode, 0)
         self.assertIn("Lexing failed", stderr)
 
     def test_unknown_token(self):
-        source = 'int main() { int $a = 5; return 0; }'  # invalid token: '$'
+        source = 'int main() { int $a = 5; return 0; }'
         stdout, stderr, returncode = self.run_compiler(source)
         self.assertNotEqual(returncode, 0)
         self.assertIn("Lexing failed", stderr)
@@ -46,12 +46,10 @@ class TestCompilerErrorHandling(unittest.TestCase):
         self.assertIn("Lexing failed", stderr)
 
     def test_missing_return_type(self):
-        source = 'main() { return 0; }'  # missing return type 'int'
+        source = 'main() { return 0; }'
         stdout, stderr, returncode = self.run_compiler(source)
         self.assertNotEqual(returncode, 0)
         self.assertIn("Parsing failed", stderr)
-
-    # Add more error cases here as needed
 
 if __name__ == "__main__":
     unittest.main()
