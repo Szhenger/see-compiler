@@ -4,7 +4,6 @@
 #include "ast.h"
 #include "ir.h"
 
-// === Create and initialize a new IR instruction ===
 IRInstr *create_ir_instr(IRType type, const char *arg) 
 {
     IRInstr *instr = malloc(sizeof(IRInstr));
@@ -16,7 +15,6 @@ IRInstr *create_ir_instr(IRType type, const char *arg)
     return instr;
 }
 
-// === Free a linked list of IR instructions ===
 void free_ir(IRInstr *head) 
 {
     while (head) {
@@ -27,7 +25,6 @@ void free_ir(IRInstr *head)
     }
 }
 
-// === Convert IR type enum to string (for debugging) ===
 const char *ir_type_to_string(IRType type) 
 {
     switch (type) {
@@ -42,7 +39,6 @@ const char *ir_type_to_string(IRType type)
     }
 }
 
-// === Print IR list ===
 void print_ir(IRInstr *head) 
 {
     for (IRInstr *curr = head; curr != NULL; curr = curr->next) {
@@ -52,7 +48,6 @@ void print_ir(IRInstr *head)
     }
 }
 
-// === Recursive IR Emitter ===
 void emit_ir_node(ASTNode *node, IRInstr **tail) 
 {
     if (!node) return;
@@ -96,12 +91,10 @@ void emit_ir_node(ASTNode *node, IRInstr **tail)
             break;
 
         default:
-            // No-op for unhandled or leaf nodes
             break;
     }
 }
 
-// === Generate IR from AST ===
 IRInstr *generate_ir(ASTNode *ast) 
 {
     IRInstr *head = create_ir_instr(IR_LABEL, "entry");
