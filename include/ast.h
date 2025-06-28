@@ -1,7 +1,6 @@
 #ifndef AST_H
 #define AST_H
 
-// === AST Node Types ===
 typedef enum {
     AST_FUNCTION_DEF,
     AST_STATEMENT_LIST,
@@ -20,19 +19,17 @@ typedef enum {
     AST_ARRAY_DECLARATION
 } ASTNodeType;
 
-// === AST Node Structure ===
 typedef struct ASTNode {
     ASTNodeType type;
-    char *value;              // Optional value (e.g., identifier name, literal)
-    struct ASTNode *left;     // Left child or first part
-    struct ASTNode *right;    // Right child or next part
+    char *value;             
+    struct ASTNode *left;    
+    struct ASTNode *right; 
 } ASTNode;
 
-// === Public API ===
 ASTNode *create_ast_node(ASTNodeType type, const char *value);
 void free_ast(ASTNode *node);
 void print_ast(ASTNode *root);
 
-#endif // AST_H
+#endif
 
 
