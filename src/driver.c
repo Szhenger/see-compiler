@@ -10,7 +10,7 @@
 // Helper Function Prototype
 char *read_file(const char *filename);
 
-// Main Procedure: Driving Compilation of Source File 
+// Main Function: Driving Compilation of Source File 
 int main(int argc, char **argv) 
 {
     if (argc != 2) {
