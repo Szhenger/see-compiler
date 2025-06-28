@@ -2,7 +2,7 @@
 #include <string.h>
 #include "parser.h"
 
-/// === Public Function: Initialize a parser with token stream and count ===
+
 Parser *init_parser(Token *t, int *count) {
     Parser *p = malloc(sizeof(Parser));
     p->tokens = t;
@@ -11,17 +11,14 @@ Parser *init_parser(Token *t, int *count) {
     return p;
 }
 
-// === Private Helper: Get the current token from parser ===
 static Token current_token(Parser *p) {
     return p->tokens[p->current];
 }
 
-// === Private Helper: Advance parser to next token ===
 static void advance(Parser *p) {
     if (p->current < p->length) p->current++;
 }
 
-// === Private Helper: Match current token against expected type and lexeme ===
 static int match(Parser *p, TokenCategory category, const char *lexeme) {
     if (p->current >= p->length) return 0;
     Token t = current_token(p);
@@ -32,23 +29,22 @@ static int match(Parser *p, TokenCategory category, const char *lexeme) {
     return 0;
 }
 
-// Private Helper: Return precedence of operator token; higher means tighter binding
 static int get_precedence(TokenCategory category) {
     switch (category) {
-        case TOKEN_OR:             return 1;  // ||
-        case TOKEN_AND:            return 2;  // &&
+        case TOKEN_OR:             return 1; 
+        case TOKEN_AND:            return 2;
         case TOKEN_EQUAL:
-        case TOKEN_NOT_EQUAL:      return 3;  // ==, !=
+        case TOKEN_NOT_EQUAL:      return 3;
         case TOKEN_LESS:
         case TOKEN_GREATER:
         case TOKEN_LESS_EQUAL:
-        case TOKEN_GREATER_EQUAL:  return 4;  // <, >, <=, >=
+        case TOKEN_GREATER_EQUAL:  return 4;
         case TOKEN_PLUS:
-        case TOKEN_MINUS:          return 5;  // +, -
+        case TOKEN_MINUS:          return 5;
         case TOKEN_STAR:
         case TOKEN_SLASH:
-        case TOKEN_PERCENT:        return 6;  // *, /, %
-        default:                   return 0;  // Not an operator
+        case TOKEN_PERCENT:        return 6;
+        default:                   return 0;
     }
 }
 
@@ -101,7 +97,6 @@ static ASTNode *parse_expression_statement(Parser *p) {
     return stmt;
 }
 
-// === Private Grammar: return_stmt ::= 'return' INTEGER_LITERAL ';' ===
 static ASTNode *parse_return(Parser *p) {
     if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
     Token val = current_token(p);
@@ -114,7 +109,6 @@ static ASTNode *parse_return(Parser *p) {
     return ret_node;
 }
 
-// === Private Grammar: call_stmt ::= IDENTIFIER '(' STRING_LITERAL ')' ';' ===
 static ASTNode *parse_call(Parser *p) {
     Token func = current_token(p);
     if (func.category != TOKEN_IDENTIFIER) return NULL;
@@ -148,7 +142,6 @@ static ASTNode *parse_call(Parser *p) {
     return call_node;
 }
 
-// === Private Grammar: decl_stmt ::= 'int' IDENTIFIER ';' ===
 static ASTNode *parse_declaration(Parser *p) {
     if (!match(p, TOKEN_KEYWORD, "int")) return NULL;
     Token ident = current_token(p);
@@ -159,7 +152,6 @@ static ASTNode *parse_declaration(Parser *p) {
     return create_ast_node(AST_DECLARATION, ident.lexeme);
 }
 
-// === Private Helper ===
 static ASTNode *parse_primary(Parser *p) {
     Token t = current_token(p);
 
@@ -191,7 +183,6 @@ static ASTNode *parse_primary(Parser *p) {
     return NULL;
 }
 
-// === Private Helper: PEMDAS ===
 static ASTNode *parse_expression_with_precedence(Parser *p, int min_precedence) {
     ASTNode *left = parse_primary(p);
     if (!left) return NULL;
@@ -201,9 +192,8 @@ static ASTNode *parse_expression_with_precedence(Parser *p, int min_precedence) 
         int prec = get_precedence(t.category);
         if (prec == 0 || prec < min_precedence) break;
 
-        advance(p);  // consume operator token
+        advance(p); 
 
-        // Parse right side with higher precedence to handle associativity
         ASTNode *right = parse_expression_with_precedence(p, prec + 1);
         if (!right) return NULL;
 
@@ -216,13 +206,10 @@ static ASTNode *parse_expression_with_precedence(Parser *p, int min_precedence) 
     return left;
 }
 
-// === Private Grammer: expres_stmt ::= .... ===
 static ASTNode *parse_expression(Parser *p) {
     return parse_expression_with_precedence(p, 1);
 }
 
-// === Private Grammar: assign_stmt ::= IDENTIFIER '=' INTEGER_LITERAL ';' ===
-// assign_stmt ::= IDENTIFIER '=' expression ';'
 static ASTNode *parse_assignment(Parser *p) {
     Token ident = current_token(p);
     if (ident.category != TOKEN_IDENTIFIER) return NULL;
@@ -240,8 +227,6 @@ static ASTNode *parse_assignment(Parser *p) {
     return assign;
 }
 
-
-// === Private Grammar: statement ::= decl_stmt | assign_stmt | call_stmt | return_stmt ===
 static ASTNode *parse_statement(Parser *p) {
     int saved = p->current;
     ASTNode *stmt = NULL;
@@ -266,7 +251,6 @@ static ASTNode *parse_statement(Parser *p) {
     return NULL;
 }
 
-// === Private Grammar: statement_list ::= statement statement_list | ε ===
 static ASTNode *parse_statement_list(Parser *p) {
     ASTNode *head = parse_statement(p);
     if (!head) return NULL;
@@ -280,9 +264,7 @@ static ASTNode *parse_statement_list(Parser *p) {
     return list;
 }
 
-// === Private Grammar: function ::= 'int' IDENTIFIER '(' 'void' ')' '{' statement_list '}' ===
 static ASTNode *parse_function(Parser *p) {
-    // Skip to opening brace (used when parsing full C function signature is unnecessary)
     while (p->current < p->length && !match(p, TOKEN_LBRACE, "{")) {
         advance(p);
     }
@@ -295,12 +277,10 @@ static ASTNode *parse_function(Parser *p) {
     return func;
 }
 
-// === Public Function: Entry point ===
 ASTNode *parse(Parser *p) {
     return parse_function(p);
 }
 
-// === Public Function: Free parser memory ===
 void free_parser(Parser *p) {
     if (!p) return;
     free(p);
