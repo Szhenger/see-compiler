@@ -117,22 +117,17 @@ void generate_code(FILE *out, IRInstr *ir) {
 
     for (IRInstr *curr = ir; curr != NULL; curr = curr->next) {
         switch (curr->type) {
-            case IR_LABEL:
-                if (strcmp(curr->arg, "main") != 0 && strcmp(curr->arg, "entry") != 0) {
-                    fprintf(out, "%s:\n", curr->arg);
-                }
-                break;
-
             case IR_PUSH:
                 if (curr->arg[0] == '"' || strchr(curr->arg, ' ')) {
                     const char *label = generate_string_label(curr->arg, out);
-                    fprintf(out, "    lea rdi, %s\n", label);
+                    fprintf(out, "    lea rax, %s\n", label);
+                    fprintf(out, "    push rax\n");
                     free((char *)label);
                 } else {
-                    fprintf(out, "    mov eax, %s\n", curr->arg);
+                    fprintf(out, "    mov rax, %s\n", curr->arg);
+                    fprintf(out, "    push rax\n");
                 }
-                break;
-
+            
             case IR_CALL:
                 fprintf(out, "    call %s\n", curr->arg);
                 break;
@@ -143,7 +138,7 @@ void generate_code(FILE *out, IRInstr *ir) {
             case IR_LOAD: {
                 int offset = find_variable_offset(curr->arg);
                 if (offset != 0) {
-                    fprintf(out, "    mov eax, DWORD PTR [rbp%+d]\n", offset);
+                    fprintf(out, "    mov rax, QWORD PTR [rbp%+d]\n", offset);
                 } else {
                     fprintf(out, "    mov eax, %s\n", curr->arg);
                 }
@@ -153,7 +148,7 @@ void generate_code(FILE *out, IRInstr *ir) {
             case IR_STORE: {
                 int offset = find_variable_offset(curr->arg);
                 if (offset != 0) {
-                    fprintf(out, "    mov DWORD PTR [rbp%+d], eax\n", offset);
+                    fprintf(out, "    mov QWORD PTR [rbp%+d], rax\n", offset);
                 } else {
                     fprintf(stderr, "Warning: unknown variable '%s' in store\n", curr->arg);
                 }
@@ -162,6 +157,58 @@ void generate_code(FILE *out, IRInstr *ir) {
 
             case IR_RET:
                 generate_epilogue(out);
+                break;
+
+
+            case IR_ADD:
+                fprintf(out, "    pop rbx\n");
+                fprintf(out, "    pop rax\n");
+                fprintf(out, "    add rax, rbx\n");
+                fprintf(out, "    push rax\n");
+                break;
+            
+            case IR_SUB:
+                fprintf(out, "    pop rbx\n");
+                fprintf(out, "    pop rax\n");
+                fprintf(out, "    sub rax, rbx\n");
+                fprintf(out, "    push rax\n");
+                break;
+            
+            case IR_MULT:
+                fprintf(out, "    pop rbx\n");
+                fprintf(out, "    pop rax\n");
+                fprintf(out, "    imul rax, rbx\n");
+                fprintf(out, "    push rax\n");
+                break;
+            
+            case IR_DIV:
+                fprintf(out, "    pop rbx\n");         
+                fprintf(out, "    pop rax\n");        
+                fprintf(out, "    cqo\n");             
+                fprintf(out, "    idiv rbx\n");        
+                fprintf(out, "    push rax\n");
+                break;
+            
+            case IR_LABEL:
+                if (curr->arg && strcmp(curr->arg, "main") != 0 && strcmp(curr->arg, "entry") != 0) {
+                    fprintf(out, "%s:\n", curr->arg);
+                }
+                break;
+            
+            case IR_JUMP:
+                fprintf(out, "    jmp %s\n", curr->arg);
+                break;
+            
+            case IR_JUMP_IF_ZERO:
+                fprintf(out, "    pop rax\n");
+                fprintf(out, "    cmp rax, 0\n");
+                fprintf(out, "    je %s\n", curr->arg);
+                break;
+            
+            case IR_CMP:
+                fprintf(out, "    pop rbx\n");
+                fprintf(out, "    pop rax\n");
+                fprintf(out, "    cmp rax, rbx\n");
                 break;
 
             default:
