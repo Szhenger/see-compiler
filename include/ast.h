@@ -4,24 +4,21 @@
 // === AST Node Types ===
 typedef enum {
     AST_FUNCTION_DEF,
-    AST_CALL_EXPR,
-    AST_STRING_LITERAL,
-    AST_INTEGER_LITERAL,
-    AST_CHAR_LITERAL,
-    AST_IDENTIFIER,
+    AST_STATEMENT_LIST,
     AST_DECLARATION,
     AST_ASSIGNMENT,
     AST_RETURN_STMT,
-    AST_IF_STMT,         
-    AST_FOR_STMT,         
-    AST_WHILE_STMT,             
-    AST_ARRAY_ACCESS,        
-    AST_BINARY_OP,             
-    AST_BLOCK,                
-    AST_STATEMENT_LIST,
-    AST_LITERAL
+    AST_CALL_EXPR,
+    AST_IDENTIFIER,
+    AST_INTEGER_LITERAL,
+    AST_STRING_LITERAL,
+    AST_BINARY_OP,
+    AST_IF_STMT,
+    AST_WHILE_LOOP,
+    AST_FOR_LOOP,
+    AST_ARRAY_ACCESS,
+    AST_ARRAY_DECLARATION
 } ASTNodeType;
-
 
 // === AST Node Structure ===
 typedef struct ASTNode {
