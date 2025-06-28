@@ -83,7 +83,6 @@ static int analyze_assignment(ASTNode *node) {
     return analyze_expression(node->right);
 }
 
-// === Private Helper: Analyze one statement ===
 static int analyze_statement(ASTNode *node)
 {
     switch (node->type) {
@@ -136,8 +135,6 @@ static int analyze_statement(ASTNode *node) {
     }
 }
 
-// === Private Helper: Analyze a function node ===
-// Assumes function body is a statement list
 static int analyze_function(ASTNode *node) {
     if (!node->left) {
         fprintf(stderr, "Semantic Error: Empty function body\n");
@@ -146,7 +143,6 @@ static int analyze_function(ASTNode *node) {
     return analyze_statement(node->left);
 }
 
-// === Public Function: Analyze an AST ===
 SemanticResult analyze(ASTNode *root) {
     if (!root || root->type != AST_FUNCTION_DEF || strcmp(root->value, "main") != 0) {
         fprintf(stderr, "Semantic Error: Program must have a 'main' function\n");
