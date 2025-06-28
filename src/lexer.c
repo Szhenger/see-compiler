@@ -4,19 +4,16 @@
 #include <string.h>
 #include "lexer.h"
 
-// === Internal Keyword Table ===
 static const char *keywords[] = {
     "int", "char", "bool", "string", "void", "return", 
     "if", "else", "while", "for", 
     "true", "false",
 };
 
-// === Internal Symbol Table ===
 static const char *multi_char_symbols[] = {
     "==", "!=", "<=", ">=", "&&", "||", "++", "--"
 };
 
-// === Private Helper: Check if word is a keyword ===
 static int is_keyword(const char *word) 
 {
     for (size_t i = 0; i < sizeof(keywords) / sizeof(keywords[0]); i++) {
@@ -25,7 +22,6 @@ static int is_keyword(const char *word)
     return 0;
 }
 
-// === Private Helper: Check for a multi-char symbol match ===
 static const char *match_multi_char_symbol(const char *input) 
 {
     for (size_t i = 0; i < sizeof(multi_char_symbols) / sizeof(multi_char_symbols[0]); i++) {
@@ -37,7 +33,6 @@ static const char *match_multi_char_symbol(const char *input)
     return NULL;
 }
 
-// === Private Helper: Return token category for single-char symbols ===
 static TokenCategory find_single_char_symbol_category(const char symbol) 
 {
     switch (symbol) {
@@ -72,7 +67,6 @@ static TokenCategory find_single_char_symbol_category(const char symbol)
     }
 }
 
-// === Private Helper: Return token category for multi-char symbols ===
 static TokenCategory find_multi_char_symbol_category(const char *symbol) 
 {
     if (strcmp(symbol, "==") == 0) return TOKEN_EQUAL;
@@ -86,13 +80,10 @@ static TokenCategory find_multi_char_symbol_category(const char *symbol)
     return TOKEN_UNKNOWN;
 }
 
-
-// === Private Helper: Read next token ===
 static Token next_token(const char **input) {
     while (**input && isspace(**input)) (*input)++;
     if (**input == '\0') return (Token){ TOKEN_EOF, strdup(""), 0, 0 };
 
-    // Handle comments
     if (**input == '/' && *(*input + 1) == '/') {
         while (**input && **input != '\n') (*input)++;
         return next_token(input);
@@ -104,14 +95,12 @@ static Token next_token(const char **input) {
         return next_token(input);
     }
 
-    // Check for multi-char symbols
     const char *symbol = match_multi_char_symbol(*input);
     if (symbol) {
         (*input) += strlen(symbol);
         return (Token){ find_multi_char_symbol_category(symbol), strdup(symbol), 0, 0 };
     }
 
-    // Check for single-char symbols
     char c = **input;
     if (strchr("(){}[];,=<>!+-*/%&|", c)) {
         (*input)++;
@@ -119,7 +108,6 @@ static Token next_token(const char **input) {
         return (Token){ find_single_char_symbol_category(c), lexeme, 0, 0 };
     }
 
-    // Integer literal
     if (isdigit(c)) {
         char buffer[32]; int i = 0;
         while (isdigit(**input)) buffer[i++] = *(*input)++;
@@ -127,7 +115,6 @@ static Token next_token(const char **input) {
         return (Token){ TOKEN_INTEGER_LITERAL, strdup(buffer), 0, 0 };
     }
 
-    // String literal
     if (c == '"') {
         (*input)++;
         char buffer[256]; int i = 0;
@@ -140,7 +127,6 @@ static Token next_token(const char **input) {
         return (Token){ TOKEN_STRING_LITERAL, strdup(buffer), 0, 0 };
     }
 
-    // Char literal
     if (c == '\'') {
         (*input)++;
         char ch = **input;
@@ -150,7 +136,6 @@ static Token next_token(const char **input) {
         return (Token){ TOKEN_CHAR_LITERAL, strdup(buffer), 0, 0 };
     }
 
-    // Identifier or keyword
     if (isalpha(c) || c == '_') {
         char buffer[64]; int i = 0;
         while (isalnum(**input) || **input == '_') buffer[i++] = *(*input)++;
@@ -161,12 +146,10 @@ static Token next_token(const char **input) {
         };
     }
 
-    // Unknown token
     (*input)++;
     return (Token){ TOKEN_UNKNOWN, strdup("?"), 0, 0 };
 }
 
-// === Public Function: Tokenize entire source ===
 Token *tokenize(const char *source, int *count) {
     const char *input = source;
     int capacity = 64;
@@ -187,7 +170,6 @@ Token *tokenize(const char *source, int *count) {
     return tokens;
 }
 
-// === Public Function: Free token array ===
 void free_tokens(Token *tokens, int count) {
     if (!tokens) return;
     for (int i = 0; i < count; i++) {
