@@ -1,6 +1,5 @@
 #include "token.h"
 
-// Public Function: Maps token category to string representation for debugging
 const char *token_category_to_string(TokenCategory category) {
     switch (type) {
         case TOKEN_KEYWORD:          return "TOKEN_KEYWORD";
