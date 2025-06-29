@@ -87,15 +87,18 @@
 - Updated the logic in `semantic.c` to analyze extended syntax
 - Added the updated details to `semantic.h`
 
-[2025-06-26] - Day 16: `SeeCompiler` Logic and Verfication Part 1
+[2025-06-26] - Day 16: `SeeCompiler` Logic and Verification Part 1
 - Read the logic for `driver.c` to obtain a complete understanding of the integration
 - Updated the interface for ir generation in `ir.h` to match larger C subset support
 - Added the extended logic for ir generation in `ir.c` to match the new interface
 - Updated the interface for x86 code generation in `ir.c` to support new C subset
 - Planned the preprocessor and linker components with linking to clang preprocessor and gcc linker
 
-[2024-06-27] - Day 17: `SeeCompiler` Logic and Verfication Part 2
+[2024-06-27] - Day 17: `SeeCompiler` Logic and Verification Part 2
 - Read the logic of all source files in `src/`
 - Read the interface of all header files in `include/`
 - Read the tests of the test files in `test/`
 - Read the structure of the token streams and ast structs in `util/`
+
+[2025-06-29] - Day 18: Logic and Validation
+- Created unit tests for all compiler components
