@@ -90,7 +90,7 @@ int main(int argc, char **argv)
     generate_code(output, ir);
     fclose(output);
 
-    // Procedure 7.5: Cleanup
+    // Procedure 7: Cleanup
     free_ir(ir);
     free_ast(ast);
     free_parser(parser);
