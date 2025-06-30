@@ -4,15 +4,20 @@
 #include "ast.h"
 #include "token.h"
 
+// Defines the structure of parser 
 typedef struct {
-    Token *tokens; 
-    int current; 
-    int length;
+    Token *tokens; // Token Stream Field
+    int current;   // Current Token Index Field
+    int length;    // Length of Stream Field
 } Parser;
 
-Parser *init_parser(Token *t, int *count);
+// Initializes a parser from a input token stream 
+Parser *init_parser(Token *ts, int *count);
+
+// Frees the input parser
 void free_parser(Parser *p);
 
+// Analyzes the syntax of token stream
 ASTNode *parse(Parser *p);
 
 #endif
