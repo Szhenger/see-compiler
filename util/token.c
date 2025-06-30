@@ -1,13 +1,16 @@
 #include "token.h"
 
+// == Public Function: Returns strings of token categories == 
 const char *token_category_to_string(TokenCategory category) {
     switch (type) {
+        // Data 
         case TOKEN_KEYWORD:          return "TOKEN_KEYWORD";
         case TOKEN_IDENTIFIER:       return "TOKEN_IDENTIFIER";
         case TOKEN_INTEGER_LITERAL:  return "TOKEN_INTEGER_LITERAL";
         case TOKEN_STRING_LITERAL:   return "TOKEN_STRING_LITERAL";
         case TOKEN_CHAR_LITERAL:     return "TOKEN_CHAR_LITERAL";
 
+        // Symbols
         case TOKEN_LPAREN:           return "TOKEN_LPAREN";
         case TOKEN_RPAREN:           return "TOKEN_RPAREN";
         case TOKEN_LBRACE:           return "TOKEN_LBRACE";
@@ -16,7 +19,8 @@ const char *token_category_to_string(TokenCategory category) {
         case TOKEN_RBRACKET:         return "TOKEN_RBRACKET";
         case TOKEN_COMMA:            return "TOKEN_COMMA";
         case TOKEN_SEMICOLON:        return "TOKEN_SEMICOLON";
-        
+
+        // Mathematical Operators 
         case TOKEN_ASSIGN:           return "TOKEN_ASSIGN";
         case TOKEN_PLUS:             return "TOKEN_PLUS";
         case TOKEN_MINUS:            return "TOKEN_MINUS";
@@ -32,9 +36,10 @@ const char *token_category_to_string(TokenCategory category) {
         case TOKEN_OR:               return "TOKEN_OR";
         case TOKEN_NOT:              return "TOKEN_NOT";
 
+        // Sentinal Values 
         case TOKEN_EOF:              return "TOKEN_EOF";
         case TOKEN_UNKNOWN:          return "TOKEN_UNKNOWN";
-
+        
         default:                     return "UNKNOWN_TOKEN_KIND";
     }
 }
