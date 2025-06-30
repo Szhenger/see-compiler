@@ -2,7 +2,6 @@
 #include <string.h>
 #include "parser.h"
 
-
 Parser *init_parser(Token *t, int *count) {
     Parser *p = malloc(sizeof(Parser));
     p->tokens = t;
