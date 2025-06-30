@@ -4,16 +4,19 @@
 #include <string.h>
 #include "lexer.h"
 
+// == Internal Keyword Table ==
 static const char *keywords[] = {
     "int", "char", "bool", "string", "void", "return", 
     "if", "else", "while", "for", 
     "true", "false",
 };
 
+// == Internal Muti-Char Symbols Table ==
 static const char *multi_char_symbols[] = {
     "==", "!=", "<=", ">=", "&&", "||", "++", "--"
 };
 
+// == Private Helper: Checks whether input string word is a keyword ==
 static int is_keyword(const char *word) 
 {
     for (size_t i = 0; i < sizeof(keywords) / sizeof(keywords[0]); i++) {
@@ -22,6 +25,7 @@ static int is_keyword(const char *word)
     return 0;
 }
 
+// == Private Helper: Checks whether input string is a multi-char symbol ==
 static const char *match_multi_char_symbol(const char *input) 
 {
     for (size_t i = 0; i < sizeof(multi_char_symbols) / sizeof(multi_char_symbols[0]); i++) {
@@ -33,6 +37,7 @@ static const char *match_multi_char_symbol(const char *input)
     return NULL;
 }
 
+// == Private Helper: Finds the associated single-char token category ==
 static TokenCategory find_single_char_symbol_category(const char symbol) 
 {
     switch (symbol) {
@@ -67,6 +72,7 @@ static TokenCategory find_single_char_symbol_category(const char symbol)
     }
 }
 
+// == Private Helper: Finds the associated multi-char token category == 
 static TokenCategory find_multi_char_symbol_category(const char *symbol) 
 {
     if (strcmp(symbol, "==") == 0) return TOKEN_EQUAL;
@@ -80,10 +86,14 @@ static TokenCategory find_multi_char_symbol_category(const char *symbol)
     return TOKEN_UNKNOWN;
 }
 
+// == Private Helper: Generates the C substring input token ==
 static Token next_token(const char **input) {
+    // Skips whitespace
     while (**input && isspace(**input)) (*input)++;
+    // Checks for NUL terminating value
     if (**input == '\0') return (Token){ TOKEN_EOF, strdup(""), 0, 0 };
-
+    
+    // Skips comments
     if (**input == '/' && *(*input + 1) == '/') {
         while (**input && **input != '\n') (*input)++;
         return next_token(input);
@@ -95,6 +105,7 @@ static Token next_token(const char **input) {
         return next_token(input);
     }
 
+    // Checks for muti-char symbol
     const char *symbol = match_multi_char_symbol(*input);
     if (symbol) {
         (*input) += strlen(symbol);
@@ -102,12 +113,15 @@ static Token next_token(const char **input) {
     }
 
     char c = **input;
+
+    // Checks for single-char symbol
     if (strchr("(){}[];,=<>!+-*/%&|", c)) {
         (*input)++;
         char *lexeme = malloc(2); lexeme[0] = c; lexeme[1] = '\0';
         return (Token){ find_single_char_symbol_category(c), lexeme, 0, 0 };
     }
 
+    // Checks for integer literal
     if (isdigit(c)) {
         char buffer[32]; int i = 0;
         while (isdigit(**input)) buffer[i++] = *(*input)++;
@@ -115,6 +129,7 @@ static Token next_token(const char **input) {
         return (Token){ TOKEN_INTEGER_LITERAL, strdup(buffer), 0, 0 };
     }
 
+    // Checks for string literal
     if (c == '"') {
         (*input)++;
         char buffer[256]; int i = 0;
@@ -126,7 +141,8 @@ static Token next_token(const char **input) {
         buffer[i] = '\0';
         return (Token){ TOKEN_STRING_LITERAL, strdup(buffer), 0, 0 };
     }
-
+    
+    // Checks for char literal
     if (c == '\'') {
         (*input)++;
         char ch = **input;
@@ -135,7 +151,8 @@ static Token next_token(const char **input) {
         char buffer[2] = { ch, '\0' };
         return (Token){ TOKEN_CHAR_LITERAL, strdup(buffer), 0, 0 };
     }
-
+    
+    // Checks for keyword
     if (isalpha(c) || c == '_') {
         char buffer[64]; int i = 0;
         while (isalnum(**input) || **input == '_') buffer[i++] = *(*input)++;
@@ -145,11 +162,12 @@ static Token next_token(const char **input) {
             strdup(buffer), 0, 0
         };
     }
-
+    
     (*input)++;
     return (Token){ TOKEN_UNKNOWN, strdup("?"), 0, 0 };
 }
 
+// == Public Function: Returns the associated dynamic array of tokens ==
 Token *tokenize(const char *source, int *count) {
     const char *input = source;
     int capacity = 64;
@@ -170,6 +188,7 @@ Token *tokenize(const char *source, int *count) {
     return tokens;
 }
 
+// == Public Function: Frees the input dynamic array of tokens ==  
 void free_tokens(Token *tokens, int count) {
     if (!tokens) return;
     for (int i = 0; i < count; i++) {
