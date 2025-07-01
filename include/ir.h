@@ -3,6 +3,7 @@
 
 #include "ast.h"
 
+// Enumerate the types of ir instructions supported
 typedef enum {
     IR_LABEL,
     IR_CALL,
@@ -20,20 +21,18 @@ typedef enum {
     IR_DIV
 } IRType;
 
+// Defines an ir instruction 
 typedef struct IRInstr {
     IRType type;             
     char *arg;               
     struct IRInstr *next;    
 } IRInstr;
 
+// == Public API ==
 IRInstr *create_ir_instr(IRType type, const char *arg);
-
 IRInstr *generate_ir(ASTNode *ast);
-
 void print_ir(IRInstr *head);
-
 void free_ir(IRInstr *head);
-
 const char *ir_type_to_string(IRType type); 
 
 #endif
