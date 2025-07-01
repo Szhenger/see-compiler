@@ -7,7 +7,8 @@
 #include "parser.h"
 #include "token.h"
 
-void assert_ast_node(ASTNode *node, ASTNodeType expected_type, const char *expected_value) {
+void assert_ast_node(ASTNode *node, ASTNodeType expected_type, const char *expected_value) 
+{
     assert(node != NULL);
     assert(node->type == expected_type);
 
