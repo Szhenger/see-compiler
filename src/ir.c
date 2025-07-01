@@ -4,6 +4,7 @@
 #include "ast.h"
 #include "ir.h"
 
+// == Public Function: Creates an ir instruction ==
 IRInstr *create_ir_instr(IRType type, const char *arg) 
 {
     IRInstr *instr = malloc(sizeof(IRInstr));
@@ -15,6 +16,7 @@ IRInstr *create_ir_instr(IRType type, const char *arg)
     return instr;
 }
 
+// == Public Function: Destroys the space storing the ir instruction ==
 void free_ir(IRInstr *head) 
 {
     while (head) {
@@ -25,6 +27,7 @@ void free_ir(IRInstr *head)
     }
 }
 
+// == Public Function: Returns string representation of an input ir type == 
 const char *ir_type_to_string(IRType type) 
 {
     switch (type) {
@@ -39,6 +42,7 @@ const char *ir_type_to_string(IRType type)
     }
 }
 
+// == Public Function: Prints the input ir linked list to the terminal for debugging ==
 void print_ir(IRInstr *head) 
 {
     for (IRInstr *curr = head; curr != NULL; curr = curr->next) {
@@ -48,6 +52,7 @@ void print_ir(IRInstr *head)
     }
 }
 
+// == Private Helper: Sets up the ir instruction from an AST node ==
 void emit_ir_node(ASTNode *node, IRInstr **tail) 
 {
     if (!node) return;
@@ -150,6 +155,7 @@ void emit_ir_node(ASTNode *node, IRInstr **tail)
     }
 }
 
+// == Public Function: Creates the ir linked list of instructions from an AST ==
 IRInstr *generate_ir(ASTNode *ast) 
 {
     IRInstr *head = create_ir_instr(IR_LABEL, "entry");
