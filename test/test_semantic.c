@@ -6,7 +6,8 @@
 #include "semantic.h"
 #include "token.h"
 
-int main(void) {
+int main(void) 
+{
     const char *source = "int main(void) { printf(\"hello, world!\\n\"); return 0; }";
 
     int token_count = 0;
