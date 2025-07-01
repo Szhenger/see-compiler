@@ -64,7 +64,7 @@ static TokenCategory find_single_char_symbol_category(const char symbol)
         case '^':           return TOKEN_BIT_XOR;
         case '~':           return TOKEN_BIT_NOT;
         
-        case '.'            return TOKEN_DOT;
+        case '.':           return TOKEN_DOT;
         case '?':           return TOKEN_QUESTION;
         case ':':           return TOKEN_COLON;
         
