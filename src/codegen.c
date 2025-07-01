@@ -4,7 +4,7 @@
 #include "codegen.h"
 #include "ir.h"
 
-// == Internal Variables Structure ==
+// == Internal Variable Structure ==
 typedef struct VarEntry {
     char *name;
     int offset;         
