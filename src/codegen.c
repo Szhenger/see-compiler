@@ -4,15 +4,18 @@
 #include "codegen.h"
 #include "ir.h"
 
+// == Internal Variables Structure ==
 typedef struct VarEntry {
     char *name;
     int offset;         
     struct VarEntry *next;
 } VarEntry;
 
+// == Internal Variable Table ==
 static VarEntry *var_table = NULL;
 static int current_offset = 0; 
 
+// == Private Helper: Adds variable to table ==
 static void add_variable(const char *name) {
     VarEntry *entry = malloc(sizeof(VarEntry));
     entry->name = strdup(name);
@@ -22,6 +25,7 @@ static void add_variable(const char *name) {
     var_table = entry;
 }
 
+// == Private Helper: Finds the offset of instruction == 
 static int find_variable_offset(const char *name) {
     for (VarEntry *e = var_table; e != NULL; e = e->next) {
         if (strcmp(e->name, name) == 0) return e->offset;
@@ -29,6 +33,7 @@ static int find_variable_offset(const char *name) {
     return 0;
 }
 
+// == Private Helper: Frees the variable table ==
 static void free_var_table(void) {
     VarEntry *curr = var_table;
     while (curr) {
@@ -41,6 +46,7 @@ static void free_var_table(void) {
     current_offset = 0;
 }
 
+// == Private Helper: Generates the required start of assembly file == 
 static void generate_prologue(FILE *out) {
     fprintf(out,
         "    .intel_syntax noprefix\n"
@@ -55,7 +61,7 @@ static void generate_prologue(FILE *out) {
             "    sub rsp, %d\n", -current_offset);
     }
 }
-
+// == Private Helper: Generattes the required end of aasembly file
 static void generate_epilogue(FILE *out) {
     fprintf(out,
         "    mov rsp, rbp\n"
@@ -64,6 +70,7 @@ static void generate_epilogue(FILE *out) {
     );
 }
 
+// == Private Helper: Escape the string i.e. remove char/string intitialization syntax ==
 static char *escape_string(const char *str) {
     size_t len = strlen(str);
     char *escaped = malloc(len * 2 + 1);
@@ -85,6 +92,7 @@ static char *escape_string(const char *str) {
     return escaped;
 }
 
+// == Private Helper: Creates the instruction label ==
 static int label_counter = 0;
 static const char *generate_string_label(const char *str, FILE *out) {
     static char label[32];
@@ -104,6 +112,7 @@ static const char *generate_string_label(const char *str, FILE *out) {
     return strdup(label);
 }
 
+// == Public Function: Generates the assembly code in file out from ir list ==
 void generate_code(FILE *out, IRInstr *ir) {
     if (!ir) return;
 
