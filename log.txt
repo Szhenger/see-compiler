@@ -100,5 +100,7 @@
 - Read the tests of the test files in `test/`
 - Read the structure of the token streams and ast structs in `util/`
 
-[2025-06-29] - Day 18: Logic and Validation
+[2025-07-01] - Day 18: Logic and Validation
 - Created unit tests for all compiler components
+- Updated the comments on each of the components
+- Planning to automate integration testing with scripts
