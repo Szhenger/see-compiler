@@ -108,7 +108,7 @@ void emit_ir_node(ASTNode *node, IRInstr **tail)
             else if (strcmp(node->value, "-") == 0)
                 *tail = (*tail)->next = create_ir_instr(IR_SUB, NULL);
             else if (strcmp(node->value, "*") == 0)
-                *tail = (*tail)->next = create_ir_instr(IR_MULT, NULL);
+                *tail = (*tail)->next = create_ir_instr(IR_MUL, NULL);
             else if (strcmp(node->value, "/") == 0)
                 *tail = (*tail)->next = create_ir_instr(IR_DIV, NULL);
             else if (strcmp(node->value, "==") == 0 || strcmp(node->value, "!=") == 0 ||
