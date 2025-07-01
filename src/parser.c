@@ -2,7 +2,9 @@
 #include <string.h>
 #include "parser.h"
 
-Parser *init_parser(Token *t, int *count) {
+// == Public Function: Initializes a dynamically allocated parser ==
+Parser *init_parser(Token *t, int *count) 
+{
     Parser *p = malloc(sizeof(Parser));
     p->tokens = t;
     p->length = *count;
@@ -10,15 +12,17 @@ Parser *init_parser(Token *t, int *count) {
     return p;
 }
 
-static Token current_token(Parser *p) {
+// == Private Utilities ==
+static Token current_token(Parser *p) 
+{
     return p->tokens[p->current];
 }
-
-static void advance(Parser *p) {
+static void advance(Parser *p) 
+{
     if (p->current < p->length) p->current++;
 }
-
-static int match(Parser *p, TokenCategory category, const char *lexeme) {
+static int match(Parser *p, TokenCategory category, const char *lexeme) 
+{
     if (p->current >= p->length) return 0;
     Token t = current_token(p);
     if (t.category == category && (!lexeme || strcmp(t.lexeme, lexeme) == 0)) {
@@ -28,7 +32,9 @@ static int match(Parser *p, TokenCategory category, const char *lexeme) {
     return 0;
 }
 
-static int get_precedence(TokenCategory category) {
+// == Private Helper: Get precedence for opeators ==
+static int get_precedence(TokenCategory category) 
+{
     switch (category) {
         case TOKEN_OR:             return 1; 
         case TOKEN_AND:            return 2;
@@ -47,6 +53,7 @@ static int get_precedence(TokenCategory category) {
     }
 }
 
+// == Private Helper: Analyze if statements ==
 static ASTNode *parse_if(Parser *p) {
     if (!match(p, TOKEN_KEYWORD, "if")) return NULL;
     if (!match(p, TOKEN_LPAREN, "(")) return NULL;
@@ -71,6 +78,7 @@ static ASTNode *parse_if(Parser *p) {
     return if_node;
 }
 
+// == Private Helper: Analyze while loops ==
 static ASTNode *parse_while(Parser *p) {
     if (!match(p, TOKEN_KEYWORD, "while")) return NULL;
     if (!match(p, TOKEN_LPAREN, "(")) return NULL;
@@ -87,6 +95,7 @@ static ASTNode *parse_while(Parser *p) {
     return while_node;
 }
 
+// == Private Helper: Analyze statements ==
 static ASTNode *parse_expression_statement(Parser *p) {
     ASTNode *expr = parse_expression(p);
     if (!expr || !match(p, TOKEN_SEMICOLON, ";")) return NULL;
@@ -96,6 +105,7 @@ static ASTNode *parse_expression_statement(Parser *p) {
     return stmt;
 }
 
+// == Private Helper: Analyze return statements ==
 static ASTNode *parse_return(Parser *p) {
     if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
     Token val = current_token(p);
@@ -108,6 +118,7 @@ static ASTNode *parse_return(Parser *p) {
     return ret_node;
 }
 
+// == Private Helper: Analyze function calls ==
 static ASTNode *parse_call(Parser *p) {
     Token func = current_token(p);
     if (func.category != TOKEN_IDENTIFIER) return NULL;
@@ -141,6 +152,7 @@ static ASTNode *parse_call(Parser *p) {
     return call_node;
 }
 
+// == Private Helper: Analyze declarations ==
 static ASTNode *parse_declaration(Parser *p) {
     if (!match(p, TOKEN_KEYWORD, "int")) return NULL;
     Token ident = current_token(p);
@@ -151,6 +163,7 @@ static ASTNode *parse_declaration(Parser *p) {
     return create_ast_node(AST_DECLARATION, ident.lexeme);
 }
 
+// == Private Helper: Analyze primatives ==
 static ASTNode *parse_primary(Parser *p) {
     Token t = current_token(p);
 
@@ -182,6 +195,7 @@ static ASTNode *parse_primary(Parser *p) {
     return NULL;
 }
 
+// == Private Helper: Analyze expressions with ordered operators ==
 static ASTNode *parse_expression_with_precedence(Parser *p, int min_precedence) {
     ASTNode *left = parse_primary(p);
     if (!left) return NULL;
@@ -205,10 +219,12 @@ static ASTNode *parse_expression_with_precedence(Parser *p, int min_precedence) 
     return left;
 }
 
+// == Private Helper: Analyze expressions without precedence ==
 static ASTNode *parse_expression(Parser *p) {
     return parse_expression_with_precedence(p, 1);
 }
 
+// == Private Helper: Analyze variable assignments ==
 static ASTNode *parse_assignment(Parser *p) {
     Token ident = current_token(p);
     if (ident.category != TOKEN_IDENTIFIER) return NULL;
@@ -226,6 +242,7 @@ static ASTNode *parse_assignment(Parser *p) {
     return assign;
 }
 
+// == Private Helper: Analyze statements ==
 static ASTNode *parse_statement(Parser *p) {
     int saved = p->current;
     ASTNode *stmt = NULL;
@@ -250,6 +267,7 @@ static ASTNode *parse_statement(Parser *p) {
     return NULL;
 }
 
+// == Private Helper: Analyze a sequence of statements ==
 static ASTNode *parse_statement_list(Parser *p) {
     ASTNode *head = parse_statement(p);
     if (!head) return NULL;
@@ -263,7 +281,9 @@ static ASTNode *parse_statement_list(Parser *p) {
     return list;
 }
 
-static ASTNode *parse_function(Parser *p) {
+// == Private Helper: Analyze function definitions == 
+static ASTNode *parse_function(Parser *p) 
+{
     while (p->current < p->length && !match(p, TOKEN_LBRACE, "{")) {
         advance(p);
     }
@@ -276,10 +296,13 @@ static ASTNode *parse_function(Parser *p) {
     return func;
 }
 
-ASTNode *parse(Parser *p) {
+// == Public Function: Analyze token stream ==  
+ASTNode *parse(Parser *p) 
+{
     return parse_function(p);
 }
 
+// Private Helper: Free the input parser ==
 void free_parser(Parser *p) {
     if (!p) return;
     free(p);
