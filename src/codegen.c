@@ -16,7 +16,8 @@ static VarEntry *var_table = NULL;
 static int current_offset = 0; 
 
 // == Private Helper: Adds variable to table ==
-static void add_variable(const char *name) {
+static void add_variable(const char *name) 
+{
     VarEntry *entry = malloc(sizeof(VarEntry));
     entry->name = strdup(name);
     current_offset -= 8;
@@ -26,7 +27,8 @@ static void add_variable(const char *name) {
 }
 
 // == Private Helper: Finds the offset of instruction == 
-static int find_variable_offset(const char *name) {
+static int find_variable_offset(const char *name) 
+{
     for (VarEntry *e = var_table; e != NULL; e = e->next) {
         if (strcmp(e->name, name) == 0) return e->offset;
     }
@@ -34,7 +36,8 @@ static int find_variable_offset(const char *name) {
 }
 
 // == Private Helper: Frees the variable table ==
-static void free_var_table(void) {
+static void free_var_table(void) 
+{
     VarEntry *curr = var_table;
     while (curr) {
         VarEntry *next = curr->next;
@@ -47,7 +50,8 @@ static void free_var_table(void) {
 }
 
 // == Private Helper: Generates the required start of assembly file == 
-static void generate_prologue(FILE *out) {
+static void generate_prologue(FILE *out) 
+{
     fprintf(out,
         "    .intel_syntax noprefix\n"
         "    .globl main\n"
@@ -62,7 +66,8 @@ static void generate_prologue(FILE *out) {
     }
 }
 // == Private Helper: Generattes the required end of aasembly file
-static void generate_epilogue(FILE *out) {
+static void generate_epilogue(FILE *out) 
+{
     fprintf(out,
         "    mov rsp, rbp\n"
         "    pop rbp\n"
@@ -71,7 +76,8 @@ static void generate_epilogue(FILE *out) {
 }
 
 // == Private Helper: Escape the string i.e. remove char/string intitialization syntax ==
-static char *escape_string(const char *str) {
+static char *escape_string(const char *str) 
+{
     size_t len = strlen(str);
     char *escaped = malloc(len * 2 + 1);
     if (!escaped) return NULL;
@@ -94,7 +100,8 @@ static char *escape_string(const char *str) {
 
 // == Private Helper: Creates the instruction label ==
 static int label_counter = 0;
-static const char *generate_string_label(const char *str, FILE *out) {
+static const char *generate_string_label(const char *str, FILE *out) 
+{
     static char label[32];
     snprintf(label, sizeof(label), ".LC%d", label_counter++);
 
@@ -113,7 +120,8 @@ static const char *generate_string_label(const char *str, FILE *out) {
 }
 
 // == Public Function: Generates the assembly code in file out from ir list ==
-void generate_code(FILE *out, IRInstr *ir) {
+void generate_code(FILE *out, IRInstr *ir) 
+{
     if (!ir) return;
 
     for (IRInstr *curr = ir; curr != NULL; curr = curr->next) {
