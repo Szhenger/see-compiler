@@ -182,7 +182,7 @@ void generate_code(FILE *out, IRInstr *ir) {
                 fprintf(out, "    push rax\n");
                 break;
             
-            case IR_MULT:
+            case IR_MUL:
                 fprintf(out, "    pop rbx\n");
                 fprintf(out, "    pop rax\n");
                 fprintf(out, "    imul rax, rbx\n");
