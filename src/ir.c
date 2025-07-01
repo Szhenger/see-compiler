@@ -44,7 +44,7 @@ const char *ir_type_to_string(IRType type)
         case IR_DIV:           return "DIV";
         case IR_JUMP:          return "JUMP";
         case IR_CMP:           return "CMP";
-        case IR_JUMP_IF_ZERO:  return "JUMP_ZERO"; 
+        case IR_JUMP_IF_ZERO:  return "JUMP_IF_ZERO"; 
         default:               return "UNKNOWN";
     }
 }
