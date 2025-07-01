@@ -31,14 +31,21 @@ void free_ir(IRInstr *head)
 const char *ir_type_to_string(IRType type) 
 {
     switch (type) {
-        case IR_LABEL: return "LABEL";
-        case IR_CALL:  return "CALL";
-        case IR_PUSH:  return "PUSH";
-        case IR_RET:   return "RET";
-        case IR_DECL:  return "DECL";
-        case IR_STORE: return "STORE";
-        case IR_LOAD:  return "LOAD";
-        default:       return "UNKNOWN";
+        case IR_LABEL:         return "LABEL";
+        case IR_CALL:          return "CALL";
+        case IR_PUSH:          return "PUSH";
+        case IR_RET:           return "RET";
+        case IR_DECL:          return "DECL";
+        case IR_STORE:         return "STORE";
+        case IR_LOAD:          return "LOAD";
+        case IR_ADD:           return "ADD";
+        case IR_SUB:           return "SUB";
+        case IR_MUL:           return "MUL";
+        case IR_DIV:           return "DIV";
+        case IR_JUMP:          return "JUMP";
+        case IR_CMP:           return "CMP";
+        case IR_JUMP_IF_ZERO:  return "JUMP_ZERO"; 
+        default:               return "UNKNOWN";
     }
 }
 
