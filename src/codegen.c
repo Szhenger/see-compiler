@@ -32,7 +32,7 @@ static int find_variable_offset(const char *name)
     for (VarEntry *e = var_table; e != NULL; e = e->next) {
         if (strcmp(e->name, name) == 0) return e->offset;
     }
-    return 0;
+    return -1;
 }
 
 // == Private Helper: Frees the variable table ==
