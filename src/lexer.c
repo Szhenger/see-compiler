@@ -13,7 +13,7 @@ static const char *keywords[] = {
 
 // == Internal Muti-Char Symbols Table ==
 static const char *multi_char_symbols[] = {
-    "==", "!=", "<=", ">=", "&&", "||", "++", "--"
+    "==", "!=", "<=", ">=", "&&", "||", "++", "--", "->", "<<", ">>"
 };
 
 // == Private Helper: Checks whether input string word is a keyword ==
@@ -83,6 +83,9 @@ static TokenCategory find_multi_char_symbol_category(const char *symbol)
     if (strcmp(symbol, "||") == 0) return TOKEN_OR;
     if (strcmp(symbol, "++") == 0) return TOKEN_INCREMENT;
     if (strcmp(symbol, "--") == 0) return TOKEN_DECREMENT;
+    if (strcmp(symbol, "->") == 0) return TOKEN_ARROW;
+    if (strcmp(symbol, "<<") == 0) return TOKEN_LEFT_SHIFT;
+    if (strcmp(symbol, ">>") == 0) return TOKEN_RIGHT_SHIFT;
     return TOKEN_UNKNOWN;
 }
 
