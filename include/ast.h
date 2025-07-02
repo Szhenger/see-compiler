@@ -15,6 +15,7 @@ typedef enum {
     AST_IDENTIFIER,
     AST_INTEGER_LITERAL,
     AST_STRING_LITERAL,
+    AST_CHAR_LITERAL,
     AST_BINARY_OP,
 
     // Branching and Iteration
