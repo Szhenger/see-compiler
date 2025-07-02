@@ -144,6 +144,7 @@ void generate_code(FILE *out, IRInstr *ir)
                     fprintf(out, "    mov rax, %s\n", curr->arg);
                     fprintf(out, "    push rax\n");
                 }
+                break;
             
             case IR_CALL:
                 fprintf(out, "    call %s\n", curr->arg);
