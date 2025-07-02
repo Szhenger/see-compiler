@@ -36,6 +36,28 @@ static void clear_symbols(void)
     }
 }
 
+// == Public Helper: Analyze a expression ==
+static int analyze_expression(ASTNode *node) {
+    switch (node->type) {
+        case AST_INTEGER_LITERAL:
+        case AST_STRING_LITERAL:
+            return 1;
+        case AST_IDENTIFIER:
+            if (!symbol_exists(node->value)) {
+                fprintf(stderr, "Semantic Error: Variable '%s' not declared\n", node->value);
+                return 0;
+            }
+            return 1;
+        case AST_BINARY_OP:
+            return analyze_expression(node->left) && analyze_expression(node->right);
+        case AST_CALL_EXPR:
+            return analyze_call(node);
+        default:
+            fprintf(stderr, "Semantic Error: Invalid expression type %d\n", node->type);
+            return 0;
+    }
+}
+
 // == Private Helper: Analyze a function call semantics == 
 static int analyze_call(ASTNode *node) {
     ASTNode *arg = node->left;
@@ -112,11 +134,35 @@ static int analyze_statement(ASTNode *node)
             if (stmt) return analyze_statement(stmt);
             return 1;
         }
-        case AST_IF_STMT:
-        case AST_WHILE_LOOP:
-        case AST_FOR_LOOP:
-            fprintf(stderr, "Semantic Error: Control flow not yet supported\n");
-            return 0;
+        case AST_IF_STMT: {
+            if (!analyze_expression(node->left)) {
+                fprintf(stderr, "Semantic Error: Invalid condition in if-statement\n");
+                return 0;
+            }
+            ASTNode *then_branch = node->right ? node->right->left : NULL;
+            ASTNode *else_branch = node->right ? node->right->right : NULL;
+            if (then_branch && !analyze_statement(then_branch)) return 0;
+            if (else_branch && !analyze_statement(else_branch)) return 0;
+            return 1;
+        }
+        case AST_WHILE_LOOP: {
+            if (!analyze_expression(node->left)) {
+                fprintf(stderr, "Semantic Error: Invalid condition in while-loop\n");
+                return 0;
+            }
+            if (!analyze_statement(node->right)) return 0;
+            return 1;
+        }
+        case AST_FOR_LOOP: {
+            ASTNode *init = node->left;           
+            ASTNode *test = node->right ? node->right->left : NULL;  
+            ASTNode *step = node->right ? node->right->right : NULL;
+        
+            if (init && !analyze_statement(init)) return 0;
+            if (test && !analyze_expression(test)) return 0;
+            if (step && !analyze_statement(step)) return 0;
+            return 1;
+        }
         default:
             fprintf(stderr, "Semantic Error: Unknown AST node type %d\n", node->type);
             return 0;
