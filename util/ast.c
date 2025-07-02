@@ -34,6 +34,7 @@ static const char *ast_type_to_string(ASTNodeType type)
         case AST_CALL_EXPR:       return "CallExpr";
         case AST_STRING_LITERAL:  return "StringLiteral";
         case AST_RETURN_STMT:     return "ReturnStmt";
+        case AST_EXPRESSION_STMT: return "ExpressStmt";
         case AST_DECLARATION:     return "Declaration";
         case AST_ASSIGNMENT:      return "Assignment";
         case AST_IDENTIFIER:      return "Identifier";
