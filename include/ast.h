@@ -6,6 +6,7 @@ typedef enum {
     // Primatives
     AST_FUNCTION_DEF,
     AST_STATEMENT_LIST,
+    AST_EXPRESSION_STMT,
     AST_DECLARATION,
     AST_ASSIGNMENT,
     AST_RETURN_STMT,
