@@ -187,7 +187,6 @@ void emit_ir_node(ASTNode *node, IRInstr **tail)
             break;
         }
 
-
         default:
             break;
     }
