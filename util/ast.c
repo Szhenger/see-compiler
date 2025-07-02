@@ -34,7 +34,6 @@ static const char *ast_type_to_string(ASTNodeType type)
         case AST_CALL_EXPR:       return "CallExpr";
         case AST_STRING_LITERAL:  return "StringLiteral";
         case AST_RETURN_STMT:     return "ReturnStmt";
-        case AST_LITERAL:         return "Literal";
         case AST_DECLARATION:     return "Declaration";
         case AST_ASSIGNMENT:      return "Assignment";
         case AST_IDENTIFIER:      return "Identifier";
@@ -43,8 +42,8 @@ static const char *ast_type_to_string(ASTNodeType type)
         case AST_BINARY_OP:       return "BinaryOp";
         case AST_CHAR_LITERAL:    return "CharLiteral";
         case AST_IF_STMT:         return "IfStmt";
-        case AST_FOR_STMT:        return "ForStmt";
-        case AST_WHILE_STMT:      return "WhileStmt";
+        case AST_FOR_LOOP:        return "ForLoop";
+        case AST_WHILE_LOOP:      return "WhileLoop";
         default:                  return "Unknown";
     }
 }
