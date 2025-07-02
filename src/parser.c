@@ -95,6 +95,44 @@ static ASTNode *parse_while(Parser *p) {
     return while_node;
 }
 
+static ASTNode *parse_for(Parser *p) {
+    if (!match(p, TOKEN_KEYWORD, "for")) return NULL;
+    if (!match(p, TOKEN_LPAREN, "(")) return NULL;
+
+    ASTNode *init = NULL;
+    int saved = p->current;
+    if ((init = parse_declaration(p)) == NULL) {
+        p->current = saved;
+        init = parse_assignment(p);
+    }
+    if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
+
+    ASTNode *cond = parse_expression(p);
+    if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
+
+    ASTNode *step = parse_assignment(p);
+
+    if (!match(p, TOKEN_RPAREN, ")")) return NULL;
+
+    ASTNode *body = parse_statement(p);
+    if (!body) return NULL;
+
+    ASTNode *cond_step = create_ast_node(AST_STATEMENT_LIST, NULL);
+    cond_step->left = cond;
+    cond_step->right = step;
+
+    ASTNode *for_node = create_ast_node(AST_FOR_LOOP, NULL);
+    for_node->left = init;
+    for_node->right = cond_step;
+
+    ASTNode *body_list = create_ast_node(AST_STATEMENT_LIST, NULL);
+    body_list->left = cond_step;
+    body_list->right = body;
+    for_node->right = body_list;
+
+    return for_node;
+}
+
 // == Private Helper: Analyze statements ==
 static ASTNode *parse_expression_statement(Parser *p) {
     ASTNode *expr = parse_expression(p);
@@ -255,6 +293,7 @@ static ASTNode *parse_statement(Parser *p) {
     p->current = saved;
     if ((stmt = parse_while(p)) != NULL) return stmt;
     p->current = saved;
+    if ((stmt = parse_for(p)) != NULL) return stmt;
     if ((stmt = parse_call(p)) != NULL) {
         if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
         return stmt;
