@@ -169,29 +169,21 @@ void emit_ir_node(ASTNode *node, IRInstr **tail)
                 emit_ir_node(node->left, tail);
             }
             *tail = (*tail)->next = create_ir_instr(IR_JUMP, cond_label);
-        
             *tail = (*tail)->next = create_ir_instr(IR_LABEL, loop_label);
-        
             if (node->right && node->right->right && node->right->right->right) {
                 emit_ir_node(node->right->right->right, tail);
             }
-        
             if (node->right && node->right->right && node->right->right->left) {
                 emit_ir_node(node->right->right->left, tail);
             }
-        
             *tail = (*tail)->next = create_ir_instr(IR_LABEL, cond_label);
-
             if (node->right && node->right->left) {
                 emit_ir_node(node->right->left, tail);
             }
-        
             *tail = (*tail)->next = create_ir_instr(IR_JUMP_IF_ZERO, end_label);
-        
             *tail = (*tail)->next = create_ir_instr(IR_JUMP, loop_label);
-
             *tail = (*tail)->next = create_ir_instr(IR_LABEL, end_label);
-        
+    
             break;
         }
 
