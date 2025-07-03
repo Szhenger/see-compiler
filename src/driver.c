@@ -7,7 +7,7 @@
 #include "semantic.h"
 #include "token.h"
 
-// Helper Function Prototype
+// Forward Helper Function Prototype
 char *read_file(const char *filename);
 
 // Main Function: Driving Compilation of Source File 
@@ -18,12 +18,13 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    // Procedure 1: Load Source File
+    // Procedure 1: Get C Source File
+    printf("== SeeCompilation ==\n");
     char *source = read_file(argv[1]);
     if (!source) return 1;
 
-    // Procedure 2: Lexical Analysis
-    printf("== Lexical Analysis ==\n");
+    // Procedure 2: Tokenize the C Source String
+    printf("== Tokenizing Source File ==\n");
     int token_count = 0;
     Token *tokens = tokenize(source, &token_count);
     if (!tokens || token_count == 0) {
@@ -31,9 +32,10 @@ int main(int argc, char **argv)
         free(source);
         return 2;
     }
+    print_tokens(tokens, token_count);
     
-    // Procedure 3: Parsing
-    printf("== Parsing ==\n");
+    // Procedure 3: Parse the Token Stream
+    printf("== Parsing Token Stream ==\n");
     Parser *parser = init_parser(tokens, token_count);
     ASTNode *ast = parse(parser);
     if (!ast) {
@@ -43,9 +45,9 @@ int main(int argc, char **argv)
         free(source);
         return 3;
     }
+    print_ast(ast);
 
-    // Procedure 4: Semantic Analysis
-    printf("== Semantic Analysis ==\n");
+    // Procedure 4: Run Semantic Analysis on AST
     if (analyze(ast) != SEMANTIC_OK) {
         fprintf(stderr, "Semantic analysis failed!\n");
         free_ast(ast);
@@ -54,13 +56,9 @@ int main(int argc, char **argv)
         free(source);
         return 4;
     }
-
-    // Procedure 4.5: Debug AST Output
-    printf("== Abstract Syntax Tree ==\n");
-    print_ast(ast);
     
-    // Procedure 5: IR Generation
-    printf("== IR Generation ==\n");
+    // Procedure 5: Generate IR Instructions from AST
+    printf("== Generating IR Instructions ==\n");
     IRInstr *ir = generate_ir(ast);
     if (!ir) {
         fprintf(stderr, "IR generation failed!\n");
@@ -70,13 +68,10 @@ int main(int argc, char **argv)
         free(source);
         return 5;
     }
-
-    // Procedure 5.5: Debug IR Output
-    printf("== Intermediate Representation ==\n");
     print_ir(ir);
 
-    // Procedure 6: Code Generation
-    printf("== x86 Code Generation ==\n");
+    // Procedure 6: Generate x86 Assembly Instructions from IR  
+    printf("== Generating x86 Assembly Instructions ==\n");
     FILE *output = fopen("output.s", "w");
     if (!output) {
         fprintf(stderr, "Failed to open output file\n");
@@ -96,11 +91,11 @@ int main(int argc, char **argv)
     free_parser(parser);
     free_tokens(tokens, token_count);
     free(source);
-    
+
     return 0;
 }
 
-// Helper Function: Read Source File into Memory
+// Helper Function: Read C Source File into Memory
 char *read_file(const char *filename) 
 {
     FILE *file = fopen(filename, "r");

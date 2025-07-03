@@ -52,6 +52,7 @@ const char *ir_type_to_string(IRType type)
 // == Public Function: Prints the input ir linked list to the terminal for debugging ==
 void print_ir(IRInstr *head) 
 {
+    printf("== Intermediate Representation ==");
     for (IRInstr *curr = head; curr != NULL; curr = curr->next) {
         printf("%s", ir_type_to_string(curr->type));
         if (curr->arg) printf(" %s", curr->arg);

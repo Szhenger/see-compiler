@@ -2,7 +2,7 @@
 
 // == Public Function: Returns strings of token categories == 
 const char *token_category_to_string(TokenCategory category) {
-    switch (type) {
+    switch (category) {
         // Data 
         case TOKEN_KEYWORD:          return "TOKEN_KEYWORD";
         case TOKEN_IDENTIFIER:       return "TOKEN_IDENTIFIER";
@@ -44,3 +44,12 @@ const char *token_category_to_string(TokenCategory category) {
     }
 }
 
+// == Public Function: Prints token stream to standard output == 
+void print_tokens(const Token *tokens, int count) 
+{
+    printf("== Token Stream ==\n");
+    for (int i = 0; i < count; i++) {
+        printf("[%d] Category: %s | Lexeme: \"%s\"\n", 
+               i, token_category_to_string(tokens[i].category), tokens[i].lexeme);
+    }
+}

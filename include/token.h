@@ -74,7 +74,11 @@ typedef struct {
     int column;             // Column Number Field (Optional) 
 } Token;
 
-// Returns the inputted token category as a string for debugging 
+// Returns the input token category as a string for debugging 
 const char *token_category_to_string(TokenCategory category);
+
+// Prints the input token stream to console
+void print_tokens(const Token *tokens, int count);
+
 
 #endif
