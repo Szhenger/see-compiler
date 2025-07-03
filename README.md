@@ -13,11 +13,11 @@ Firstly, the lexer begans this compilation pipeline, which is housed in `lexer.c
 ## Lexer
 
 Internally, `lexer.c` has the functionality to support tokenization:
-* Primitive types (int, char, bool, string, etc.)
-* Control flow keywords (if, else, while, for, etc.)
+* Primitive types (`int`, `char`, `bool`, `string`, etc.)
+* Control flow keywords (`if`, `else`, `while`, `for`, etc.)
 * Literals: integers, characters, strings
-* Symbols: both single-character and multi-character (e.g., ==, ++, ->)
-* Comments: skips both // and /* ... */ formats
+* Symbols: both single-character and multi-character (e.g., `==`, `++`, `->`)
+* Comments: skips both `//` and `/* ... */` formats
 * Identifiers: variable/function names, respecting C conventions
 are all handled and analyzed by the module. 
 
