@@ -4,7 +4,7 @@ import tempfile
 import os
 
 class TestCompilerGeneration(unittest.TestCase):
-    COMPILER_BIN = "build/seec"
+    COMPILER_BIN = "./build/seec"
     
     def run_compiler(self, source_code):
         with tempfile.NamedTemporaryFile(mode='w', suffix='.c', delete=False) as tmp:
