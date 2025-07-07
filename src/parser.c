@@ -1,6 +1,23 @@
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include "parser.h"
+
+// == Forward Declarations for Mutually Recursive Parsers ==
+static ASTNode *parse_primary(Parser *p);
+static ASTNode *parse_call(Parser *p);
+static ASTNode *parse_expression(Parser *p);
+static ASTNode *parse_expression_with_precedence(Parser *p, int min_precedence);
+static ASTNode *parse_statement(Parser *p);
+static ASTNode *parse_statement_list(Parser *p);
+static ASTNode *parse_declaration(Parser *p);
+static ASTNode *parse_assignment(Parser *p);
+static ASTNode *parse_if(Parser *p);
+static ASTNode *parse_while(Parser *p);
+static ASTNode *parse_for(Parser *p);
+static ASTNode *parse_return(Parser *p);
+static ASTNode *parse_expression_statement(Parser *p);
+static ASTNode *parse_function(Parser *p);
 
 // == Public Function: Initializes a dynamically allocated parser ==
 Parser *init_parser(Token *t, int *count) 
@@ -51,6 +68,70 @@ static int get_precedence(TokenCategory category)
         case TOKEN_PERCENT:        return 6;
         default:                   return 0;
     }
+}
+
+// == Private Helper: Analyze primatives ==
+static ASTNode *parse_primary(Parser *p) 
+{
+    Token t = current_token(p);
+
+    if (t.category == TOKEN_INTEGER_LITERAL) {
+        advance(p);
+        return create_ast_node(AST_INTEGER_LITERAL, t.lexeme);
+    }
+
+    if (t.category == TOKEN_STRING_LITERAL) {
+        advance(p);
+        return create_ast_node(AST_STRING_LITERAL, t.lexeme);
+    }
+
+    if (t.category == TOKEN_IDENTIFIER) {
+        advance(p);
+        if (match(p, TOKEN_LPAREN, "(")) {
+            p->current--;
+            return parse_call(p);
+        }
+        return create_ast_node(AST_IDENTIFIER, t.lexeme);
+    }
+
+    if (match(p, TOKEN_LPAREN, "(")) {
+        ASTNode *expr = parse_expression(p);
+        match(p, TOKEN_RPAREN, ")");
+        return expr;
+    }
+
+    return NULL;
+}
+
+// == Private Helper: Analyze expressions with ordered operators ==
+static ASTNode *parse_expression_with_precedence(Parser *p, int min_precedence) 
+{
+    ASTNode *left = parse_primary(p);
+    if (!left) return NULL;
+
+    while (true) {
+        Token t = current_token(p);
+        int prec = get_precedence(t.category);
+        if (prec == 0 || prec < min_precedence) break;
+
+        advance(p); 
+
+        ASTNode *right = parse_expression_with_precedence(p, prec + 1);
+        if (!right) return NULL;
+
+        ASTNode *binop = create_ast_node(AST_BINARY_OP, t.lexeme);
+        binop->left = left;
+        binop->right = right;
+        left = binop;
+    }
+
+    return left;
+}
+
+// == Private Helper: Analyze expressions without precedence ==
+static ASTNode *parse_expression(Parser *p) 
+{
+    return parse_expression_with_precedence(p, 1);
 }
 
 // == Private Helper: Analyze if statements ==
@@ -150,11 +231,18 @@ static ASTNode *parse_expression_statement(Parser *p)
 static ASTNode *parse_return(Parser *p) 
 {
     if (!match(p, TOKEN_KEYWORD, "return")) return NULL;
-    Token val = current_token(p);
-    advance(p);
-    if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
 
-    ASTNode *value = create_ast_node(AST_LITERAL, val.lexeme);
+    // Check if next token is a semicolon — meaning: no return value
+    if (match(p, TOKEN_SEMICOLON, ";")) {
+        ASTNode *ret_node = create_ast_node(AST_RETURN_STMT, NULL);
+        ret_node->left = NULL;
+        return ret_node;
+    }
+
+    // Otherwise, parse the return expression
+    ASTNode *value = parse_expression(p);
+    if (!value || !match(p, TOKEN_SEMICOLON, ";")) return NULL;
+
     ASTNode *ret_node = create_ast_node(AST_RETURN_STMT, NULL);
     ret_node->left = value;
     return ret_node;
@@ -205,70 +293,6 @@ static ASTNode *parse_declaration(Parser *p)
     if (!match(p, TOKEN_SEMICOLON, ";")) return NULL;
 
     return create_ast_node(AST_DECLARATION, ident.lexeme);
-}
-
-// == Private Helper: Analyze primatives ==
-static ASTNode *parse_primary(Parser *p) 
-{
-    Token t = current_token(p);
-
-    if (t.category == TOKEN_INTEGER_LITERAL) {
-        advance(p);
-        return create_ast_node(AST_INTEGER_LITERAL, t.lexeme);
-    }
-
-    if (t.category == TOKEN_STRING_LITERAL) {
-        advance(p);
-        return create_ast_node(AST_STRING_LITERAL, t.lexeme);
-    }
-
-    if (t.category == TOKEN_IDENTIFIER) {
-        advance(p);
-        if (match(p, TOKEN_LPAREN, "(")) {
-            p->current--;
-            return parse_call(p);
-        }
-        return create_ast_node(AST_IDENTIFIER, t.lexeme);
-    }
-
-    if (match(p, TOKEN_LPAREN, "(")) {
-        ASTNode *expr = parse_expression(p);
-        match(p, TOKEN_RPAREN, ")");
-        return expr;
-    }
-
-    return NULL;
-}
-
-// == Private Helper: Analyze expressions with ordered operators ==
-static ASTNode *parse_expression_with_precedence(Parser *p, int min_precedence) 
-{
-    ASTNode *left = parse_primary(p);
-    if (!left) return NULL;
-
-    while (true) {
-        Token t = current_token(p);
-        int prec = get_precedence(t.category);
-        if (prec == 0 || prec < min_precedence) break;
-
-        advance(p); 
-
-        ASTNode *right = parse_expression_with_precedence(p, prec + 1);
-        if (!right) return NULL;
-
-        ASTNode *binop = create_ast_node(AST_BINARY_OP, t.lexeme);
-        binop->left = left;
-        binop->right = right;
-        left = binop;
-    }
-
-    return left;
-}
-
-// == Private Helper: Analyze expressions without precedence ==
-static ASTNode *parse_expression(Parser *p) 
-{
-    return parse_expression_with_precedence(p, 1);
 }
 
 // == Private Helper: Analyze variable assignments ==

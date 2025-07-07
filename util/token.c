@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "token.h"
 
 // == Public Function: Returns strings of token categories == 

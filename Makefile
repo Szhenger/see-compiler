@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra -g -Iinclude
 SRC_DIR = src
 BUILD_DIR = build
 TEST_DIR = test
-UTIL_DIR = utils
+UTIL_DIR = util
 
 # Source files
 DRIVER_SRC = $(SRC_DIR)/driver.c

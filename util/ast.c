@@ -65,7 +65,8 @@ static void print_ast_recursive(ASTNode *node, int indent)
 }
 
 // Pulblic Function: Prints AST recursively ==
-void print_ast(ASTNode *root) {
+void print_ast(ASTNode *root) 
+{
     printf("== Abstract Syntax Tree ==\n");
     print_ast_recursive(root, 0);
 }

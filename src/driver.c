@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ast.h"
+#include "codegen.h"
 #include "ir.h"
 #include "lexer.h"
 #include "parser.h"
@@ -19,12 +20,10 @@ int main(int argc, char **argv)
     }
 
     // Procedure 1: Get C Source File
-    printf("== SeeCompilation ==\n");
     char *source = read_file(argv[1]);
     if (!source) return 1;
 
     // Procedure 2: Tokenize the C Source String
-    printf("== Tokenizing Source File ==\n");
     int token_count = 0;
     Token *tokens = tokenize(source, &token_count);
     if (!tokens || token_count == 0) {
@@ -35,8 +34,7 @@ int main(int argc, char **argv)
     print_tokens(tokens, token_count);
     
     // Procedure 3: Parse the Token Stream
-    printf("== Parsing Token Stream ==\n");
-    Parser *parser = init_parser(tokens, token_count);
+    Parser *parser = init_parser(tokens, &token_count);
     ASTNode *ast = parse(parser);
     if (!ast) {
         fprintf(stderr, "Parsing failed!\n");
@@ -58,7 +56,6 @@ int main(int argc, char **argv)
     }
     
     // Procedure 5: Generate IR Instructions from AST
-    printf("== Generating IR Instructions ==\n");
     IRInstr *ir = generate_ir(ast);
     if (!ir) {
         fprintf(stderr, "IR generation failed!\n");
@@ -71,7 +68,6 @@ int main(int argc, char **argv)
     print_ir(ir);
 
     // Procedure 6: Generate x86 Assembly Instructions from IR  
-    printf("== Generating x86 Assembly Instructions ==\n");
     FILE *output = fopen("output.s", "w");
     if (!output) {
         fprintf(stderr, "Failed to open output file\n");

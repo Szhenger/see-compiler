@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "semantic.h"
 
@@ -35,6 +36,15 @@ static void clear_symbols(void)
         symbol_table = next;
     }
 }
+
+// == Forward Declarations for Semantic Analysis ==
+static int analyze_expression(ASTNode *node);
+static int analyze_call(ASTNode *node);
+static int analyze_return(ASTNode *node);
+static int analyze_declaration(ASTNode *node);
+static int analyze_assignment(ASTNode *node);
+static int analyze_statement(ASTNode *node);
+static int analyze_function(ASTNode *node);
 
 // == Public Helper: Analyze a expression ==
 static int analyze_expression(ASTNode *node) {
