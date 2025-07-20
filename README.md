@@ -2,6 +2,8 @@
 
 This is **SeeCompiler**, a readable and modular C compiler that translates a verified subset of the C programming language into a sequence of x86 assembly instructions. Designed for correctness, clarity and traceability, the compiler exposes each major compilation step with beginner-friendly source code and debug-friendly output.
 
+Created and maintained under the SZ Laboratory of Programming — a personal initiative focused on systems-level compilers and infrastructure.
+
 At the core of SeeCompiler is `driver.c`, the management abstraction layer that runs the full compilation pipeline in a linear and inspectable process. This makes the project ideal for education, experimentation, and systems-level programming exploration.
 
 ## Driver
