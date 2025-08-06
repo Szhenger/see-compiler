@@ -1,6 +1,6 @@
-# SeeComplier: A Beginner-Friendly C Compiler 
+# SeeComplier: A Beginner-Friendly C/C++ Compiler 
 
-This is **SeeCompiler**, a readable and modular C compiler that translates a verified subset of the C programming language into a sequence of x86 assembly instructions. Designed for correctness, clarity and traceability, the compiler exposes each major compilation step with beginner-friendly source code and debug-friendly output.
+This is **SeeCompiler**, a readable and modular C/C++ compiler that translates a verified subset of the C/C++ programming language into a sequence of x86 assembly instructions. Designed for correctness, clarity and traceability, the compiler exposes each major compilation step with beginner-friendly source code and debug-friendly output.
 
 Created and maintained under the SZ Open Laboratory — a personal initiative focused on systems-level compilers and infrastructure.
 
