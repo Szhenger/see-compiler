@@ -51,7 +51,7 @@ enum class Prim : uint8_t {
 
 struct TypeInfo {
   Prim        kind;
-  const char* spelling;       // canonical spelling used by the compiler
+  const char *spelling;       // canonical spelling used by the compiler
 
   // Classification Flags
   bool        is_integer;
@@ -121,35 +121,35 @@ static inline const TypeInfo* type_info(Prim k) {
 }
 
 static inline uint8_t size_of(Prim k, Arch a) {
-  const TypeInfo* t = type_info(k);
+  const TypeInfo *t = type_info(k);
   if (!t) return 0;
   return (a == Arch::X86_64) ? t->size_x86_64 : t->size_arm64;
 }
 
 static inline uint8_t align_of(Prim k, Arch a) {
-  const TypeInfo* t = type_info(k);
+  const TypeInfo *t = type_info(k);
   if (!t) return 0;
   return (a == Arch::X86_64) ? t->align_x86_64 : t->align_arm64;
 }
 
-static inline bool is_integer(Prim k)   { const TypeInfo* t = type_info(k); return t ? t->is_integer  : false; }
-static inline bool is_floating(Prim k)  { const TypeInfo* t = type_info(k); return t ? t->is_floating : false; }
-static inline bool is_signed(Prim k)    { const TypeInfo* t = type_info(k); return t ? t->is_signed   : false; }
-static inline bool is_character(Prim k) { const TypeInfo* t = type_info(k); return t ? t->is_character: false; }
+static inline bool is_integer(Prim k)   { const TypeInfo *t = type_info(k); return t ? t->is_integer  : false; }
+static inline bool is_floating(Prim k)  { const TypeInfo *t = type_info(k); return t ? t->is_floating : false; }
+static inline bool is_signed(Prim k)    { const TypeInfo *t = type_info(k); return t ? t->is_signed   : false; }
+static inline bool is_character(Prim k) { const TypeInfo *t = type_info(k); return t ? t->is_character: false; }
 
-static inline uint8_t integer_rank(Prim k) { const TypeInfo* t = type_info(k); return t ? t->int_rank   : 0; }
-static inline uint8_t float_rank(Prim k)   { const TypeInfo* t = type_info(k); return t ? t->float_rank : 0; }
+static inline uint8_t integer_rank(Prim k) { const TypeInfo *t = type_info(k); return t ? t->int_rank   : 0; }
+static inline uint8_t float_rank(Prim k)   { const TypeInfo *t = type_info(k); return t ? t->float_rank : 0; }
 
 static inline const char* to_string(Prim k) {
-  const TypeInfo* t = type_info(k);
+  const TypeInfo *t = type_info(k);
   return t ? t->spelling : "<invalid>";
 }
 
 // ---------------------- Spelling Lookups ----------------------
 
-static inline bool from_spelling(const char* s, Prim* out) {
+static inline bool from_spelling(const char *s, Prim *out) {
   if (!s || !out) return false;
-  for (size_t i = 0; i < static_cast<size_t>(Prim::_COUNT); ++i) {
+  for (size_t i = 0; i < static_cast<size_t>(Prim::_COUNT); i++) {
     if (std::strcmp(s, kTypeTable[i].spelling) == 0) {
       *out = kTypeTable[i].kind;
       return true;
@@ -158,7 +158,7 @@ static inline bool from_spelling(const char* s, Prim* out) {
   return false;
 }
 
-static inline void normalize(const char* in, char* out_buf, size_t out_cap) {
+static inline void normalize(const char *in, char *out_buf, size_t out_cap) {
   if (!in || !out_buf || out_cap == 0) return;
   size_t o = 0;
   bool last_space = true;
@@ -177,11 +177,11 @@ static inline void normalize(const char* in, char* out_buf, size_t out_cap) {
       }
     }
   }
-  if (o > 0 && out_buf[o - 1] == ' ') --o; // trim trailing
+  if (o > 0 && out_buf[o - 1] == ' ') --o;
   if (o < out_cap) out_buf[o] = '\0';
 }
 
-static inline bool from_flexible_spelling(const char* s, Prim* out) {
+static inline bool from_flexible_spelling(const char *s, Prim *out) {
   if (!s || !out) return false;
 
   const size_t n = std::strlen(s);
@@ -191,9 +191,9 @@ static inline bool from_flexible_spelling(const char* s, Prim* out) {
 
   if (from_spelling(buf, out)) return true;
 
-  struct Alias { const char* key; Prim val; };
+  struct Alias { const char *key; Prim val; };
   static const Alias aliases[] = {
-    {"_bool",                 Prim::CBool},
+    {"bool",                 Prim::Bool},
     {"nullptr",               Prim::Nullptr},
     {"unsigned",              Prim::UInt},
     {"signed",                Prim::Int},
@@ -214,7 +214,7 @@ static inline bool from_flexible_spelling(const char* s, Prim* out) {
     {"unsigned long long int",Prim::ULongLong},
     {"signed char",           Prim::SChar},
     {"unsigned char",         Prim::UChar},
-    {"wchar",                 Prim::WChar},   // forgiving
+    {"wchar",                 Prim::WChar},
     {"wchar_t",               Prim::WChar},
     {"char8",                 Prim::Char8},
     {"char16",                Prim::Char16},
@@ -223,7 +223,7 @@ static inline bool from_flexible_spelling(const char* s, Prim* out) {
     {"unsigned __int128_t",   Prim::UInt128},
   };
 
-  for (size_t i = 0; i < sizeof(aliases)/sizeof(aliases[0]); ++i) {
+  for (size_t i = 0; i < sizeof(aliases)/sizeof(aliases[0]); i++) {
     if (std::strcmp(buf, aliases[i].key) == 0) { *out = aliases[i].val; return true; }
   }
   return false;
