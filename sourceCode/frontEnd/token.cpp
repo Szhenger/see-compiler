@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <cstring>
 #include <cctype>
+#include "token.hpp"
 
 namespace see {
 
