@@ -193,7 +193,7 @@ static inline bool from_flexible_spelling(const char *s, Prim *out) {
 
   struct Alias { const char *key; Prim val; };
   static const Alias aliases[] = {
-    {"bool",                 Prim::Bool},
+    {"bool",                  Prim::Bool},
     {"nullptr",               Prim::Nullptr},
     {"unsigned",              Prim::UInt},
     {"signed",                Prim::Int},
