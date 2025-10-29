@@ -32,7 +32,7 @@ struct Token {
   Prim              prim;       // valid iff kind==Type
 };
 
-// ----------------------------- Lexer core ------------------------------
+// ----------------------------- Lexer Core ------------------------------
 
 class Lexer {
 public:
@@ -161,32 +161,30 @@ private:
 
   // Simple C/C++ keyword set (non-primitive). Primitive words are handled via token.cpp.
   static bool is_keyword(std::string_view s) {
-    // C core
-    static const char* kw[] = {
+    static const char *kw[] = {
       "if","else","switch","case","default","break","continue","return",
       "for","while","do","goto",
       "typedef","struct","union","enum","sizeof","alignof",
       "auto","register","static","extern","const","volatile","restrict",
       "inline","_Noreturn","_Alignas","_Alignof","_Atomic","_Thread_local",
-      // C++ supplements commonly seen in “mostly C” codebases
       "namespace","using","class","template","typename","new","delete",
       "try","catch","throw","constexpr","consteval","constinit","explicit",
       "friend","operator","private","protected","public","virtual","override",
       "mutable","noexcept","static_assert"
     };
-    for (const char* k : kw) {
+    for (const char *k : kw) {
       if (s == k) return true;
     }
     return false;
   }
 
-  bool try_scan_primitive_collapse(Prim* out_prim, const char** out_start, const char** out_end) {
-    const char* save = cur_;
+  bool try_scan_primitive_collapse(Prim *out_prim, const char **out_start, const char **out_end) {
+    const char *save = cur_;
     uint32_t save_line = line_, save_col = col_;
     bool save_at_bol = at_line_start_;
 
     char probe[128]; size_t p = 0;
-    const char* first = cur_;
+    const char *first = cur_;
     int words = 0;
 
     auto append = [&](const char* s, size_t n) {
@@ -206,7 +204,7 @@ private:
       append(wbeg, size_t(wend - wbeg));
       words++;
 
-      const char* save2 = cur_;
+      const char *save2 = cur_;
       uint32_t sl2_line = line_, sl2_col = col_; bool sl2_bol = at_line_start_;
       skip_inline_space_only();
       if (!(cur_ < end_ && is_ident_start(*cur_)) || words >= 4) {
@@ -233,10 +231,10 @@ private:
   Token scan_identifier_or_type() {
     const uint32_t start_line = line_;
     const uint32_t start_col  = col_;
-    const char* tok_start_ptr = cur_;
+    const char *tok_start_ptr = cur_;
 
     // First, try the primitive-type collapse (may consume multiple ident tokens).
-    Prim prim; const char* s=nullptr; const char* e=nullptr;
+    Prim prim; const char *s=nullptr; const char *e=nullptr;
     if (try_scan_primitive_collapse(&prim, &s, &e)) {
       return make_type_token(prim, s, size_t(e - s), start_line, start_col);
     }
@@ -244,7 +242,7 @@ private:
     // Else: scan a single identifier
     advance(); // first char
     while (cur_ < end_ && is_ident_char(*cur_)) advance();
-    const char* tok_end_ptr = cur_;
+    const char *tok_end_ptr = cur_;
     std::string_view ident{tok_start_ptr, size_t(tok_end_ptr - tok_start_ptr)};
 
     // Single-word canonical primitive? (e.g., "int", "double", "wchar_t", "char8_t", "_Bool", "bool")
@@ -279,7 +277,7 @@ private:
   // ------------- numeric literals -------------
 
   Token scan_number() {
-    const char* s = cur_;
+    const char *s = cur_;
     bool is_float = false;
 
     // Prefix: 0x / 0X (hex), 0b / 0B (binary), 0 (octal) — we’ll accept underscores in digits? (not in C/C++)
@@ -327,7 +325,7 @@ private:
 
   void consume_int_suffix() {
     // Simple: accept combinations of u/U and l/L/ll/LL (and C++ size_t suffix 'z'/'Z' in some impls)
-    const char* save;
+    const char *save;
     do {
       save = cur_;
       if (match('u') || match('U')) continue;
@@ -361,7 +359,7 @@ private:
   }
 
   Token scan_string_or_char() {
-    const char* s = cur_;
+    const char *s = cur_;
     bool is_char = false;
 
     // Handle prefix
@@ -394,7 +392,7 @@ private:
   // ------------- operators / punctuators -------------
 
   Token scan_operator_or_punct() {
-    const char* s = cur_;
+    const char *s = cur_;
     auto two = [&](char a, char b){ return (cur_+1<end_ && *cur_==a && *(cur_+1)==b); };
     auto three = [&](char a, char b, char c){ return (cur_+2<end_ && *cur_==a && *(cur_+1)==b && *(cur_+2)==c); };
 
@@ -447,9 +445,9 @@ private:
   }
 
 private:
-  const char* begin_;
-  const char* cur_;
-  const char* end_;
+  const char *begin_;
+  const char *cur_;
+  const char *end_;
   uint32_t    line_;
   uint32_t    col_;
   bool        at_line_start_ = true;
