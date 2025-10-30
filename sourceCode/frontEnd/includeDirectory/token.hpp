@@ -1,25 +1,24 @@
 #pragma once
 #include <cstdint>
 #include <cstddef>
-#include "token.cpp"
 
 namespace see {
 
-// ---------------------- Targets ----------------------
+// ---------------------- Targeted Architectures ----------------------
 
 enum class Arch : std::uint8_t {
   X86_64 = 0,
   ARM64  = 1
 };
 
-// ---------------------- Primitive kinds ----------------------
+// ---------------------- Primitive Tokens ----------------------
 
 enum class Prim : std::uint8_t {
   // Void
   Void,
   Nullptr,      // C++: std::nullptr_t
 
-  // Booleans
+  // Boolean
   Bool,         // C++: bool
 
   // Character Family
@@ -29,7 +28,7 @@ enum class Prim : std::uint8_t {
   Char8,        // char8_t (C++20)
   Char16,       // char16_t
   Char32,       // char32_t
-  WChar,        // wchar_t (Darwin: 4 bytes)
+  WChar,        // wchar_t (arm64: 4 bytes)
 
   // Integers
   Short,
@@ -52,7 +51,7 @@ enum class Prim : std::uint8_t {
   _COUNT
 };
 
-// ---------------------- Type metadata ----------------------
+// ---------------------- Type Metadata ----------------------
 
 struct TypeInfo {
   Prim          kind;
