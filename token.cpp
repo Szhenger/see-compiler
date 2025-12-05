@@ -4,8 +4,6 @@
 #include <iostream>
 #include <sstream>
 
-namespace token {
-
 static const std::vector<std::pair<std::string, KeywordKind>>& keyword_table() {
     static std::vector<std::pair<std::string, KeywordKind>> tbl = {
         // C
@@ -777,5 +775,3 @@ bool is_binary_operator(const Token& t) {
             return false;
     }
 }
-
-} // namespace token

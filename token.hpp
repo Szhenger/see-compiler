@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 
-namespace token {
-
 struct SourceLocation {
     std::uint32_t line;
     std::uint32_t column;
@@ -255,7 +253,4 @@ bool is_unary_operator(const Token& t);
 
 bool is_binary_operator(const Token& t);
 
-}
-
 #endif // TOKEN_HPP
-
