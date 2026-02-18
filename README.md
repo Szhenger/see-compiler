@@ -28,6 +28,7 @@ In `SeeC++`, we represent a Neural Network as a composite function $F: \mathbb{R
 
 ### 1. The Adjoint Equation
 To train the model, `SeeC++` constructs the **Adjoint Graph**. By applying the Chain Rule in reverse topological order, the compiler generates the gradient code for every weight $w_i$:
+
 $$\frac{\partial L}{\partial w_i} = \frac{\partial L}{\partial f_L} \cdot \frac{\partial f_L}{\partial f_{L-1}} \cdot \dots \cdot \frac{\partial f_i}{\partial w_i}$$
 
 ### 2. Kernel Fusion & Function Composition
