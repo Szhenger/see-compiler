@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package seecpp.sir;
+
+// 1. Core Data Types
+enum DataType {
+  F32 = 0;
+  I32 = 1;
+  I64 = 2;
+}
+
+message Shape {
+  repeated int64 dims = 1;
+}
+
+// 2. SSA Value: The "Edge" between operations
+message Value {
+  string id = 1;
+  DataType dtype = 2;
+  Shape shape = 3;
+}
+
+// 3. Attribute: Compile-time constants (strides, padding, etc.)
+message Attribute {
+  string name = 1;
+  oneof value {
+    int64 i = 2;
+    float f = 3;
+    string s = 4;
+    IntList ints = 5;
+  }
+}
+
+message IntList {
+  repeated int64 values = 1;
+}
+
+// 4. Operation: The "Node" in the graph
+message Operation {
+  string mnemonic = 1;         // e.g., "sc_high.conv2d" or "sc_low.simd_add"
+  repeated string operands = 2; // IDs of the input Values
+  repeated Value results = 3;  // New Values produced by this op
+  repeated Attribute attrs = 4;
+}
+
+// 5. Block: The Container (The serialized SIR Graph)
+message Block {
+  repeated Operation operations = 1;
+}
