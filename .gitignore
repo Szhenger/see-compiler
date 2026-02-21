@@ -1,0 +1,12 @@
+# Build directories
+build/
+bin/
+lib/
+
+# Generated Protobuf files
+*.pb.cc
+*.pb.h
+
+# OS specific
+.DS_Store
+Thumbs.db
