@@ -1,19 +1,33 @@
 #pragma once
-#include "middle_end/sir.hpp"
-#include "utility_end/logger.hpp"
+#include "middle-end/sir.hpp"
+#include "utility/logger.hpp"
 
 namespace seecpp::frontend {
 
 class ShapeInferenceEngine {
-public:
-    // The main entry point that iterates through the entire graph
-    void infer(middle_end::Block& block);
+    public:
+        /**
+         * @brief Performs a forward pass over the block to calculate all tensor shapes.
+         * @return true if all shapes were successfully resolved.
+         */
+        bool infer(sir::Block& block);
 
-private:
-    // Op-specific inference logic
-    void inferMatMul(middle_end::Operation* op);
-    void inferConv2D(middle_end::Operation* op);
-    void inferElementwise(middle_end::Operation* op); // Relu, Add, etc.
+    private:
+        // --- The Core Math Logic ---
+        
+        // Handles Matrix Multiplication: [M, K] x [K, N] -> [M, N]
+        bool inferMatMul(sir::Operation* op);
+
+        // Handles Convolution: Calculates output based on padding, stride, and dilation
+        bool inferConv2D(sir::Operation* op);
+
+        // Handles Add/Sub/Mul: Implements NumPy-style broadcasting rules
+        bool inferElementwise(sir::Operation* op);
+
+        // --- Helper for Rigor ---
+        
+        // Ensures all operands of an operation actually have a shape before we use them
+        bool verifyOperandsDefined(sir::Operation* op);
 };
 
 } // namespace seecpp::frontend

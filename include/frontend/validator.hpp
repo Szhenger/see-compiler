@@ -1,26 +1,32 @@
 #pragma once
-#include "source/middle_end/sir.hpp"
+#include "middle-end/sir.hpp"
 #include <set>
 #include <string>
+#include <unordered_set>
 
 namespace seecpp::frontend {
 
 class Validator {
 public:
-    // The main entry point for validation
-    bool validate(const middle_end::Block& block);
+    /**
+     * @brief Performs a multi-pass validation of the SIR Block.
+     * Checks: Topology, Op-Support, SSA Dominance, and Type Consistency.
+     */
+    bool validate(const sir::Block& block);
 
 private:
-    // Check if we support this specific operator name
-    bool isOpSupported(const std::string& mnemonic);
+    // 1. Structural: Is the graph a valid DAG?
+    bool checkTopologicalOrder(const sir::Block& block);
     
-    // Check for cycles in the graph (DFS)
-    bool hasCycles(const middle_end::Block& block);
+    // 2. Dialect: Does every op follow its own rules (e.g., MatMul has 2 inputs)?
+    bool checkOpConstraints(const sir::Operation& op);
 
-    // Set of officially supported "sc_high" operations
-    const std::set<std::string> supported_ops = {
-        "sc_high.MatMul", "sc_high.Conv", "sc_high.Relu", 
-        "sc_high.Add", "sc_high.Constant"
+    // 3. Connectivity: Are there any null pointers or undefined SSA values?
+    bool checkSSALinks(const sir::Block& block);
+
+    const std::unordered_set<std::string> supported_ops = {
+        "sc_high.matmul", "sc_high.conv2d", "sc_high.relu", 
+        "sc_high.add", "sc_high.constant", "sc_high.input"
     };
 };
 

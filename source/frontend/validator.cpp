@@ -1,45 +1,67 @@
 #include "frontend/validator.hpp"
-#include "utility_end/logger.hpp"
+#include "include/utility/logger.hpp"
+#include <unordered_set>
 
 namespace seecpp::frontend {
 
-bool Validator::validate(const middle_end::Block& block) {
-    utility_end::Logger::info("Starting Model Validation...");
+bool Validator::validate(const sir::Block& block) {
+    utility::Logger::info("Validating SIR Graph Integrity...");
+
+    if (!checkSSALinks(block)) return false;
+    if (!checkTopologicalOrder(block)) return false;
 
     for (const auto& op : block.operations) {
-        // 1. Support Check
-        if (!isOpSupported(op->mnemonic)) {
-            utility_end::Logger::error("Unsupported Operator: " + op->mnemonic);
+        if (supported_ops.find(op->mnemonic) == supported_ops.end()) {
+            utility::Logger::error("Unsupported Op: " + op->mnemonic);
             return false;
         }
+        if (!checkOpConstraints(*op)) return false;
+    }
 
-        // 2. SSA Integrity: Ensure inputs actually exist
+    utility::Logger::info("Validation Passed.");
+    return true;
+}
+
+bool Validator::checkTopologicalOrder(const sir::Block& block) {
+    std::unordered_set<sir::Value*> defined_values;
+
+    for (const auto& op : block.operations) {
+        // 1. Check if all operands for this op have been defined yet
         for (auto* operand : op->operands) {
-            if (operand == nullptr || operand->id.empty()) {
-                utility_end::Logger::error("Dangling SSA pointer in op: " + op->mnemonic);
+            if (defined_values.find(operand) == defined_values.end()) {
+                utility::Logger::error("SSA Violation: Value used before definition in " + op->mnemonic);
+                return false;
+            }
+        }
+
+        // 2. Mark this op's results as "defined"
+        for (const auto& res : op->results) {
+            defined_values.insert(res.get());
+        }
+    }
+    return true;
+}
+
+bool Validator::checkOpConstraints(const sir::Operation& op) {
+    if (op.mnemonic == "sc_high.matmul" && op.operands.size() != 2) {
+        utility::Logger::error("MatMul must have exactly 2 operands.");
+        return false;
+    }
+    // Add constraints for Conv2D, etc.
+    return true;
+}
+
+bool Validator::checkSSALinks(const sir::Block& block) {
+    for (const auto& op : block.operations) {
+        if (op == nullptr) return false;
+        for (auto* operand : op->operands) {
+            if (operand == nullptr) {
+                utility::Logger::error("Null operand found in op " + op->mnemonic);
                 return false;
             }
         }
     }
-
-    // 3. Topology Check
-    if (hasCycles(block)) {
-        utility_end::Logger::error("Graph Validation Failed: Cyclic dependency detected.");
-        return false;
-    }
-
-    utility_end::Logger::info("Model Validation Passed.");
     return true;
-}
-
-bool Validator::isOpSupported(const std::string& mnemonic) {
-    return supported_ops.find(mnemonic) != supported_ops.end();
-}
-
-bool Validator::hasCycles(const middle_end::Block& block) {
-    // For a simple ML compiler, we expect a DAG (Directed Acyclic Graph)
-    // We can implement a quick DFS-based topological check here
-    return false; // Placeholder: Assume DAG for now
 }
 
 } // namespace seecpp::frontend
