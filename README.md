@@ -46,6 +46,6 @@ In `SeeC++`, we fuse operations like `Add + ReLU + Dropout` into a single loop, 
 * **Autodiff Engine:** The "Calculus Core" that symbolically appends gradient nodes to the forward graph.
 * **Static Memory Mapper:** Pre-calculates the exact lifespan of every tensor to minimize the memory footprint.
 
-### Step III: The Engineering Pass (Backend)
+### Step III: The System Pass (Backend)
 * **Emitter:** Translates the `SIR` into high-performance `C++20`.
 * **Optimization:** Inlines hardware intrinsics for `x86_64` (AVX-512) and `ARM` (NEON).
