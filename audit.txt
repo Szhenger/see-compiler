@@ -1,4 +1,0 @@
-SeeC++ Audit Log
-
-April 29th, 2026:
-- Initializing the Frontend Audit!
