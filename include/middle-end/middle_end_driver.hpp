@@ -1,23 +1,33 @@
 #pragma once
 
 #include "middle-end/pass_manager.hpp"
-
-// =============================================================================
-// Middle-End Pipeline Assembly
-//
-// Pass ordering:
-//   [1] OperatorFusionPass    — Conv+BN fusion (sc_high, pre-lowering)
-//   [2] DeadCodeElimination   — remove BN ops absorbed by fusion
-//   [3] ConvLoweringPass      — sc_high.conv2d -> sc_low.im2col + sc_low.matmul
-//   [4] OperatorFusionPass    — MatMul+Relu fusion (sc_low, post-lowering)
-//   [5] DeadCodeElimination   — remove residual dead ops
-// =============================================================================
+#include <cstdint>
 
 namespace seecpp::middle {
 
-/// Build and return the canonical SeeC++ middle-end PassManager.
-/// Caller drives execution with pm.run(block).
-[[nodiscard]]
-PassManager buildMiddleEndPipeline();
+enum class OptLevel : uint8_t {
+    O0, 
+    O1, 
+    O2, 
+    O3 
+};
+
+struct PipelineConfig {
+    OptLevel level{OptLevel::O2};
+    size_t l1_cache_size{32768};
+    bool enable_autodiff{true};
+    bool strict_continuity_check{true};
+};
+
+/**
+ * Pipeline Order:
+ * 1. HighLevelFusion (Conv+BN)
+ * 2. DCE
+ * 3. ConvLowering (Conv -> Im2Col + MatMul)
+ * 4. LowLevelFusion (MatMul+ReLU)
+ * 5. DCE
+ */
+
+[[nodiscard]] PassManager buildMiddleEndPipeline(const PipelineConfig& config = {});
 
 } // namespace seecpp::middle
