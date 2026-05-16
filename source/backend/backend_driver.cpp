@@ -53,7 +53,6 @@ std::unique_ptr<CodegenDriver> createCpuDriver(
 
     switch (options.arch) {
         case TargetArch::HostNative:
-            // TODO: Query CPUID here. Defaulting to generic C for safety.
             utility::Logger::warn("HostNative target selected. Defaulting to generic C code.");
             target_emitter = std::make_unique<CpuGenericCTarget>(output_dir, options);
             break;
