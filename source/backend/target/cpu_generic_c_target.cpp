@@ -1,4 +1,4 @@
-// src/backend/targets/cpu_generic_c_target.cpp
+// source/backend/targets/cpu_generic_c_target.cpp
 #include "include/backend/targets/cpu_generic_c_target.hpp"
 #include "include/utility/logger.hpp"
 
