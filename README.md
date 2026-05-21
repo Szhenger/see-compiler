@@ -1,5 +1,5 @@
 # SeeC++: An AOT ONNX-to-C++ Training Compiler
-### *Where the Rigor of Mathematical Analysis Meets the Metal of Systems Engineering*
+### *Where the Rigor of Mathematical Analysis Meets the Metal of Performance Engineering*
 
 [![Standard: ONNX](https://img.shields.io/badge/Standard-ONNX%20v1.16-blue)](https://onnx.ai/)
 [![Backend: C++20](https://img.shields.io/badge/Backend-C%2B%2B20-00599C)](https://isocpp.org/)
@@ -7,7 +7,7 @@
 **SeeC++** is a specialized Ahead-of-Time (AOT) compiler that transforms standard ONNX (Open Neural Network Exchange) computation graphs into standalone, dependency-free `C++` source code. 
 
 ## The "Why": A Love for Mathematical Analysis
-`SeeC++` was born at the intersection of a engineering pivot and a lifelong obsession with **Mathematical Analysis**. 
+`SeeC++` was born at the intersection of a engineering pivot with **Mathematical Analysis**. 
 
 In college, `Real Analysis` was my favorite subject — the study of real-valued functions. While building `SeeC`, I realized that the "Leaky Abstractions" of modern ML (Machine Learning) frameworks often obscure the beauty of the underlying calculus. I am developing `SeeC++` to reclaim that transparency: translating the abstract **Chain Rule** directly into **AVX-512** instructions.
 
@@ -38,14 +38,14 @@ In `SeeC++`, we fuse operations like `Add + ReLU + Dropout` into a single loop, 
 
 ## System Architecture
 
-### Step I: Ingress (Frontend)
+### Module I: Ingress (Frontend)
 * **Input:** Industry-standard `.onnx` files.
 * **Process:** Parses the Protobuf binary into the **SeeC++ Intermediate Representation (SIR)**.
 
-### Step II: The Analytic Pass (Middle-End)
+### Module II: The Analytic Pass (Middle-End)
 * **Autodiff Engine:** The "Calculus Core" that symbolically appends gradient nodes to the forward graph.
 * **Static Memory Mapper:** Pre-calculates the exact lifespan of every tensor to minimize the memory footprint.
 
-### Step III: The System Pass (Backend)
+### Module III: The System Pass (Backend)
 * **Emitter:** Translates the `SIR` into high-performance `C++20`.
 * **Optimization:** Inlines hardware intrinsics for `x86_64` (AVX-512) and `ARM` (NEON).
