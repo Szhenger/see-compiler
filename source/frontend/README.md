@@ -1,4 +1,4 @@
-# SeeC++ Frontend: The Semantic Ingress & Schema
+# SeeC++ Frontend: The Semantic Ingress & Representation Schema
 
 ## 1. Mathematical Foundations: The Tensor Manifold
 
@@ -17,7 +17,7 @@ A tensor of shape $[2, 6]$ and a tensor of shape $[3, 4]$ are **isomorphic** in 
 
 ## 2. System Architecture: The Ingress Pipeline
 
-The Frontend is divided into two major functional units: the **Ingress** and the **Parser/Validator**.
+The Frontend is divided into two major functional units: the **Ingress** and the **Parser**.
 
 ### A. The Ingress (Protobuf Deserializer)
 The Ingress is the physical interface with the `.onnx` binary.
