@@ -59,8 +59,6 @@ In `SeeC++`, we fuse operations like `Add + ReLU + Dropout` into a single loop, 
 ```text
 see-compiler/
 ├── README.md               # Specification
-├── .clang-format           # Google-style C++ enforcement
-├── .clang-tidy             # Google-style C++ adjustment
 ├── CMakeLists.txt          # Master build orchestrator
 ├── cmake/                  # Custom CMake modules (e.g., Protobuf codegen)
 ├── include/
@@ -78,4 +76,6 @@ see-compiler/
 ├── external/               # External vendor dependencies (ONNX, GoogleTest) managed via CMake
 ├── docs/                   # Architectural Decision Records (ADRs) and Calculus Proofs
 ├── tools/                  # Developer ergonomics (format.sh, lint.sh)
+├── .clang-format           # Google-style C++ enforcement
+├── .clang-tidy             # Google-style C++ adjustment
 └── .github/workflows/      # Continuous Integration pipelines
