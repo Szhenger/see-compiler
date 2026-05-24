@@ -58,7 +58,9 @@ In `SeeC++`, we fuse operations like `Add + ReLU + Dropout` into a single loop, 
 
 ```text
 see-compiler/
-├── README.md               # Specification 
+├── README.md               # Specification
+├── .clang-format           # Google-style C++ enforcement
+├── .clang-tidy             # Google-style C++ adjustment
 ├── CMakeLists.txt          # Master build orchestrator
 ├── cmake/                  # Custom CMake modules (e.g., Protobuf codegen)
 ├── include/
