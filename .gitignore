@@ -1,7 +1,3 @@
-# ==============================================================================
-# SeeC++ Compiler .gitignore
-# ==============================================================================
-
 # --- CMake & C++ Build Artifacts ---
 # Ignores out-of-source builds and compilation databases
 build/
