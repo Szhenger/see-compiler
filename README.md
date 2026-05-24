@@ -57,7 +57,7 @@ In `SeeC++`, we fuse operations like `Add + ReLU + Dropout` into a single loop, 
 **SeeC++** adheres to the **Google C++ Style Guide** and utilizes modern **CMake** to ensure mechanical sympathy, structural predictability, and robust cross-platform compilation. 
 
 ```text
-seecpp/
+see-compiler/
 ├── CMakeLists.txt          # Master build orchestrator
 ├── cmake/                  # Custom CMake modules (e.g., Protobuf codegen)
 ├── include/
