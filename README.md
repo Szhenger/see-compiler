@@ -49,3 +49,30 @@ In `SeeC++`, we fuse operations like `Add + ReLU + Dropout` into a single loop, 
 ### Module III: The System Pass (Backend)
 * **Emitter:** Translates the `SIR` into high-performance `C++20`.
 * **Optimization:** Inlines hardware intrinsics for `x86_64` (AVX-512) and `ARM` (NEON).
+
+---
+
+## Repository Structure & Build System
+
+**SeeC++** adheres to the **Google C++ Style Guide** and utilizes modern **CMake** to ensure mechanical sympathy, structural predictability, and robust cross-platform compilation. 
+
+```text
+seecpp/
+├── CMakeLists.txt          # Master build orchestrator
+├── cmake/                  # Custom CMake modules (e.g., Protobuf codegen)
+├── include/
+│   └── seecpp/             # Protected public API boundary (compiler.h, options.h)
+├── src/                    # Internal implementation (headers co-located with source)
+│   ├── frontend/
+│   ├── middle_end/
+│   └── backend/
+├── test/                   
+│   ├── cpp/                # High-performance GoogleTest unit tests
+│   ├── python/             # End-to-end pytest framework integration
+│   └── fixtures/           # Deterministic .onnx mathematical scenarios
+├── proto/
+│   └── sir.proto           # SeeC++ Intermediate Representation schema
+├── external/               # External vendor dependencies (ONNX, GoogleTest) managed via CMake
+├── docs/                   # Architectural Decision Records (ADRs) and Calculus Proofs
+├── tools/                  # Developer ergonomics (format.sh, lint.sh)
+└── .github/workflows/      # Continuous Integration pipelines
