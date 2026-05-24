@@ -24,7 +24,7 @@ Most Deep Learning frameworks act as "interpreters," dispatching kernels one-by-
 
 ## Mathematical Foundation
 
-In `SeeC++`, we represent a Neural Network as a composite function $F: \mathbb{R}^n \to \mathbb{R}^m$ where $F = f_L \circ f_{L-1} \circ \dots \circ f_1$.
+In `SeeC++`, we represent a Neural Network as a composite function $F \ : \ \mathbb{R}^n \to \mathbb{R}^m$ where $F = f_L \circ f_{L-1} \circ \dots \circ f_1$.
 
 ### 1. The Adjoint Equation
 To train the model, `SeeC++` constructs the **Adjoint Graph**. By applying the Chain Rule in reverse topological order, the compiler generates the gradient code for every weight $w_i$:
