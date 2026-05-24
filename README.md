@@ -62,7 +62,7 @@ seecpp/
 ├── cmake/                  # Custom CMake modules (e.g., Protobuf codegen)
 ├── include/
 │   └── seecpp/             # Protected public API boundary (compiler.h, options.h)
-├── src/                    # Internal implementation (headers co-located with source)
+├── source/                    # Internal implementation (headers co-located with source)
 │   ├── frontend/
 │   ├── middle_end/
 │   └── backend/
