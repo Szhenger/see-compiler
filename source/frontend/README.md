@@ -81,7 +81,7 @@ Before passing the graph to the Middle-End, the Frontend enforces **Real Analysi
 ## 6. Subrepository Structure & Build System
 
 ```text
-seecpp/
+see_compiler/
 ├── include/
 │   └── seecpp/
 │       └── frontend/
