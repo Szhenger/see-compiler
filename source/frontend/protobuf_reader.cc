@@ -1,19 +1,25 @@
-#include "frontend/onnx_ingressor.hpp"
-#include "include/utility/logger.hpp"
-#include "include/utility/weight_buffer.hpp"
+#include "seecpp/frontend/protobuf_reader.h"
 
+// Note: Ensure these headers exist in your include/utility/ directory
+#include "seecpp/utility/logger.h"
+#include "seecpp/utility/weight_buffer.h"
+
+// Protobuf headers (compiled from external/onnx)
 #include <onnx.pb.h>
-#include <fstream>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
+
+#include <fstream>
+#include <set>
 
 namespace seecpp::frontend {
 
+// Assuming this is defined and allocated in your utility module
 extern utility::WeightBuffer global_weight_buffer;
 
-const std::unordered_map<std::string, OnnxIngressor::NodeHandler, StringHash, std::equal_to<>>
-OnnxIngressor::kHandlers = {
+const std::unordered_map<std::string, ProtobufReader::NodeHandler, StringHash, std::equal_to<>>
+ProtobufReader::kHandlers = {
 
-    {"Conv", [](const onnx::NodeProto& node, SymbolTable& sym, sir::Block& block, OnnxIngressor* ingressor) 
+    {"Conv", [](const onnx::NodeProto& node, SymbolTable& sym, sir::Block& block, ProtobufReader* ingressor) 
         -> std::expected<sir::Operation*, IngestError> {
 
         if (node.input_size() < 2) {
@@ -47,7 +53,7 @@ OnnxIngressor::kHandlers = {
             else if (attr.name() == "group") group = attr.i();
         }
 
-        auto* op = block.createOperation("sc_high.conv2d");
+        auto* op = block.appendOp("sc_high.conv2d");
         op->addOperand(input);
         op->addOperand(filter);
         if (bias) op->addOperand(bias);
@@ -57,11 +63,12 @@ OnnxIngressor::kHandlers = {
         op->setAttribute("dilations", dilations);
         op->setAttribute("group", group);
 
-        op->addResult(node.output(0), sir::DataType::F32);
+        // Uses default empty shape until ShapeInferencePass resolves it
+        op->addResult(node.output(0), sir::DataType::F32, sir::Shape{});
         return op;
     }},
 
-    {"Gemm", [](const onnx::NodeProto& node, SymbolTable& sym, sir::Block& block, OnnxIngressor* ingressor) 
+    {"Gemm", [](const onnx::NodeProto& node, SymbolTable& sym, sir::Block& block, ProtobufReader* ingressor) 
         -> std::expected<sir::Operation*, IngestError> {
 
         if (node.input_size() < 2) {
@@ -85,23 +92,25 @@ OnnxIngressor::kHandlers = {
             else if (attr.name() == "beta") beta = attr.f();
         }
 
-        auto* op = block.createOperation("sc_high.gemm");
+        auto* op = block.appendOp("sc_high.gemm");
         op->addOperand(it_a->second);
         op->addOperand(it_b->second);
         if (node.input_size() > 2) {
-            if (auto it_c = sym.find(node.input(2)); it_c != sym.end()) op->addOperand(it_c->second);
+            if (auto it_c = sym.find(node.input(2)); it_c != sym.end()) {
+                op->addOperand(it_c->second);
+            }
         }
 
-        op->setAttribute("transA", trans_a);
-        op->setAttribute("transB", trans_b);
+        op->setAttribute("transA", static_cast<int64_t>(trans_a));
+        op->setAttribute("transB", static_cast<int64_t>(trans_b));
         op->setAttribute("alpha", alpha);
         op->setAttribute("beta", beta);
 
-        op->addResult(node.output(0), sir::DataType::F32);
+        op->addResult(node.output(0), sir::DataType::F32, sir::Shape{});
         return op;
     }},
 
-    {"Relu", [](const onnx::NodeProto& node, SymbolTable& sym, sir::Block& block, OnnxIngressor* ingressor) 
+    {"Relu", [](const onnx::NodeProto& node, SymbolTable& sym, sir::Block& block, ProtobufReader* ingressor) 
         -> std::expected<sir::Operation*, IngestError> {
         
         auto it = sym.find(node.input(0));
@@ -109,15 +118,15 @@ OnnxIngressor::kHandlers = {
             return std::unexpected(IngestError{IngestErrorCode::MissingInput, node.name(), node.op_type(), "Input missing"});
         }
 
-        auto* op = block.createOperation("sc_high.relu");
+        auto* op = block.appendOp("sc_high.relu");
         op->addOperand(it->second);
-        op->addResult(node.output(0), sir::DataType::F32);
+        op->addResult(node.output(0), sir::DataType::F32, sir::Shape{});
         return op;
     }}
 };
 
 std::expected<std::unique_ptr<sir::Block>, IngestError>
-OnnxIngressor::ingest(std::string_view model_path) {
+ProtobufReader::ingest(std::string_view model_path) {
     current_model_path_ = std::string(model_path);
     
     std::ifstream ifs(current_model_path_, std::ios::binary);
@@ -143,13 +152,13 @@ OnnxIngressor::ingest(std::string_view model_path) {
     return block;
 }
 
-void OnnxIngressor::processInitializers(const onnx::GraphProto& graph, SymbolTable& sym, sir::Block& block) {
+void ProtobufReader::processInitializers(const onnx::GraphProto& graph, SymbolTable& sym, sir::Block& block) {
     for (const auto& init : graph.initializer()) {
         auto dt = mapDataType(init.data_type()).value_or(sir::DataType::F32);
         sir::Shape shape;
         for (auto d : init.dims()) shape.dims.push_back(d);
 
-        auto* op = block.createOperation("sc_high.constant");
+        auto* op = block.appendOp("sc_high.constant");
         op->setAttribute("weight_ref", init.name());
         sym[init.name()] = op->addResult(init.name(), dt, shape);
 
@@ -162,9 +171,11 @@ void OnnxIngressor::processInitializers(const onnx::GraphProto& graph, SymbolTab
     }
 }
 
-void OnnxIngressor::processInputs(const onnx::GraphProto& graph, SymbolTable& sym, sir::Block& block) {
+void ProtobufReader::processInputs(const onnx::GraphProto& graph, SymbolTable& sym, sir::Block& block) {
     std::set<std::string_view> initializers;
-    for (const auto& init : graph.initializer()) initializers.insert(init.name());
+    for (const auto& init : graph.initializer()) {
+        initializers.insert(init.name());
+    }
 
     for (const auto& input : graph.input()) {
         if (initializers.contains(input.name())) continue;
@@ -179,30 +190,31 @@ void OnnxIngressor::processInputs(const onnx::GraphProto& graph, SymbolTable& sy
             }
         }
 
-        sym[input.name()] = block.addArgument(input.name(), dt, shape);
+        // The block manages SSA, but we map the ONNX name into our symbol table for later lookup
+        sym[input.name()] = block.addArgument(dt, shape);
     }
 }
 
 std::expected<void, IngestError>
-OnnxIngressor::processNodes(const onnx::GraphProto& graph, SymbolTable& sym, sir::Block& block) {
+ProtobufReader::processNodes(const onnx::GraphProto& graph, SymbolTable& sym, sir::Block& block) {
     for (const auto& node : graph.node()) {
         auto it = kHandlers.find(node.op_type());
         if (it == kHandlers.end()) {
-            return std::unexpected(IngestError{IngestErrorCode::UnsupportedOp, node.name(), node.op_type(), "No handler"});
+            return std::unexpected(IngestError{IngestErrorCode::UnsupportedOp, node.name(), node.op_type(), "No handler for node type"});
         }
 
         auto result = it->second(node, sym, block, this);
         if (!result) return std::unexpected(result.error());
 
         sir::Operation* op = *result;
-        for (int i = 0; i < node.output_size() && i < (int)op->numResults(); ++i) {
+        for (int i = 0; i < node.output_size() && i < static_cast<int>(op->numResults()); ++i) {
             sym[node.output(i)] = op->result(i);
         }
     }
     return {};
 }
 
-std::optional<sir::DataType> OnnxIngressor::mapDataType(int onnx_type) {
+std::optional<sir::DataType> ProtobufReader::mapDataType(int onnx_type) {
     switch (onnx_type) {
         case 1:  return sir::DataType::F32;
         case 6:  return sir::DataType::I32;
