@@ -87,7 +87,7 @@ see_compiler/
 │       └── frontend/
 │           └── frontend_manager.h    # The ONLY public API for the Frontend
 │
-├── src/
+├── source/
 │   └── frontend/
 │       ├── ingress/                  # Stage 1: Protobuf Extraction
 │       │   ├── protobuf_reader.h
