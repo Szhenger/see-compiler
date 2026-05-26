@@ -82,11 +82,6 @@ Before passing the graph to the Middle-End, the Frontend enforces **Real Analysi
 
 ```text
 see_compiler/
-├── include/
-│   └── seecpp/
-│       └── frontend/
-│           └── frontend_manager.h    # The ONLY public API for the Frontend
-│
 ├── source/
 │   └── frontend/
 │       ├── ingress/                  # Stage 1: Protobuf Extraction
