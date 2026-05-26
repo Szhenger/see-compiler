@@ -81,31 +81,35 @@ Before passing the graph to the Middle-End, the Frontend enforces **Real Analysi
 ## 6. Subrepository Structure & Build System
 
 ```text
-see_compiler/
+seecpp/
 ├── source/
 │   └── frontend/
-│       ├── ingress/                  # Stage 1: Protobuf Extraction
+│       ├── ingress/                  # Submodule 1: Protobuf Extraction
 │       │   ├── protobuf_reader.h
 │       │   ├── protobuf_reader.cc
 │       │   ├── type_bridge.h         # Isolates ONNX enums from SeeC++ enums
 │       │   └── type_bridge.cc
 │       │
-│       ├── parser/                   # Stage 2: DAG Reconstruction
+│       ├── parser/                   # Submodule 2: DAG Reconstruction
 │       │   ├── graph_builder.h       # Manages std::unique_ptr ownership of nodes
 │       │   ├── graph_builder.cc
 │       │   ├── shape_inference.h     # Propagates shapes from inputs to outputs
 │       │   └── shape_inference.cc
 │       │
-│       ├── transforms/               # Stages 3 & 4: Lowering and Evaluation
+│       ├── transforms/               # Submodule 3 & 4: Lowering and Evaluation
 │       │   ├── canonicalizer.h       # De-sugars complex ONNX ops (e.g., Gemm)
 │       │   ├── canonicalizer.cc
 │       │   ├── constant_folder.h     # Pre-computes static subgraphs
 │       │   └── constant_folder.cc
 │       │
-│       ├── validator/                # Stage 5: Real Analysis Constraints
+│       ├── validator/                # Submodule 5: Real Analysis Constraints
 │       │   ├── semantic_check.h      # Enforces rank, broadcast, and AOT shape rules
 │       │   └── semantic_check.cc
 │       │
-│       └── diagnostics/              # Stage 6: Error Formatting
-│           ├── diagnostics_engine.h  # Clang-style terminal error tracing
-│           └── diagnostics_engine.cc
+│       ├── diagnostics/              # Submodule 6: Error Formatting
+│       │   ├── diagnostics_engine.h  # Clang-style terminal error tracing
+│       │   └── diagnostics_engine.cc
+│       │
+│       └── driver/                
+│           ├── frontend_driver.h     # Submodule 7: Orcestration Manager 
+│           └── frontend_driver.cc
