@@ -1,44 +1,52 @@
 #ifndef SEECPP_MIDDLE_END_TRANSFORMS_KERNEL_FUSER_H_
 #define SEECPP_MIDDLE_END_TRANSFORMS_KERNEL_FUSER_H_
 
-#include <string>
 #include <string_view>
-#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
+#include "seecpp/diagnostics/diagnostics_engine.h"
 #include "seecpp/sir/sir.h"
 
 namespace seecpp::middle_end::transforms {
 
-/// @brief Combines chains of element-wise operations into single fused kernels.
-/// This drastically reduces memory bandwidth constraints by keeping intermediate
-/// values in hardware registers.
+/// @brief Fuses compatible sub-graphs to maximize register locality and 
+/// eliminate unnecessary global memory round-trips.
 class KernelFuser {
  public:
-  KernelFuser() = default;
+  explicit KernelFuser(diagnostics::DiagnosticsEngine* diags = nullptr) 
+      : diags_(diags) {}
   ~KernelFuser() = default;
 
   KernelFuser(const KernelFuser&) = delete;
   KernelFuser& operator=(const KernelFuser&) = delete;
 
-  /// @brief Executes the fusion pass over the block until convergence.
+  /// @brief Executes all fusion passes over the block.
   /// @param block The SIR block to optimize.
-  /// @return True if any operations were fused, false otherwise.
+  /// @return True if any operations were fused.
   bool Run(sir::Block& block);
 
  private:
-  /// @brief Determines if an operator is purely element-wise (e.g., Add, Relu)
-  /// and eligible for memory-bound kernel fusion.
-  [[nodiscard]] bool IsElementwise(std::string_view mnemonic) const;
+  // Sub-passes
+  bool FoldConvBatchNorm(sir::Block& block);
+  bool FuseMatMulRelu(sir::Block& block);
+  bool FuseElementwiseChains(sir::Block& block);
 
-  /// @brief Performs a full scan of the block to compute the exact number of 
-  /// downstream consumers for every node. We can only safely fuse an intermediate
-  /// node if it has exactly 1 consumer to avoid recomputation overhead.
-  [[nodiscard]] std::unordered_map<std::string, int> ComputeUseCounts(
-      const sir::Block& block) const;
+  // Core fusion implementations
+  bool TryFoldConvBatchNorm(sir::Block& block, sir::Operation* bn_op,
+                            std::unordered_set<std::string_view>& dead_ids);
+  bool TryFuseMatMulRelu(sir::Block& block, sir::Operation* relu_op,
+                         std::unordered_set<std::string_view>& dead_ids);
+  bool TryFuseElementwisePair(sir::Block& block, sir::Operation* consumer_op,
+                              std::unordered_set<std::string_view>& dead_ids);
 
-  /// @brief Attempts a single pairwise fusion between a producer and consumer.
-  bool TryFusePair(sir::Operation& consumer, sir::Block& block,
-                   const std::unordered_map<std::string, int>& use_counts);
+  // Optional diagnostics hook for terminal tracing
+  diagnostics::DiagnosticsEngine* diags_;
+
+  // Metrics
+  size_t fused_conv_bn_ = 0;
+  size_t fused_matmul_relu_ = 0;
+  size_t fused_elementwise_ = 0;
 };
 
 }  // namespace seecpp::middle_end::transforms
