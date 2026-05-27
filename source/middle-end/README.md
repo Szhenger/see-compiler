@@ -54,7 +54,9 @@ This is the most critical systems-level optimization. Because SeeC++ is an AOT c
 ---
 
 ## 📐 The Analytic Constraint: Continuity
+
 A key invariant in this module is **Continuity**. The Middle-End will flag any "Non-Differentiable" paths in the graph (e.g., a branch on a discrete value that has no defined gradient) to ensure the training binary is mathematically sound before it ever hits the Backend.
+
 ---
 
 ## 6. Repository Structure
