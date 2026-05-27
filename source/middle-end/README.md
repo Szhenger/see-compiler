@@ -55,3 +55,36 @@ This is the most critical systems-level optimization. Because SeeC++ is an AOT c
 
 ## 📐 The Analytic Constraint: Continuity
 A key invariant in this module is **Continuity**. The Middle-End will flag any "Non-Differentiable" paths in the graph (e.g., a branch on a discrete value that has no defined gradient) to ensure the training binary is mathematically sound before it ever hits the Backend.
+---
+
+## 6. Repository Structure
+
+The middle-end architecture maps the mathematical and system constraints directly into the codebase:
+
+```text
+seecpp/
+└── source/
+    └── middle_end/
+        ├── analysis/                 # Submodule 1: The Continuity & Liveness Constraints
+        │   ├── differentiability_checker.h
+        │   ├── differentiability_checker.cc
+        │   ├── liveness_analysis.h
+        │   └── liveness_analysis.cc
+        │
+        ├── autodiff/                 # Submodule 2: The Calculus Engine
+        │   ├── gradient_builder.h
+        │   └── gradient_builder.cc
+        │
+        ├── transforms/               # Submodule 3: The Optimizers
+        │   ├── algebraic_simplifier.h
+        │   ├── algebraic_simplifier.cc
+        │   ├── kernel_fuser.h
+        │   └── kernel_fuser.cc
+        │
+        ├── memory/                   # Submodule 4: The Systems Optimizer
+        │   ├── arena_mapper.h
+        │   └── arena_mapper.cc
+        │
+        ├── manager/                  # Submodule 5: The Orchestrator
+        │   ├── pass_manager.h
+        │   └── pass_manager.c
