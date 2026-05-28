@@ -47,8 +47,8 @@ In `SeeC++`, we fuse operations like `Add + ReLU + Dropout` into a single loop, 
 * **Static Memory Mapper:** Pre-calculates the exact lifespan of every tensor to minimize the memory footprint.
 
 ### Module III: The System Pass (Backend)
-* **Emitter:** Translates the `SIR` into high-performance `C++20`.
-* **Optimization:** Inlines hardware intrinsics for `x86_64` (AVX-512) and `ARM` (NEON).
+* **Serializer:** Transforms the `SIR` and Memory Arena Map into a lightweight, high-performance `.see` binary topology. This eliminates the need for host-side C++ code generation, allowing for instant compilation of massive model architectures.
+* **Kernel Orchestration**: Instead of inlining code, the backend maps operations to a pre-compiled `Static Kernel Library (libseecpp_kernels.a)`. This library utilizes platform-specific hardware intrinsics — `AVX-512` for `x86_64` and `NEON` for `ARM` — to ensure that the math execution is as close to the silicon as possible.
 
 ---
 
