@@ -10,7 +10,7 @@
 #include "seecpp/middle_end/pass_context.h"
 #include "seecpp/middle_end/passes/pass.h"
 #include "seecpp/sir/sir.h"
-#include "seecpp/utility/result.hpp" // <-- C++20 Fallback
+#include "seecpp/utility/result.h" // <-- C++20 Fallback
 
 namespace seecpp::middle_end {
 
