@@ -12,12 +12,13 @@ std::expected<ArenaLayout, MapperError> ArenaMapper::Run(sir::Block& block) {
   utility::Logger::info("ArenaMapper: Starting workspace memory allocation.");
 
   // 1. Calculate the lifespan and size of every intermediate tensor.
-  auto intervals_expected = ComputeLiveness(block);
-  if (!intervals_expected) {
-    return std::unexpected(intervals_expected.error());
+  auto intervals_result = ComputeLiveness(block);
+  if (!intervals_result) {
+    // Extract the error from the result and bubble it up
+    return intervals_result.error(); 
   }
-  std::vector<LiveInterval> intervals = std::move(intervals_expected.value());
-
+  std::vector<LiveInterval> intervals = std::move(intervals_result.value());
+  
   // 2. Sort intervals by start_tick to simulate linear execution time.
   std::sort(intervals.begin(), intervals.end(),
             [](const LiveInterval& a, const LiveInterval& b) {
