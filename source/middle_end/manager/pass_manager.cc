@@ -61,10 +61,10 @@ std::expected<bool, PassError> PassManager::Run(sir::Block& block) {
       if (!block.Verify(context_.diags)) {
         if (context_.diags) {
           context_.diags->Report(diagnostics::Level::Fatal)
-              << "Verification failed after pass: " << pass_name
-              << ". The intermediate representation is structurally malformed.";
+              << "Verification failed after pass: " << pass_name;
         }
-        return std::unexpected(PassError::kVerificationFailed);
+        // C++20: Just return the error enum. The Result(E) constructor handles it.
+        return PassError::kVerificationFailed; 
       }
     }
   }
