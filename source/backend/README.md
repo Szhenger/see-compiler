@@ -28,19 +28,28 @@ This directory organization ensures a clean separation between the compilation l
 
 ```text
 /backend
-├── /include
+├── /include                  # PUBLIC API (Exposed to clients/other modules)
 │   ├── /runtime
-│   │   └── see_executor.h    # The lightweight dispatcher class
+│   │   ├── see_executor.h    
+│   │   └── opcodes.h         
 │   └── /kernels
-│       └── math_kernels.h    # Prototypes for SIMD-optimized math
-├── /source
+│       └── math_kernels.h    
+├── /src                      # PRIVATE IMPLEMENTATION (Internal to the Backend)
+│   ├── /lowering
+│   │   ├── selector.h        <-- Internal Interface
+│   │   └── selector.cc       
+│   ├── /memory
+│   │   ├── offset_binder.h   <-- Internal Interface
+│   │   └── offset_binder.cc  
+│   ├── /weights
+│   │   ├── weight_packer.h   <-- Internal Interface
+│   │   └── weight_packer.cc  
 │   ├── /serializer
-│   │   ├── serializer.cc     # Logic to write the .see binary
-│   │   └── schema.h          # Header/Instruction structs for .see
+│   │   ├── serializer.h      <-- Internal Interface (called by see-compile.cc)
+│   │   ├── serializer.cc     
+│   │   └── schema.h          # Private struct layouts for the .see file
 │   └── /kernels
-│       ├── avx512_kernels.cc # x86-specific implementations
-│       └── neon_kernels.cc   # ARM-specific implementations
-├── /tools
-│   └── see-compile.cc        # Driver for the AOT serialization
-└── /tests
-    └── /benchmarks           # Latency/Throughput test suites
+│       ├── avx512_kernels.cc 
+│       └── neon_kernels.cc   
+└── /tools
+    └── see-compile.cc        # The CLI driver that includes serializer.h
