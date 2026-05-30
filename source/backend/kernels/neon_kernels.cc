@@ -1,6 +1,6 @@
 #if defined(__aarch64__) || defined(_M_ARM64)
 
-#include "src/runtime/kernels.h"
+#include "source/kernels/kernels.h"
 #include <arm_neon.h>
 #include <cassert>
 
